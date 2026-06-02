@@ -19,7 +19,7 @@ export class AuthService {
   login(req: LoginRequest) {
     return this.api.post<LoginResponse>('/auth/login', req).pipe(
       tap(response => {
-        this.currentUser.set(response.user);
+        this.currentUser.set({ id: response.userId, email: response.email, displayName: response.displayName } as User);
         if (this.isBrowser) localStorage.setItem('token', response.token);
       })
     );
@@ -35,14 +35,14 @@ export class AuthService {
     const token = localStorage.getItem('token');
     if (token) {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      this.currentUser.set(payload);
+      this.currentUser.set({ id: payload.sub, email: payload.email, displayName: payload.name } as User);
     }
   }
 
   register(req: RegisterRequest) {
     return this.api.post<LoginResponse>('/auth/register', { ...req }).pipe(
       tap(response => {
-        this.currentUser.set(response.user);
+        this.currentUser.set({ id: response.userId, email: response.email, displayName: response.displayName } as User);
         if (this.isBrowser) localStorage.setItem('token', response.token);
       })
     );

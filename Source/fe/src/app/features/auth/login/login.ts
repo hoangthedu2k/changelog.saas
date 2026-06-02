@@ -25,7 +25,6 @@ export class Login {
   onSubmit() {
     if (this.form.invalid) return;
     const req = this.form.getRawValue() as LoginRequest;
-    const { email, password } = this.form.getRawValue();
     this.authService.login(req).subscribe({
       next: () => this.router.navigate(['/app']),
       error: (err) => console.error('Login failed', err),
