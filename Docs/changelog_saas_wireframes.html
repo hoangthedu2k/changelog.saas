@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframes — Changelog SaaS</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    /* Colors - light mode */
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5f4;
+    --color-background-info: #eff6ff;
+    --color-background-success: #f0fdf4;
+    --color-background-warning: #fffbeb;
+    --color-background-danger: #fef2f2;
+
+    --color-text-primary: #1c1917;
+    --color-text-secondary: #78716c;
+    --color-text-tertiary: #a8a29e;
+    --color-text-info: #2563eb;
+    --color-text-success: #16a34a;
+    --color-text-warning: #d97706;
+    --color-text-danger: #dc2626;
+
+    --color-border-primary: #1c1917;
+    --color-border-secondary: #e7e5e4;
+    --color-border-tertiary: #f0eeed;
+
+    --border-radius-sm: 4px;
+    --border-radius-md: 6px;
+    --border-radius-lg: 10px;
+
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: #fafaf9;
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Wireframe các màn hình chính của Changelog SaaS: Dashboard, Public Page, Widget, và Pricing</h2>
+
+<style>
+.wf-nav { display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
+.wf-btn { padding:7px 16px; border-radius:var(--border-radius-md); border:0.5px solid var(--color-border-secondary); background:var(--color-background-primary); color:var(--color-text-secondary); font-size:13px; cursor:pointer; transition:all .15s; }
+.wf-btn.active { background:var(--color-background-secondary); color:var(--color-text-primary); border-color:var(--color-border-primary); font-weight:500; }
+.wf-screen { display:none; }
+.wf-screen.active { display:block; }
+
+.screen-shell { border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); overflow:hidden; background:var(--color-background-secondary); }
+.browser-bar { background:var(--color-background-primary); border-bottom:0.5px solid var(--color-border-tertiary); padding:10px 14px; display:flex; align-items:center; gap:10px; }
+.dots { display:flex; gap:5px; }
+.dot { width:10px; height:10px; border-radius:50%; }
+.dot-r { background:#f87171; }
+.dot-y { background:#fbbf24; }
+.dot-g { background:#4ade80; }
+.url-bar { flex:1; background:var(--color-background-secondary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:4px 10px; font-size:12px; color:var(--color-text-secondary); font-family:var(--font-mono); }
+
+.app-layout { display:flex; height:520px; }
+.sidebar { width:200px; background:var(--color-background-primary); border-right:0.5px solid var(--color-border-tertiary); padding:16px 0; flex-shrink:0; }
+.sb-logo { padding:0 16px 16px; border-bottom:0.5px solid var(--color-border-tertiary); margin-bottom:12px; }
+.sb-logo-text { font-size:14px; font-weight:500; color:var(--color-text-primary); }
+.sb-logo-sub { font-size:11px; color:var(--color-text-secondary); }
+.sb-item { display:flex; align-items:center; gap:8px; padding:8px 16px; font-size:13px; color:var(--color-text-secondary); cursor:pointer; }
+.sb-item.active { color:var(--color-text-primary); background:var(--color-background-secondary); font-weight:500; border-right:2px solid var(--color-text-primary); }
+.sb-item i { font-size:16px; }
+.sb-section { font-size:10px; color:var(--color-text-tertiary); padding:12px 16px 4px; letter-spacing:1px; text-transform:uppercase; }
+
+.main-area { flex:1; overflow-y:auto; padding:24px; background:var(--color-background-secondary); }
+.main-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.main-title { font-size:16px; font-weight:500; color:var(--color-text-primary); }
+.btn-primary { padding:7px 14px; border-radius:var(--border-radius-md); background:var(--color-text-primary); color:var(--color-background-primary); font-size:13px; border:none; cursor:pointer; display:flex; align-items:center; gap:6px; }
+.btn-ghost { padding:7px 14px; border-radius:var(--border-radius-md); background:transparent; border:0.5px solid var(--color-border-secondary); font-size:13px; cursor:pointer; color:var(--color-text-secondary); }
+
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+.stat { background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:14px; }
+.stat-n { font-size:22px; font-weight:500; color:var(--color-text-primary); }
+.stat-l { font-size:11px; color:var(--color-text-secondary); margin-top:2px; }
+.stat-d { font-size:11px; color:var(--color-text-success); margin-top:4px; }
+
+.entry-list { display:flex; flex-direction:column; gap:10px; }
+.entry-card { background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:14px 16px; }
+.entry-top { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.entry-title { font-size:14px; font-weight:500; color:var(--color-text-primary); flex:1; }
+.entry-meta { font-size:11px; color:var(--color-text-secondary); display:flex; align-items:center; gap:10px; }
+.entry-body { font-size:12px; color:var(--color-text-secondary); line-height:1.5; margin-bottom:10px; }
+.entry-actions { display:flex; gap:6px; }
+.tag { font-size:11px; padding:2px 8px; border-radius:var(--border-radius-md); }
+.tag-new { background:var(--color-background-info); color:var(--color-text-info); }
+.tag-fix { background:var(--color-background-success); color:var(--color-text-success); }
+.tag-imp { background:var(--color-background-warning); color:var(--color-text-warning); }
+.tag-draft { background:var(--color-background-secondary); color:var(--color-text-secondary); border:0.5px solid var(--color-border-secondary); }
+.status-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.dot-pub { background:#4ade80; }
+.dot-dft { background:var(--color-text-tertiary); }
+
+.section-card { background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:16px; margin-bottom:12px; }
+.section-title { font-size:13px; font-weight:500; color:var(--color-text-primary); margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+
+.editor-area { border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); overflow:hidden; }
+.editor-toolbar { background:var(--color-background-secondary); border-bottom:0.5px solid var(--color-border-tertiary); padding:8px 12px; display:flex; gap:10px; }
+.toolbar-btn { font-size:13px; color:var(--color-text-secondary); cursor:pointer; }
+.editor-body { padding:14px; min-height:120px; font-size:13px; color:var(--color-text-secondary); line-height:1.7; }
+.cursor { display:inline-block; width:2px; height:14px; background:var(--color-text-primary); vertical-align:-2px; animation:blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.field-label { font-size:12px; color:var(--color-text-secondary); margin-bottom:5px; }
+.field-input { width:100%; background:var(--color-background-secondary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:8px 12px; font-size:13px; color:var(--color-text-primary); margin-bottom:12px; font-family:var(--font-sans); }
+
+.tag-row { display:flex; gap:6px; flex-wrap:wrap; }
+.tag-sel { padding:5px 12px; border-radius:var(--border-radius-md); font-size:12px; border:0.5px solid var(--color-border-secondary); cursor:pointer; }
+.tag-sel.sel { background:var(--color-text-primary); color:var(--color-background-primary); border-color:var(--color-text-primary); }
+
+.pub-layout { display:flex; flex-direction:column; }
+.pub-header { background:var(--color-background-primary); border-bottom:0.5px solid var(--color-border-tertiary); padding:20px 32px; display:flex; align-items:center; justify-content:space-between; }
+.pub-logo { font-size:16px; font-weight:500; color:var(--color-text-primary); }
+.pub-sub-btn { padding:7px 14px; border:0.5px solid var(--color-border-secondary); border-radius:var(--border-radius-md); font-size:13px; cursor:pointer; background:var(--color-background-primary); color:var(--color-text-secondary); }
+.pub-body { padding:32px; display:flex; gap:28px; }
+.pub-sidebar { width:160px; flex-shrink:0; }
+.pub-filter-title { font-size:11px; color:var(--color-text-tertiary); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+.pub-filter-item { font-size:13px; color:var(--color-text-secondary); padding:5px 0; display:flex; align-items:center; gap:6px; cursor:pointer; }
+.pub-filter-item.active { color:var(--color-text-primary); font-weight:500; }
+.pub-entries { flex:1; display:flex; flex-direction:column; gap:16px; }
+.pub-entry { border-bottom:0.5px solid var(--color-border-tertiary); padding-bottom:16px; }
+.pub-entry-date { font-size:11px; color:var(--color-text-tertiary); margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.pub-entry-title { font-size:15px; font-weight:500; color:var(--color-text-primary); margin-bottom:6px; }
+.pub-entry-body { font-size:13px; color:var(--color-text-secondary); line-height:1.6; }
+.pub-entry-body ul { margin:8px 0 0 16px; }
+.pub-entry-body li { margin-bottom:3px; }
+
+.sub-form { display:flex; gap:8px; margin-top:6px; }
+.sub-input { flex:1; border:0.5px solid var(--color-border-secondary); border-radius:var(--border-radius-md); padding:7px 12px; font-size:13px; background:var(--color-background-secondary); color:var(--color-text-secondary); }
+
+.widget-demo { display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; }
+.widget-phone { width:220px; background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); overflow:hidden; }
+.phone-app-bar { background:var(--color-background-secondary); border-bottom:0.5px solid var(--color-border-tertiary); padding:12px 14px; display:flex; align-items:center; justify-content:space-between; }
+.phone-app-name { font-size:13px; font-weight:500; color:var(--color-text-primary); }
+.badge-notif { background:#ef4444; color:#fff; font-size:10px; font-weight:500; padding:1px 5px; border-radius:100px; }
+.phone-content { padding:12px 14px; }
+.phone-item { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:0.5px solid var(--color-border-tertiary); }
+.phone-item:last-child { border-bottom:none; }
+.phone-item-icon { width:28px; height:28px; border-radius:var(--border-radius-md); background:var(--color-background-secondary); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.phone-item-text { font-size:12px; color:var(--color-text-primary); font-weight:500; }
+.phone-item-sub { font-size:11px; color:var(--color-text-secondary); }
+
+.widget-popup { width:260px; background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); overflow:hidden; }
+.popup-header { padding:12px 14px; border-bottom:0.5px solid var(--color-border-tertiary); display:flex; align-items:center; justify-content:space-between; }
+.popup-title { font-size:13px; font-weight:500; color:var(--color-text-primary); }
+.popup-close { font-size:16px; color:var(--color-text-secondary); cursor:pointer; }
+.popup-entries { padding:0; }
+.popup-entry { padding:12px 14px; border-bottom:0.5px solid var(--color-border-tertiary); }
+.popup-entry:last-child { border-bottom:none; }
+.popup-entry-title { font-size:13px; font-weight:500; color:var(--color-text-primary); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.popup-entry-date { font-size:11px; color:var(--color-text-tertiary); }
+.popup-entry-desc { font-size:12px; color:var(--color-text-secondary); margin-top:4px; line-height:1.5; }
+.popup-fab { display:flex; justify-content:flex-end; padding:12px 14px 6px; position:relative; }
+.fab-btn { display:flex; align-items:center; gap:6px; background:var(--color-text-primary); color:var(--color-background-primary); padding:8px 12px; border-radius:var(--border-radius-md); font-size:12px; font-weight:500; cursor:pointer; }
+
+.pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.price-card { background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; }
+.price-card.popular { border:1.5px solid var(--color-border-info); }
+.price-pop-badge { font-size:11px; background:var(--color-background-info); color:var(--color-text-info); padding:3px 10px; border-radius:var(--border-radius-md); display:inline-block; margin-bottom:10px; }
+.price-name { font-size:14px; font-weight:500; color:var(--color-text-primary); margin-bottom:4px; }
+.price-amount { font-size:28px; font-weight:500; color:var(--color-text-primary); margin:10px 0 4px; }
+.price-amount span { font-size:13px; color:var(--color-text-secondary); font-weight:400; }
+.price-desc { font-size:12px; color:var(--color-text-secondary); margin-bottom:14px; }
+.price-features { list-style:none; display:flex; flex-direction:column; gap:7px; margin-bottom:16px; }
+.price-features li { font-size:12px; color:var(--color-text-secondary); display:flex; align-items:center; gap:7px; }
+.price-features li i { font-size:14px; color:var(--color-text-success); }
+.price-features li.no i { color:var(--color-text-tertiary); }
+.price-features li.no { color:var(--color-text-tertiary); }
+.price-cta { width:100%; padding:8px; border-radius:var(--border-radius-md); font-size:13px; cursor:pointer; text-align:center; }
+.cta-outline { background:transparent; border:0.5px solid var(--color-border-secondary); color:var(--color-text-secondary); }
+.cta-fill { background:var(--color-text-primary); border:none; color:var(--color-background-primary); }
+
+.settings-layout { display:flex; height:520px; }
+.settings-sidebar { width:180px; background:var(--color-background-primary); border-right:0.5px solid var(--color-border-tertiary); padding:16px 0; flex-shrink:0; }
+.settings-main { flex:1; padding:24px; overflow-y:auto; background:var(--color-background-secondary); }
+
+.form-row { margin-bottom:14px; }
+.form-row label { display:block; font-size:12px; color:var(--color-text-secondary); margin-bottom:5px; }
+.form-row input, .form-row select { width:100%; background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:8px 12px; font-size:13px; color:var(--color-text-primary); }
+
+.color-row { display:flex; gap:8px; align-items:center; }
+.color-swatch { width:28px; height:28px; border-radius:50%; cursor:pointer; }
+.color-active { outline:2px solid var(--color-text-primary); outline-offset:2px; }
+
+.embed-code { background:var(--color-background-secondary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:12px; font-family:var(--font-mono); font-size:11px; color:var(--color-text-secondary); line-height:1.7; word-break:break-all; margin-top:10px; }
+.copy-row { display:flex; justify-content:flex-end; margin-top:8px; }
+
+.notification { position:fixed; top:16px; right:16px; background:var(--color-background-primary); border:0.5px solid var(--color-border-secondary); border-radius:var(--border-radius-md); padding:10px 16px; font-size:13px; color:var(--color-text-primary); display:none; align-items:center; gap:8px; z-index:100; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+</style>
+
+<div class="notification" id="notif">
+  <i class="ti ti-check" style="color:var(--color-text-success); font-size:16px;"></i>
+  <span id="notif-text">Đã copy!</span>
+</div>
+
+<div class="wf-nav">
+  <button class="wf-btn active" onclick="showScreen('dashboard')"><i class="ti ti-layout-dashboard" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>Dashboard</button>
+  <button class="wf-btn" onclick="showScreen('editor')"><i class="ti ti-edit" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>Editor</button>
+  <button class="wf-btn" onclick="showScreen('public')"><i class="ti ti-world" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>Public Page</button>
+  <button class="wf-btn" onclick="showScreen('widget')"><i class="ti ti-puzzle" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>Widget</button>
+  <button class="wf-btn" onclick="showScreen('pricing')"><i class="ti ti-credit-card" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>Pricing</button>
+  <button class="wf-btn" onclick="showScreen('settings')"><i class="ti ti-settings" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>Settings</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="screen-dashboard" class="wf-screen active">
+  <div class="screen-shell">
+    <div class="browser-bar">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <div class="url-bar">app.changelogapp.io/dashboard</div>
+    </div>
+    <div class="app-layout">
+      <div class="sidebar">
+        <div class="sb-logo">
+          <div class="sb-logo-text">ChangelogApp</div>
+          <div class="sb-logo-sub">My Awesome SaaS</div>
+        </div>
+        <div class="sb-item active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Dashboard</div>
+        <div class="sb-item"><i class="ti ti-news" aria-hidden="true"></i>Entries</div>
+        <div class="sb-item"><i class="ti ti-users" aria-hidden="true"></i>Subscribers</div>
+        <div class="sb-item"><i class="ti ti-puzzle" aria-hidden="true"></i>Widget</div>
+        <div class="sb-section">Settings</div>
+        <div class="sb-item"><i class="ti ti-palette" aria-hidden="true"></i>Appearance</div>
+        <div class="sb-item"><i class="ti ti-credit-card" aria-hidden="true"></i>Billing</div>
+        <div class="sb-item"><i class="ti ti-settings" aria-hidden="true"></i>Project</div>
+      </div>
+      <div class="main-area">
+        <div class="main-header">
+          <div class="main-title">Overview</div>
+          <button class="btn-primary" onclick="showScreen('editor')"><i class="ti ti-plus" style="font-size:14px" aria-hidden="true"></i> New entry</button>
+        </div>
+        <div class="stats-row">
+          <div class="stat"><div class="stat-n">12</div><div class="stat-l">Total entries</div><div class="stat-d">+3 this month</div></div>
+          <div class="stat"><div class="stat-n">847</div><div class="stat-l">Subscribers</div><div class="stat-d">+42 this week</div></div>
+          <div class="stat"><div class="stat-n">68%</div><div class="stat-l">Email open rate</div><div class="stat-d">+5% vs last</div></div>
+          <div class="stat"><div class="stat-n">2.4k</div><div class="stat-l">Page views</div><div class="stat-d">+18% this month</div></div>
+        </div>
+        <div style="font-size:12px; color:var(--color-text-secondary); margin-bottom:10px; font-weight:500; text-transform:uppercase; letter-spacing:1px;">Recent entries</div>
+        <div class="entry-list">
+          <div class="entry-card">
+            <div class="entry-top">
+              <div class="status-dot dot-pub"></div>
+              <span class="entry-title">Dark mode & custom themes</span>
+              <span class="tag tag-new">New</span>
+              <span class="tag tag-imp">Improvement</span>
+            </div>
+            <div class="entry-body">Users can now switch to dark mode or choose from 8 custom color themes in Settings. System preference is detected automatically.</div>
+            <div class="entry-meta"><i class="ti ti-calendar" style="font-size:13px" aria-hidden="true"></i>May 28, 2026 <i class="ti ti-mail" style="font-size:13px" aria-hidden="true"></i>847 sent <i class="ti ti-eye" style="font-size:13px" aria-hidden="true"></i>576 opened</div>
+          </div>
+          <div class="entry-card">
+            <div class="entry-top">
+              <div class="status-dot dot-pub"></div>
+              <span class="entry-title">Fixed login loop on Safari</span>
+              <span class="tag tag-fix">Bug fix</span>
+            </div>
+            <div class="entry-body">Resolved an issue causing redirect loops when signing in via Safari 17+. All OAuth flows now work correctly.</div>
+            <div class="entry-meta"><i class="ti ti-calendar" style="font-size:13px" aria-hidden="true"></i>May 20, 2026 <i class="ti ti-mail" style="font-size:13px" aria-hidden="true"></i>847 sent <i class="ti ti-eye" style="font-size:13px" aria-hidden="true"></i>498 opened</div>
+          </div>
+          <div class="entry-card">
+            <div class="entry-top">
+              <div class="status-dot dot-dft"></div>
+              <span class="entry-title">CSV export & bulk actions</span>
+              <span class="tag tag-draft">Draft</span>
+            </div>
+            <div class="entry-body" style="color:var(--color-text-tertiary)">Work in progress — not published yet.</div>
+            <div class="entry-meta"><i class="ti ti-clock" style="font-size:13px" aria-hidden="true"></i>Last edited today</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDITOR -->
+<div id="screen-editor" class="wf-screen">
+  <div class="screen-shell">
+    <div class="browser-bar">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <div class="url-bar">app.changelogapp.io/entries/new</div>
+    </div>
+    <div class="app-layout">
+      <div class="sidebar">
+        <div class="sb-logo">
+          <div class="sb-logo-text">ChangelogApp</div>
+          <div class="sb-logo-sub">My Awesome SaaS</div>
+        </div>
+        <div class="sb-item"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Dashboard</div>
+        <div class="sb-item active"><i class="ti ti-news" aria-hidden="true"></i>Entries</div>
+        <div class="sb-item"><i class="ti ti-users" aria-hidden="true"></i>Subscribers</div>
+        <div class="sb-item"><i class="ti ti-puzzle" aria-hidden="true"></i>Widget</div>
+        <div class="sb-section">Settings</div>
+        <div class="sb-item"><i class="ti ti-palette" aria-hidden="true"></i>Appearance</div>
+        <div class="sb-item"><i class="ti ti-credit-card" aria-hidden="true"></i>Billing</div>
+      </div>
+      <div class="main-area">
+        <div class="main-header">
+          <div class="main-title">New entry</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-ghost">Save draft</button>
+            <button class="btn-primary"><i class="ti ti-send" style="font-size:14px" aria-hidden="true"></i> Publish & notify</button>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="form-row">
+            <label>Title</label>
+            <input type="text" value="CSV export & bulk actions" style="font-size:14px;font-weight:500;" />
+          </div>
+          <div class="form-row" style="margin-bottom:6px;">
+            <label>Content</label>
+            <div class="editor-area">
+              <div class="editor-toolbar">
+                <span class="toolbar-btn"><strong>B</strong></span>
+                <span class="toolbar-btn"><em>I</em></span>
+                <span class="toolbar-btn"><u>U</u></span>
+                <span class="toolbar-btn">H1</span>
+                <span class="toolbar-btn">H2</span>
+                <span class="toolbar-btn"><i class="ti ti-list" aria-hidden="true"></i></span>
+                <span class="toolbar-btn"><i class="ti ti-link" aria-hidden="true"></i></span>
+                <span class="toolbar-btn"><i class="ti ti-photo" aria-hidden="true"></i></span>
+              </div>
+              <div class="editor-body">You can now export any data table to CSV with one click. We also added bulk selection — hold Shift to select multiple rows and apply actions like delete or tag.<span class="cursor"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-title">Tags <span style="font-size:11px;color:var(--color-text-tertiary);font-weight:400;">Choose all that apply</span></div>
+          <div class="tag-row">
+            <span class="tag-sel sel">New feature</span>
+            <span class="tag-sel">Bug fix</span>
+            <span class="tag-sel sel">Improvement</span>
+            <span class="tag-sel">Security</span>
+            <span class="tag-sel">Performance</span>
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-title">Version <span style="font-size:11px;color:var(--color-text-tertiary);font-weight:400;">Optional</span></div>
+          <input class="field-input" type="text" value="v2.5.0" style="width:160px;margin:0;" />
+        </div>
+        <div class="section-card" style="background:var(--color-background-warning);border-color:var(--color-border-warning);">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-text-warning);">
+            <i class="ti ti-mail" style="font-size:16px;" aria-hidden="true"></i>
+            Publishing will send an email notification to <strong>847 subscribers</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PUBLIC PAGE -->
+<div id="screen-public" class="wf-screen">
+  <div class="screen-shell">
+    <div class="browser-bar">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <div class="url-bar">changelog.myapp.io</div>
+    </div>
+    <div class="pub-layout" style="min-height:520px;background:var(--color-background-primary);">
+      <div class="pub-header">
+        <div>
+          <div class="pub-logo">MyApp Changelog</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px;">Updates & release notes</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px;">Get notified of new updates</div>
+          <div class="sub-form">
+            <input class="sub-input" type="text" placeholder="your@email.com" />
+            <button class="btn-primary" style="white-space:nowrap;">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="pub-body">
+        <div class="pub-sidebar">
+          <div class="pub-filter-title">Filter</div>
+          <div class="pub-filter-item active"><i class="ti ti-circle-filled" style="font-size:8px;" aria-hidden="true"></i>All updates</div>
+          <div class="pub-filter-item"><i class="ti ti-circle-filled" style="font-size:8px;color:var(--color-text-info);" aria-hidden="true"></i>New feature</div>
+          <div class="pub-filter-item"><i class="ti ti-circle-filled" style="font-size:8px;color:var(--color-text-success);" aria-hidden="true"></i>Bug fix</div>
+          <div class="pub-filter-item"><i class="ti ti-circle-filled" style="font-size:8px;color:var(--color-text-warning);" aria-hidden="true"></i>Improvement</div>
+          <div style="margin-top:20px;">
+            <div class="pub-filter-title">Archives</div>
+            <div class="pub-filter-item">May 2026</div>
+            <div class="pub-filter-item">Apr 2026</div>
+            <div class="pub-filter-item">Mar 2026</div>
+          </div>
+        </div>
+        <div class="pub-entries">
+          <div class="pub-entry">
+            <div class="pub-entry-date">May 28, 2026 <span class="tag tag-new">New</span><span class="tag tag-imp" style="margin-left:4px;">Improvement</span></div>
+            <div class="pub-entry-title">Dark mode & custom themes</div>
+            <div class="pub-entry-body">Users can now switch to dark mode or choose from 8 custom color themes in Settings.<ul><li>Auto-detect system preference</li><li>8 built-in color themes</li><li>Custom hex color support (Pro)</li></ul></div>
+          </div>
+          <div class="pub-entry">
+            <div class="pub-entry-date">May 20, 2026 <span class="tag tag-fix">Bug fix</span></div>
+            <div class="pub-entry-title">Fixed login loop on Safari</div>
+            <div class="pub-entry-body">Resolved redirect loops during OAuth sign-in on Safari 17+. All authentication flows now work correctly across all major browsers.</div>
+          </div>
+          <div class="pub-entry">
+            <div class="pub-entry-date">May 10, 2026 <span class="tag tag-new">New</span></div>
+            <div class="pub-entry-title">CSV export & bulk actions</div>
+            <div class="pub-entry-body">Export any table to CSV with one click. Bulk-select rows with Shift+click to apply batch actions.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WIDGET -->
+<div id="screen-widget" class="wf-screen">
+  <div class="screen-shell">
+    <div class="browser-bar">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <div class="url-bar">myapp.io/dashboard  ← app của khách hàng</div>
+    </div>
+    <div style="padding:24px; min-height:480px; background:var(--color-background-secondary);">
+      <div style="font-size:12px;color:var(--color-text-tertiary);margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;">Widget xuất hiện góc dưới-phải trong app của khách</div>
+      <div class="widget-demo">
+        <div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;font-weight:500;">App của khách hàng</div>
+          <div class="widget-phone">
+            <div class="phone-app-bar">
+              <div class="phone-app-name">MyApp</div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <i class="ti ti-bell" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i>
+                <span class="badge-notif">3</span>
+              </div>
+            </div>
+            <div class="phone-content">
+              <div class="phone-item">
+                <div class="phone-item-icon"><i class="ti ti-chart-bar" style="font-size:15px;color:var(--color-text-secondary);" aria-hidden="true"></i></div>
+                <div><div class="phone-item-text">Analytics</div><div class="phone-item-sub">View your metrics</div></div>
+              </div>
+              <div class="phone-item">
+                <div class="phone-item-icon"><i class="ti ti-users" style="font-size:15px;color:var(--color-text-secondary);" aria-hidden="true"></i></div>
+                <div><div class="phone-item-text">Team</div><div class="phone-item-sub">Manage members</div></div>
+              </div>
+              <div class="phone-item">
+                <div class="phone-item-icon"><i class="ti ti-settings" style="font-size:15px;color:var(--color-text-secondary);" aria-hidden="true"></i></div>
+                <div><div class="phone-item-text">Settings</div><div class="phone-item-sub">Account preferences</div></div>
+              </div>
+              <div style="margin-top:10px;display:flex;justify-content:flex-end;">
+                <div class="fab-btn"><i class="ti ti-speakerphone" style="font-size:14px;" aria-hidden="true"></i>What's new <span class="badge-notif">3</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;font-weight:500;">Popup khi user click "What's new"</div>
+          <div class="widget-popup">
+            <div class="popup-header">
+              <div class="popup-title">What's new <span class="badge-notif">3</span></div>
+              <i class="ti ti-x popup-close" aria-label="Close" style="font-size:16px;"></i>
+            </div>
+            <div class="popup-entries">
+              <div class="popup-entry">
+                <div class="popup-entry-title"><span class="tag tag-new" style="font-size:10px;">New</span>Dark mode & themes</div>
+                <div class="popup-entry-date">May 28, 2026</div>
+                <div class="popup-entry-desc">Switch to dark mode or pick from 8 color themes in settings.</div>
+              </div>
+              <div class="popup-entry">
+                <div class="popup-entry-title"><span class="tag tag-fix" style="font-size:10px;">Fix</span>Safari login fixed</div>
+                <div class="popup-entry-date">May 20, 2026</div>
+                <div class="popup-entry-desc">Resolved OAuth redirect loop on Safari 17+.</div>
+              </div>
+              <div class="popup-entry">
+                <div class="popup-entry-title"><span class="tag tag-new" style="font-size:10px;">New</span>CSV export</div>
+                <div class="popup-entry-date">May 10, 2026</div>
+                <div class="popup-entry-desc">Export any table to CSV with one click.</div>
+              </div>
+            </div>
+            <div style="padding:10px 14px;border-top:0.5px solid var(--color-border-tertiary);text-align:center;">
+              <span style="font-size:12px;color:var(--color-text-info);cursor:pointer;">View all updates <i class="ti ti-arrow-right" style="font-size:12px;" aria-hidden="true"></i></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;font-weight:500;">Embed code (1 dòng)</div>
+          <div class="embed-code">&lt;script src="https://cdn.changelogapp.io/widget.js"<br>  data-project="my-awesome-saas"&gt;<br>&lt;/script&gt;</div>
+          <div class="copy-row"><button class="btn-ghost" onclick="notify('Đã copy embed code!')"><i class="ti ti-copy" style="font-size:13px;margin-right:4px;" aria-hidden="true"></i>Copy</button></div>
+          <div style="margin-top:14px;font-size:12px;color:var(--color-text-secondary);">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;"><i class="ti ti-check" style="color:var(--color-text-success);font-size:14px;" aria-hidden="true"></i>Không cần cài thêm gì</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;"><i class="ti ti-check" style="color:var(--color-text-success);font-size:14px;" aria-hidden="true"></i>Cache Redis, load < 10ms</div>
+            <div style="display:flex;align-items:center;gap:6px;"><i class="ti ti-check" style="color:var(--color-text-success);font-size:14px;" aria-hidden="true"></i>Tự động cập nhật realtime</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div id="screen-pricing" class="wf-screen">
+  <div class="screen-shell">
+    <div class="browser-bar">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <div class="url-bar">changelogapp.io/pricing</div>
+    </div>
+    <div style="padding:32px 24px;background:var(--color-background-primary);min-height:480px;">
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;">Simple, transparent pricing</div>
+        <div style="font-size:13px;color:var(--color-text-secondary);">Start free. Upgrade when you grow. Cancel anytime.</div>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-name">Free</div>
+          <div class="price-amount">$0<span>/month</span></div>
+          <div class="price-desc">For indie hackers just starting out</div>
+          <ul class="price-features">
+            <li><i class="ti ti-check" aria-hidden="true"></i>1 project</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>Up to 5 entries</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>100 subscribers</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>Embed widget</li>
+            <li class="no"><i class="ti ti-x" aria-hidden="true"></i>Custom domain</li>
+            <li class="no"><i class="ti ti-x" aria-hidden="true"></i>Remove branding</li>
+          </ul>
+          <button class="price-cta cta-outline">Get started free</button>
+        </div>
+        <div class="price-card popular">
+          <div class="price-pop-badge">Most popular</div>
+          <div class="price-name">Pro</div>
+          <div class="price-amount">$9<span>/month</span></div>
+          <div class="price-desc">For growing SaaS products</div>
+          <ul class="price-features">
+            <li><i class="ti ti-check" aria-hidden="true"></i>3 projects</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>Unlimited entries</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>2,000 subscribers</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>Custom domain</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>Remove branding</li>
+            <li class="no"><i class="ti ti-x" aria-hidden="true"></i>API access</li>
+          </ul>
+          <button class="price-cta cta-fill">Start 14-day trial</button>
+        </div>
+        <div class="price-card">
+          <div class="price-name">Team</div>
+          <div class="price-amount">$29<span>/month</span></div>
+          <div class="price-desc">For teams & multiple products</div>
+          <ul class="price-features">
+            <li><i class="ti ti-check" aria-hidden="true"></i>Unlimited projects</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>Unlimited entries</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>Unlimited subscribers</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>Custom domain</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>Remove branding</li>
+            <li><i class="ti ti-check" aria-hidden="true"></i>API access</li>
+          </ul>
+          <button class="price-cta cta-outline">Start 14-day trial</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="screen-settings" class="wf-screen">
+  <div class="screen-shell">
+    <div class="browser-bar">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <div class="url-bar">app.changelogapp.io/settings/appearance</div>
+    </div>
+    <div class="settings-layout">
+      <div class="settings-sidebar">
+        <div class="sb-logo">
+          <div class="sb-logo-text">Settings</div>
+        </div>
+        <div class="sb-item"><i class="ti ti-folder" aria-hidden="true"></i>General</div>
+        <div class="sb-item active"><i class="ti ti-palette" aria-hidden="true"></i>Appearance</div>
+        <div class="sb-item"><i class="ti ti-world" aria-hidden="true"></i>Custom domain</div>
+        <div class="sb-item"><i class="ti ti-mail" aria-hidden="true"></i>Email settings</div>
+        <div class="sb-item"><i class="ti ti-key" aria-hidden="true"></i>API keys</div>
+        <div class="sb-item"><i class="ti ti-credit-card" aria-hidden="true"></i>Billing</div>
+      </div>
+      <div class="settings-main">
+        <div class="main-header" style="margin-bottom:16px;">
+          <div class="main-title">Appearance</div>
+          <button class="btn-primary" onclick="notify('Đã lưu settings!')"><i class="ti ti-check" style="font-size:14px" aria-hidden="true"></i> Save changes</button>
+        </div>
+        <div class="section-card">
+          <div class="section-title">Brand</div>
+          <div class="form-row"><label>Project name</label><input type="text" value="My Awesome SaaS" /></div>
+          <div class="form-row"><label>Website URL</label><input type="text" value="https://myapp.io" /></div>
+        </div>
+        <div class="section-card">
+          <div class="section-title">Accent color</div>
+          <div class="color-row">
+            <div class="color-swatch color-active" style="background:#6366f1;"></div>
+            <div class="color-swatch" style="background:#0ea5e9;"></div>
+            <div class="color-swatch" style="background:#10b981;"></div>
+            <div class="color-swatch" style="background:#f59e0b;"></div>
+            <div class="color-swatch" style="background:#ef4444;"></div>
+            <div class="color-swatch" style="background:#ec4899;"></div>
+            <div class="color-swatch" style="background:#1a1714;"></div>
+            <input type="text" value="#6366f1" style="width:90px;padding:5px 10px;font-size:12px;font-family:var(--font-mono);" />
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-title">Widget position</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:280px;">
+            <div style="padding:8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;text-align:center;cursor:pointer;color:var(--color-text-secondary);">Top left</div>
+            <div style="padding:8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;text-align:center;cursor:pointer;color:var(--color-text-secondary);">Top right</div>
+            <div style="padding:8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;text-align:center;cursor:pointer;color:var(--color-text-secondary);">Bottom left</div>
+            <div style="padding:8px;border:1.5px solid var(--color-border-info);border-radius:var(--border-radius-md);font-size:12px;text-align:center;cursor:pointer;color:var(--color-text-info);font-weight:500;">Bottom right</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showScreen(name) {
+  document.querySelectorAll('.wf-screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.wf-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const idx = ['dashboard','editor','public','widget','pricing','settings'].indexOf(name);
+  document.querySelectorAll('.wf-btn')[idx].classList.add('active');
+}
+function notify(msg) {
+  const n = document.getElementById('notif');
+  document.getElementById('notif-text').textContent = msg;
+  n.style.display = 'flex';
+  setTimeout(() => n.style.display = 'none', 2000);
+}
+</script>
+
+</body>
+</html>

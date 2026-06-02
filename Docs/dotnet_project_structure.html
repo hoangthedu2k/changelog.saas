@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cấu trúc .NET Project — Changelog SaaS</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    /* Colors - light mode */
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5f4;
+    --color-background-info: #eff6ff;
+    --color-background-success: #f0fdf4;
+    --color-background-warning: #fffbeb;
+    --color-background-danger: #fef2f2;
+
+    --color-text-primary: #1c1917;
+    --color-text-secondary: #78716c;
+    --color-text-tertiary: #a8a29e;
+    --color-text-info: #2563eb;
+    --color-text-success: #16a34a;
+    --color-text-warning: #d97706;
+    --color-text-danger: #dc2626;
+
+    --color-border-primary: #1c1917;
+    --color-border-secondary: #e7e5e4;
+    --color-border-tertiary: #f0eeed;
+
+    --border-radius-sm: 4px;
+    --border-radius-md: 6px;
+    --border-radius-lg: 10px;
+
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: #fafaf9;
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Cấu trúc project .NET cho Changelog SaaS theo Clean Architecture, gồm Domain, Application, Infrastructure, và API layers</h2>
+
+<style>
+.nav { display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
+.nb { padding:7px 14px; border-radius:var(--border-radius-md); border:0.5px solid var(--color-border-secondary); background:var(--color-background-primary); color:var(--color-text-secondary); font-size:13px; cursor:pointer; }
+.nb.active { background:var(--color-background-secondary); color:var(--color-text-primary); border-color:var(--color-border-primary); font-weight:500; }
+.pane { display:none; }
+.pane.active { display:block; }
+
+.two-col { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+.card { background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); overflow:hidden; }
+.card-head { padding:12px 16px; border-bottom:0.5px solid var(--color-border-tertiary); display:flex; align-items:center; gap:8px; background:var(--color-background-secondary); }
+.card-title { font-size:13px; font-weight:500; color:var(--color-text-primary); font-family:var(--font-mono); }
+.card-sub { font-size:11px; color:var(--color-text-secondary); margin-top:1px; }
+.card-body { padding:14px 16px; }
+
+.tree { font-family:var(--font-mono); font-size:12px; line-height:1.9; color:var(--color-text-secondary); }
+.tree-folder { color:var(--color-text-primary); font-weight:500; cursor:pointer; }
+.tree-file { color:var(--color-text-secondary); }
+.tree-file.cs { color:var(--color-text-info); }
+.tree-file.json { color:var(--color-text-warning); }
+.tree-file.md { color:var(--color-text-success); }
+.tree-indent { padding-left:16px; }
+.tree-line { color:var(--color-text-tertiary); }
+
+pre { background:var(--color-background-secondary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:14px 16px; font-family:var(--font-mono); font-size:11px; line-height:1.8; overflow-x:auto; color:var(--color-text-secondary); margin:0; }
+.kw { color:var(--color-text-info); }
+.type { color:var(--color-text-success); }
+.str { color:var(--color-text-warning); }
+.cmt { color:var(--color-text-tertiary); font-style:italic; }
+.attr { color:var(--color-text-danger); }
+
+.layer-badge { font-size:10px; padding:2px 8px; border-radius:var(--border-radius-md); font-weight:500; }
+.l-domain { background:var(--color-background-danger); color:var(--color-text-danger); }
+.l-app { background:var(--color-background-warning); color:var(--color-text-warning); }
+.l-infra { background:var(--color-background-success); color:var(--color-text-success); }
+.l-api { background:var(--color-background-info); color:var(--color-text-info); }
+
+.dep-row { display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:0.5px solid var(--color-border-tertiary); font-size:12px; }
+.dep-row:last-child { border-bottom:none; }
+.dep-name { font-family:var(--font-mono); color:var(--color-text-primary); flex:1; font-size:11px; }
+.dep-ver { font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary); }
+.dep-desc { font-size:11px; color:var(--color-text-secondary); }
+
+.section-lbl { font-size:11px; color:var(--color-text-tertiary); text-transform:uppercase; letter-spacing:1.5px; margin:16px 0 8px; }
+.full { grid-column:1/-1; }
+</style>
+
+<div class="nav">
+  <button class="nb active" onclick="show('structure')"><i class="ti ti-folder" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Folder structure</button>
+  <button class="nb" onclick="show('domain')"><i class="ti ti-box" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Domain</button>
+  <button class="nb" onclick="show('application')"><i class="ti ti-cpu" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Application</button>
+  <button class="nb" onclick="show('infra')"><i class="ti ti-database" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Infrastructure</button>
+  <button class="nb" onclick="show('api')"><i class="ti ti-api" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>API layer</button>
+  <button class="nb" onclick="show('packages')"><i class="ti ti-package" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>NuGet packages</button>
+</div>
+
+<!-- STRUCTURE -->
+<div id="pane-structure" class="pane active">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head">
+        <i class="ti ti-folder" style="font-size:16px;color:var(--color-text-warning);" aria-hidden="true"></i>
+        <div>
+          <div class="card-title">ChangelogSaaS/</div>
+          <div class="card-sub">Clean Architecture — 4 projects</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tree">
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> ChangelogSaaS.Domain/</span>
+<div class="tree-indent">
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Entities/</span>
+<div class="tree-indent">
+<span class="tree-file cs">User.cs</span><br>
+<span class="tree-file cs">Project.cs</span><br>
+<span class="tree-file cs">ChangelogEntry.cs</span><br>
+<span class="tree-file cs">Subscriber.cs</span><br>
+<span class="tree-file cs">Subscription.cs</span>
+</div>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Enums/</span>
+<div class="tree-indent">
+<span class="tree-file cs">EntryStatus.cs</span><br>
+<span class="tree-file cs">PlanType.cs</span><br>
+<span class="tree-file cs">SubscriberStatus.cs</span>
+</div>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Exceptions/</span>
+<div class="tree-indent">
+<span class="tree-file cs">DomainException.cs</span><br>
+<span class="tree-file cs">NotFoundException.cs</span>
+</div>
+</div>
+
+<br>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> ChangelogSaaS.Application/</span>
+<div class="tree-indent">
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Entries/</span>
+<div class="tree-indent">
+<span class="tree-file cs">CreateEntryCommand.cs</span><br>
+<span class="tree-file cs">PublishEntryCommand.cs</span><br>
+<span class="tree-file cs">GetEntriesQuery.cs</span>
+</div>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Subscribers/</span>
+<div class="tree-indent">
+<span class="tree-file cs">SubscribeCommand.cs</span><br>
+<span class="tree-file cs">ConfirmSubscriberCommand.cs</span>
+</div>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Billing/</span>
+<div class="tree-indent">
+<span class="tree-file cs">CreateCheckoutCommand.cs</span><br>
+<span class="tree-file cs">HandleStripeWebhookCommand.cs</span>
+</div>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Interfaces/</span>
+<div class="tree-indent">
+<span class="tree-file cs">IEmailService.cs</span><br>
+<span class="tree-file cs">IBillingService.cs</span><br>
+<span class="tree-file cs">ICacheService.cs</span>
+</div>
+</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <i class="ti ti-folder" style="font-size:16px;color:var(--color-text-warning);" aria-hidden="true"></i>
+        <div>
+          <div class="card-title">Tiếp theo...</div>
+          <div class="card-sub">Infrastructure + API + Tests</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tree">
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> ChangelogSaaS.Infrastructure/</span>
+<div class="tree-indent">
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Persistence/</span>
+<div class="tree-indent">
+<span class="tree-file cs">AppDbContext.cs</span><br>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Configurations/</span>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Migrations/</span>
+</div>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Services/</span>
+<div class="tree-indent">
+<span class="tree-file cs">EmailService.cs</span><br>
+<span class="tree-file cs">StripeService.cs</span><br>
+<span class="tree-file cs">RedisCacheService.cs</span>
+</div>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Jobs/</span>
+<div class="tree-indent">
+<span class="tree-file cs">SendEmailNotificationJob.cs</span><br>
+<span class="tree-file cs">InvalidateWidgetCacheJob.cs</span>
+</div>
+</div>
+
+<br>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> ChangelogSaaS.API/</span>
+<div class="tree-indent">
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Endpoints/</span>
+<div class="tree-indent">
+<span class="tree-file cs">AuthEndpoints.cs</span><br>
+<span class="tree-file cs">EntryEndpoints.cs</span><br>
+<span class="tree-file cs">WidgetEndpoints.cs</span><br>
+<span class="tree-file cs">WebhookEndpoints.cs</span>
+</div>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Middleware/</span>
+<div class="tree-indent">
+<span class="tree-file cs">ExceptionMiddleware.cs</span><br>
+<span class="tree-file cs">RateLimitMiddleware.cs</span>
+</div>
+<span class="tree-file cs">Program.cs</span><br>
+<span class="tree-file json">appsettings.json</span>
+</div>
+
+<br>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> ChangelogSaaS.Tests/</span>
+<div class="tree-indent">
+<span class="tree-file cs">EntryServiceTests.cs</span><br>
+<span class="tree-file cs">StripeWebhookTests.cs</span>
+</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card full">
+      <div class="card-head">
+        <i class="ti ti-arrow-right" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i>
+        <div><div class="card-title">Dependency flow — chiều phụ thuộc</div></div>
+      </div>
+      <div class="card-body" style="display:flex;align-items:center;gap:0;flex-wrap:wrap;">
+        <div style="text-align:center;padding:12px 16px;background:var(--color-background-danger);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-danger);">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-danger);">Domain</div>
+          <div style="font-size:10px;color:var(--color-text-danger);margin-top:2px;">Entities, Enums</div>
+        </div>
+        <div style="padding:0 8px;color:var(--color-text-tertiary);font-size:18px;">←</div>
+        <div style="text-align:center;padding:12px 16px;background:var(--color-background-warning);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-warning);">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-warning);">Application</div>
+          <div style="font-size:10px;color:var(--color-text-warning);margin-top:2px;">Commands, Queries</div>
+        </div>
+        <div style="padding:0 8px;color:var(--color-text-tertiary);font-size:18px;">←</div>
+        <div style="text-align:center;padding:12px 16px;background:var(--color-background-success);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-success);">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-success);">Infrastructure</div>
+          <div style="font-size:10px;color:var(--color-text-success);margin-top:2px;">DB, Email, Stripe</div>
+        </div>
+        <div style="padding:0 8px;color:var(--color-text-tertiary);font-size:18px;">←</div>
+        <div style="text-align:center;padding:12px 16px;background:var(--color-background-info);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-info);">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-info);">API</div>
+          <div style="font-size:10px;color:var(--color-text-info);margin-top:2px;">Endpoints, Middleware</div>
+        </div>
+        <div style="padding:0 12px;font-size:11px;color:var(--color-text-tertiary);flex:1;min-width:180px;">Domain không biết gì về các layer bên ngoài. API biết tất cả.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOMAIN -->
+<div id="pane-domain" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><span class="layer-badge l-domain">Domain</span><div class="card-title" style="margin-left:4px;">ChangelogEntry.cs</div></div>
+      <div class="card-body">
+<pre><span class="kw">namespace</span> ChangelogSaaS.Domain.Entities;
+
+<span class="kw">public class</span> <span class="type">ChangelogEntry</span>
+{
+    <span class="kw">public</span> <span class="type">Guid</span> Id { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">Guid</span> ProjectId { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">string</span> Title { <span class="kw">get</span>; <span class="kw">private set</span>; } = <span class="str">""</span>;
+    <span class="kw">public</span> <span class="type">string</span> ContentHtml { <span class="kw">get</span>; <span class="kw">private set</span>; } = <span class="str">""</span>;
+    <span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">string</span>&gt; Tags { <span class="kw">get</span>; <span class="kw">private set</span>; } = [];
+    <span class="kw">public</span> <span class="type">EntryStatus</span> Status { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">string</span>? Version { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">DateTime</span>? PublishedAt { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">DateTime</span> CreatedAt { <span class="kw">get</span>; <span class="kw">private set</span>; }
+
+    <span class="cmt">// Factory method — không dùng constructor public</span>
+    <span class="kw">public static</span> <span class="type">ChangelogEntry</span> Create(
+        <span class="type">Guid</span> projectId, <span class="type">string</span> title, <span class="type">string</span> html,
+        <span class="type">List</span>&lt;<span class="type">string</span>&gt; tags, <span class="type">string</span>? version)
+    {
+        <span class="kw">return new</span> <span class="type">ChangelogEntry</span>
+        {
+            Id = <span class="type">Guid</span>.NewGuid(),
+            ProjectId = projectId,
+            Title = title,
+            ContentHtml = html,
+            Tags = tags,
+            Version = version,
+            Status = <span class="type">EntryStatus</span>.Draft,
+            CreatedAt = <span class="type">DateTime</span>.UtcNow
+        };
+    }
+
+    <span class="kw">public void</span> Publish()
+    {
+        <span class="kw">if</span> (Status == <span class="type">EntryStatus</span>.Published)
+            <span class="kw">throw new</span> <span class="type">DomainException</span>(<span class="str">"Entry already published"</span>);
+        Status = <span class="type">EntryStatus</span>.Published;
+        PublishedAt = <span class="type">DateTime</span>.UtcNow;
+    }
+}</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="layer-badge l-domain">Domain</span><div class="card-title" style="margin-left:4px;">Project.cs + Enums</div></div>
+      <div class="card-body">
+<pre><span class="kw">public class</span> <span class="type">Project</span>
+{
+    <span class="kw">public</span> <span class="type">Guid</span> Id { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">Guid</span> UserId { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">string</span> Name { <span class="kw">get</span>; <span class="kw">private set</span>; } = <span class="str">""</span>;
+    <span class="kw">public</span> <span class="type">string</span> Slug { <span class="kw">get</span>; <span class="kw">private set</span>; } = <span class="str">""</span>;
+    <span class="kw">public</span> <span class="type">string</span>? CustomDomain { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">string</span> AccentColor { <span class="kw">get</span>; <span class="kw">private set</span>; } = <span class="str">"#6366f1"</span>;
+    <span class="kw">public bool</span> IsPublic { <span class="kw">get</span>; <span class="kw">private set</span>; } = <span class="kw">true</span>;
+
+    <span class="kw">public void</span> UpdateSettings(<span class="type">string</span> name, <span class="type">string</span> color)
+    {
+        Name = name;
+        AccentColor = color;
+    }
+}
+
+<span class="cmt">// Enums/EntryStatus.cs</span>
+<span class="kw">public enum</span> <span class="type">EntryStatus</span>
+{
+    Draft,
+    Published
+}
+
+<span class="cmt">// Enums/PlanType.cs</span>
+<span class="kw">public enum</span> <span class="type">PlanType</span>
+{
+    Free,
+    Pro,
+    Team
+}
+
+<span class="cmt">// Exceptions/DomainException.cs</span>
+<span class="kw">public class</span> <span class="type">DomainException</span>(<span class="type">string</span> message)
+    : <span class="type">Exception</span>(message) { }</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APPLICATION -->
+<div id="pane-application" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><span class="layer-badge l-app">Application</span><div class="card-title" style="margin-left:4px;">PublishEntryCommand.cs</div></div>
+      <div class="card-body">
+<pre><span class="cmt">// Command + Handler trong 1 file (Vertical Slice)</span>
+
+<span class="kw">public record</span> <span class="type">PublishEntryCommand</span>(<span class="type">Guid</span> EntryId, <span class="type">Guid</span> UserId);
+
+<span class="kw">public class</span> <span class="type">PublishEntryHandler</span>(
+    <span class="type">AppDbContext</span> db,
+    <span class="type">IEmailService</span> email,
+    <span class="type">ICacheService</span> cache)
+{
+    <span class="kw">public async</span> <span class="type">Task</span> Handle(
+        <span class="type">PublishEntryCommand</span> cmd,
+        <span class="type">CancellationToken</span> ct)
+    {
+        <span class="kw">var</span> entry = <span class="kw">await</span> db.ChangelogEntries
+            .Include(e => e.Project)
+            .FirstOrDefaultAsync(e =>
+                e.Id == cmd.EntryId &&
+                e.Project.UserId == cmd.UserId, ct)
+            ?? <span class="kw">throw new</span> <span class="type">NotFoundException</span>(<span class="str">"Entry not found"</span>);
+
+        entry.Publish(); <span class="cmt">// Domain logic</span>
+        <span class="kw">await</span> db.SaveChangesAsync(ct);
+
+        <span class="cmt">// Queue email job (không block response)</span>
+        <span class="type">BackgroundJob</span>.Enqueue&lt;<span class="type">SendEmailNotificationJob</span>&gt;(
+            j => j.Execute(entry.Id));
+
+        <span class="cmt">// Xóa cache widget</span>
+        <span class="kw">await</span> cache.RemoveAsync(
+            <span class="str">$"widget:{entry.Project.Slug}"</span>);
+    }
+}</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="layer-badge l-app">Application</span><div class="card-title" style="margin-left:4px;">Interfaces + CreateEntryCommand</div></div>
+      <div class="card-body">
+<pre><span class="cmt">// Interfaces/IEmailService.cs</span>
+<span class="kw">public interface</span> <span class="type">IEmailService</span>
+{
+    <span class="type">Task</span> SendChangelogNotificationAsync(
+        <span class="type">ChangelogEntry</span> entry,
+        <span class="type">IEnumerable</span>&lt;<span class="type">Subscriber</span>&gt; subscribers);
+
+    <span class="type">Task</span> SendConfirmEmailAsync(
+        <span class="type">string</span> email, <span class="type">string</span> confirmUrl);
+}
+
+<span class="cmt">// Interfaces/ICacheService.cs</span>
+<span class="kw">public interface</span> <span class="type">ICacheService</span>
+{
+    <span class="type">Task</span>&lt;<span class="type">T</span>?&gt; GetAsync&lt;<span class="type">T</span>&gt;(<span class="type">string</span> key);
+    <span class="type">Task</span> SetAsync&lt;<span class="type">T</span>&gt;(<span class="type">string</span> key, <span class="type">T</span> value,
+        <span class="type">TimeSpan</span>? expiry = <span class="kw">null</span>);
+    <span class="type">Task</span> RemoveAsync(<span class="type">string</span> key);
+}
+
+<span class="cmt">// CreateEntryCommand.cs</span>
+<span class="kw">public record</span> <span class="type">CreateEntryCommand</span>(
+    <span class="type">Guid</span> ProjectId,
+    <span class="type">Guid</span> UserId,
+    <span class="type">string</span> Title,
+    <span class="type">string</span> ContentHtml,
+    <span class="type">List</span>&lt;<span class="type">string</span>&gt; Tags,
+    <span class="type">string</span>? Version);
+
+<span class="kw">public class</span> <span class="type">CreateEntryHandler</span>(<span class="type">AppDbContext</span> db)
+{
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">Guid</span>&gt; Handle(
+        <span class="type">CreateEntryCommand</span> cmd, <span class="type">CancellationToken</span> ct)
+    {
+        <span class="kw">var</span> entry = <span class="type">ChangelogEntry</span>.Create(
+            cmd.ProjectId, cmd.Title,
+            cmd.ContentHtml, cmd.Tags, cmd.Version);
+
+        db.ChangelogEntries.Add(entry);
+        <span class="kw">await</span> db.SaveChangesAsync(ct);
+        <span class="kw">return</span> entry.Id;
+    }
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INFRASTRUCTURE -->
+<div id="pane-infra" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><span class="layer-badge l-infra">Infrastructure</span><div class="card-title" style="margin-left:4px;">StripeService.cs — Webhook</div></div>
+      <div class="card-body">
+<pre><span class="kw">public class</span> <span class="type">StripeService</span>(<span class="type">AppDbContext</span> db,
+    <span class="type">IOptions</span>&lt;<span class="type">StripeSettings</span>&gt; opts)
+    : <span class="type">IBillingService</span>
+{
+    <span class="kw">public async</span> <span class="type">Task</span> HandleWebhookAsync(
+        <span class="type">string</span> payload, <span class="type">string</span> signature)
+    {
+        <span class="kw">var</span> evt = <span class="type">EventUtility</span>.ConstructEvent(
+            payload, signature,
+            opts.Value.WebhookSecret);
+
+        <span class="kw">switch</span> (evt.Type)
+        {
+            <span class="kw">case</span> <span class="str">"customer.subscription.created"</span>:
+            <span class="kw">case</span> <span class="str">"customer.subscription.updated"</span>:
+                <span class="kw">await</span> UpsertSubscriptionAsync(
+                    evt.Data.Object <span class="kw">as</span> <span class="type">Subscription</span>);
+                <span class="kw">break</span>;
+
+            <span class="kw">case</span> <span class="str">"customer.subscription.deleted"</span>:
+                <span class="kw">await</span> CancelSubscriptionAsync(
+                    evt.Data.Object <span class="kw">as</span> <span class="type">Subscription</span>);
+                <span class="kw">break</span>;
+        }
+    }
+
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">string</span>&gt; CreateCheckoutAsync(
+        <span class="type">Guid</span> userId, <span class="type">string</span> priceId)
+    {
+        <span class="kw">var</span> options = <span class="kw">new</span> <span class="type">SessionCreateOptions</span>
+        {
+            Mode = <span class="str">"subscription"</span>,
+            LineItems = [<span class="kw">new</span>() {
+                Price = priceId, Quantity = 1 }],
+            SuccessUrl = <span class="str">"https://app.io/billing/success"</span>,
+            CancelUrl = <span class="str">"https://app.io/billing"</span>,
+            Metadata = <span class="kw">new</span>() {{ <span class="str">"userId"</span>, userId.ToString() }}
+        };
+        <span class="kw">var</span> session = <span class="kw">await new</span> <span class="type">SessionService</span>()
+            .CreateAsync(options);
+        <span class="kw">return</span> session.Url;
+    }
+}</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="layer-badge l-infra">Infrastructure</span><div class="card-title" style="margin-left:4px;">AppDbContext.cs + EmailService</div></div>
+      <div class="card-body">
+<pre><span class="kw">public class</span> <span class="type">AppDbContext</span>(<span class="type">DbContextOptions</span> opts)
+    : <span class="type">DbContext</span>(opts)
+{
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">User</span>&gt; Users => Set&lt;<span class="type">User</span>&gt;();
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">Project</span>&gt; Projects => Set&lt;<span class="type">Project</span>&gt;();
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">ChangelogEntry</span>&gt; ChangelogEntries
+        => Set&lt;<span class="type">ChangelogEntry</span>&gt;();
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">Subscriber</span>&gt; Subscribers
+        => Set&lt;<span class="type">Subscriber</span>&gt;();
+
+    <span class="kw">protected override void</span> OnModelCreating(
+        <span class="type">ModelBuilder</span> builder)
+    {
+        builder.ApplyConfigurationsFromAssembly(
+            <span class="type">Assembly</span>.GetExecutingAssembly());
+    }
+}
+
+<span class="cmt">// EmailService.cs — dùng Resend</span>
+<span class="kw">public class</span> <span class="type">EmailService</span>(<span class="type">ResendClient</span> resend)
+    : <span class="type">IEmailService</span>
+{
+    <span class="kw">public async</span> <span class="type">Task</span> SendChangelogNotificationAsync(
+        <span class="type">ChangelogEntry</span> entry,
+        <span class="type">IEnumerable</span>&lt;<span class="type">Subscriber</span>&gt; subscribers)
+    {
+        <span class="kw">foreach</span> (<span class="kw">var</span> sub <span class="kw">in</span> subscribers)
+        {
+            <span class="kw">await</span> resend.Emails.SendAsync(<span class="kw">new</span>()
+            {
+                From = <span class="str">"updates@changelogapp.io"</span>,
+                To = [sub.Email],
+                Subject = <span class="str">$"New update: {entry.Title}"</span>,
+                Html = BuildEmailHtml(entry, sub)
+            });
+        }
+    }
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- API LAYER -->
+<div id="pane-api" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><span class="layer-badge l-api">API</span><div class="card-title" style="margin-left:4px;">Program.cs — Setup</div></div>
+      <div class="card-body">
+<pre><span class="kw">var</span> builder = <span class="type">WebApplication</span>.CreateBuilder(args);
+
+<span class="cmt">// Database</span>
+builder.Services.AddDbContext&lt;<span class="type">AppDbContext</span>&gt;(o =>
+    o.UseNpgsql(builder.Configuration
+        .GetConnectionString(<span class="str">"Postgres"</span>)));
+
+<span class="cmt">// Auth — JWT</span>
+builder.Services
+    .AddAuthentication(<span class="type">JwtBearerDefaults</span>.AuthenticationScheme)
+    .AddJwtBearer(o => {
+        o.TokenValidationParameters = <span class="kw">new</span>() {
+            ValidateIssuerSigningKey = <span class="kw">true</span>,
+            IssuerSigningKey = <span class="kw">new</span> <span class="type">SymmetricSecurityKey</span>(
+                <span class="type">Encoding</span>.UTF8.GetBytes(
+                    builder.Configuration[<span class="str">"Jwt:Secret"</span>]!))
+        };
+    });
+
+<span class="cmt">// Redis cache</span>
+builder.Services.AddStackExchangeRedisCache(o =>
+    o.Configuration = builder.Configuration
+        .GetConnectionString(<span class="str">"Redis"</span>));
+
+<span class="cmt">// Hangfire background jobs</span>
+builder.Services.AddHangfire(c => c
+    .UsePostgreSqlStorage(builder.Configuration
+        .GetConnectionString(<span class="str">"Postgres"</span>)));
+builder.Services.AddHangfireServer();
+
+<span class="cmt">// Rate limiting</span>
+builder.Services.AddRateLimiter(o =>
+    o.AddFixedWindowLimiter(<span class="str">"widget"</span>, w => {
+        w.Window = <span class="type">TimeSpan</span>.FromMinutes(1);
+        w.PermitLimit = 60;
+    }));
+
+<span class="cmt">// DI — services</span>
+builder.Services.AddScoped&lt;<span class="type">IEmailService</span>, <span class="type">EmailService</span>&gt;();
+builder.Services.AddScoped&lt;<span class="type">IBillingService</span>, <span class="type">StripeService</span>&gt;();
+builder.Services.AddSingleton&lt;<span class="type">ICacheService</span>, <span class="type">RedisCacheService</span>&gt;();
+
+<span class="kw">var</span> app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseMiddleware&lt;<span class="type">ExceptionMiddleware</span>&gt;();
+
+<span class="cmt">// Map endpoints</span>
+app.MapAuthEndpoints();
+app.MapEntryEndpoints();
+app.MapWidgetEndpoints();
+app.MapWebhookEndpoints();
+
+app.Run();</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="layer-badge l-api">API</span><div class="card-title" style="margin-left:4px;">EntryEndpoints.cs + WidgetEndpoints.cs</div></div>
+      <div class="card-body">
+<pre><span class="cmt">// EntryEndpoints.cs — Minimal API</span>
+<span class="kw">public static class</span> <span class="type">EntryEndpoints</span>
+{
+    <span class="kw">public static void</span> MapEntryEndpoints(
+        <span class="kw">this</span> <span class="type">WebApplication</span> app)
+    {
+        <span class="kw">var</span> g = app.MapGroup(<span class="str">"/api/entries"</span>)
+            .RequireAuthorization();
+
+        g.MapPost(<span class="str">"/"</span>, <span class="kw">async</span> (
+            <span class="type">CreateEntryCommand</span> cmd,
+            <span class="type">CreateEntryHandler</span> handler,
+            <span class="type">CancellationToken</span> ct) =>
+        {
+            <span class="kw">var</span> id = <span class="kw">await</span> handler.Handle(cmd, ct);
+            <span class="kw">return</span> <span class="type">Results</span>.Created(<span class="str">$"/api/entries/{id}"</span>, id);
+        });
+
+        g.MapPost(<span class="str">"/{id}/publish"</span>, <span class="kw">async</span> (
+            <span class="type">Guid</span> id,
+            <span class="type">ClaimsPrincipal</span> user,
+            <span class="type">PublishEntryHandler</span> handler,
+            <span class="type">CancellationToken</span> ct) =>
+        {
+            <span class="kw">await</span> handler.Handle(
+                <span class="kw">new</span>(id, user.GetUserId()), ct);
+            <span class="kw">return</span> <span class="type">Results</span>.Ok();
+        });
+    }
+}
+
+<span class="cmt">// WidgetEndpoints.cs — public, cached</span>
+<span class="kw">public static class</span> <span class="type">WidgetEndpoints</span>
+{
+    <span class="kw">public static void</span> MapWidgetEndpoints(
+        <span class="kw">this</span> <span class="type">WebApplication</span> app)
+    {
+        app.MapGet(<span class="str">"/api/widget/{slug}"</span>, <span class="kw">async</span> (
+            <span class="type">string</span> slug,
+            <span class="type">ICacheService</span> cache,
+            <span class="type">AppDbContext</span> db) =>
+        {
+            <span class="kw">var</span> cached = <span class="kw">await</span> cache
+                .GetAsync&lt;<span class="type">WidgetDto</span>&gt;(<span class="str">$"widget:{slug}"</span>);
+            <span class="kw">if</span> (cached != <span class="kw">null</span>) <span class="kw">return</span> cached;
+
+            <span class="kw">var</span> data = <span class="kw">await</span> db.Projects
+                .Where(p => p.Slug == slug)
+                .Select(p => <span class="kw">new</span> <span class="type">WidgetDto</span> { ... })
+                .FirstOrDefaultAsync();
+
+            <span class="kw">await</span> cache.SetAsync(<span class="str">$"widget:{slug}"</span>,
+                data, <span class="type">TimeSpan</span>.FromMinutes(5));
+            <span class="kw">return</span> data;
+        }).RequireRateLimiting(<span class="str">"widget"</span>);
+    }
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PACKAGES -->
+<div id="pane-packages" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><i class="ti ti-package" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i><div class="card-title" style="margin-left:8px;">API + Infrastructure packages</div></div>
+      <div class="card-body" style="padding:0;">
+        <div class="dep-row"><div><div class="dep-name">Npgsql.EntityFrameworkCore.PostgreSQL</div><div class="dep-desc">EF Core provider cho PostgreSQL</div></div><div class="dep-ver">9.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">Microsoft.AspNetCore.Authentication.JwtBearer</div><div class="dep-desc">JWT authentication</div></div><div class="dep-ver">8.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">Stripe.net</div><div class="dep-desc">Stripe API client chính thức</div></div><div class="dep-ver">46.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">Hangfire.PostgreSql</div><div class="dep-desc">Background jobs, email queue</div></div><div class="dep-ver">1.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">Microsoft.Extensions.Caching.StackExchangeRedis</div><div class="dep-desc">Redis distributed cache</div></div><div class="dep-ver">8.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">resend-dotnet</div><div class="dep-desc">Resend email API client</div></div><div class="dep-ver">1.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">AspNetCoreRateLimit</div><div class="dep-desc">Rate limiting middleware</div></div><div class="dep-ver">5.x</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><i class="ti ti-package" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i><div class="card-title" style="margin-left:8px;">Dev tools + Testing</div></div>
+      <div class="card-body" style="padding:0;">
+        <div class="dep-row"><div><div class="dep-name">FluentValidation.AspNetCore</div><div class="dep-desc">Validate request DTOs</div></div><div class="dep-ver">11.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">Mapster</div><div class="dep-desc">Object mapping (nhanh hơn AutoMapper)</div></div><div class="dep-ver">7.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">Serilog.AspNetCore</div><div class="dep-desc">Structured logging</div></div><div class="dep-ver">8.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">Scalar.AspNetCore</div><div class="dep-desc">API docs UI (thay Swagger)</div></div><div class="dep-ver">1.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">xunit + FluentAssertions</div><div class="dep-desc">Unit testing</div></div><div class="dep-ver">2.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">Testcontainers.PostgreSql</div><div class="dep-desc">Integration test với DB thật</div></div><div class="dep-ver">3.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">NSubstitute</div><div class="dep-desc">Mock dependencies trong test</div></div><div class="dep-ver">5.x</div></div>
+      </div>
+    </div>
+    <div class="card full">
+      <div class="card-head"><i class="ti ti-settings" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i><div class="card-title" style="margin-left:8px;">appsettings.json — cấu hình chính</div></div>
+      <div class="card-body">
+<pre>{
+  <span class="str">"ConnectionStrings"</span>: {
+    <span class="str">"Postgres"</span>: <span class="str">"Host=localhost;Database=changelog;Username=dev;Password=dev"</span>,
+    <span class="str">"Redis"</span>: <span class="str">"localhost:6379"</span>
+  },
+  <span class="str">"Jwt"</span>: {
+    <span class="str">"Secret"</span>: <span class="str">"your-super-secret-key-min-32-chars"</span>,
+    <span class="str">"ExpiryMinutes"</span>: 60
+  },
+  <span class="str">"Stripe"</span>: {
+    <span class="str">"SecretKey"</span>: <span class="str">"sk_live_..."</span>,
+    <span class="str">"WebhookSecret"</span>: <span class="str">"whsec_..."</span>,
+    <span class="str">"ProPriceId"</span>: <span class="str">"price_..."</span>,
+    <span class="str">"TeamPriceId"</span>: <span class="str">"price_..."</span>
+  },
+  <span class="str">"Resend"</span>: {
+    <span class="str">"ApiKey"</span>: <span class="str">"re_..."</span>,
+    <span class="str">"FromEmail"</span>: <span class="str">"updates@changelogapp.io"</span>
+  }
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(name) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + name).classList.add('active');
+  const idx = ['structure','domain','application','infra','api','packages'].indexOf(name);
+  document.querySelectorAll('.nb')[idx].classList.add('active');
+}
+</script>
+
+</body>
+</html>

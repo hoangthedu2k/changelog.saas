@@ -1,0 +1,16 @@
+import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
+import { guestGuard } from './core/auth/guest.guard';
+
+export const routes: Routes = [
+    { path: 'login', canActivate: [guestGuard], loadComponent: () => import('./features/auth/login/login').then(m => m.Login) },
+    { path: 'register', canActivate: [guestGuard], loadComponent: () => import('./features/auth/register/register').then(m => m.Register) },
+    {
+        path: 'app',
+        loadComponent: () => import('./shared/layout/app-shell/app-shell').then(m => m.AppShell),
+        canActivate: [authGuard],
+        children: [],
+    },
+    { path: '', redirectTo: '/app', pathMatch: 'full' },
+    { path: '**', redirectTo: '/app' },
+];

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Changelog SaaS — Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --border: #2a2a3e;
+    --accent: #7c6af7;
+    --accent2: #f7a26a;
+    --accent3: #6af7c2;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --green: #4ade80;
+    --yellow: #facc15;
+    --red: #f87171;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,106,247,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,106,247,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(124,106,247,0.15);
+    border: 1px solid rgba(124,106,247,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 400;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 56px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+
+  .stat-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent2);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Section title */
+  .section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Phase cards */
+  .phases {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 56px;
+  }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 0;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .phase:nth-child(1) { animation-delay: 0.15s; }
+  .phase:nth-child(2) { animation-delay: 0.25s; }
+  .phase:nth-child(3) { animation-delay: 0.35s; }
+
+  .phase-timeline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 24px;
+  }
+
+  .phase-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .phase-dot.p1 { background: rgba(124,106,247,0.2); border: 2px solid var(--accent); color: var(--accent); }
+  .phase-dot.p2 { background: rgba(247,162,106,0.2); border: 2px solid var(--accent2); color: var(--accent2); }
+  .phase-dot.p3 { background: rgba(106,247,194,0.2); border: 2px solid var(--accent3); color: var(--accent3); }
+
+  .phase-line {
+    width: 2px;
+    flex: 1;
+    min-height: 30px;
+    background: var(--border);
+    margin: 6px 0;
+  }
+
+  .phase:last-child .phase-line { display: none; }
+
+  .phase-body {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin: 8px 0 24px 16px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .phase-body:hover { border-color: rgba(124,106,247,0.3); }
+
+  .phase-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .phase-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .phase-sub {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 3px;
+  }
+
+  .phase-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .tag-p1 { background: rgba(124,106,247,0.15); color: var(--accent); border: 1px solid rgba(124,106,247,0.3); }
+  .tag-p2 { background: rgba(247,162,106,0.15); color: var(--accent2); border: 1px solid rgba(247,162,106,0.3); }
+  .tag-p3 { background: rgba(106,247,194,0.15); color: var(--accent3); border: 1px solid rgba(106,247,194,0.3); }
+
+  .task-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: #c8c8d8;
+    line-height: 1.5;
+  }
+
+  .task-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .icon-build { background: rgba(124,106,247,0.2); color: var(--accent); }
+  .icon-market { background: rgba(247,162,106,0.2); color: var(--accent2); }
+  .icon-scale { background: rgba(106,247,194,0.2); color: var(--accent3); }
+  .icon-money { background: rgba(250,204,21,0.2); color: var(--yellow); }
+
+  .phase-goal {
+    margin-top: 18px;
+    padding: 12px 16px;
+    background: rgba(124,106,247,0.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .phase-goal strong { color: var(--text); }
+
+  /* MVP features */
+  .mvp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-bottom: 56px;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .mvp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .mvp-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .mvp-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .mvp-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* Revenue table */
+  .revenue-section {
+    margin-bottom: 56px;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+
+  .rev-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .rev-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rev-table td {
+    padding: 14px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(42,42,62,0.5);
+    color: #c8c8d8;
+  }
+
+  .rev-table tr:last-child td { border-bottom: none; }
+
+  .rev-table tr:hover td { background: rgba(124,106,247,0.04); }
+
+  .rev-highlight {
+    color: var(--green) !important;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+  }
+
+  .rev-table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  /* Stack */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-bottom: 56px;
+    animation: fadeUp 0.6s 0.55s ease both;
+  }
+
+  .stack-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .stack-emoji { font-size: 20px; flex-shrink: 0; }
+
+  .stack-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .stack-role {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* Competitors */
+  .comp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 56px;
+    animation: fadeUp 0.6s 0.6s ease both;
+  }
+
+  .comp-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+
+  .comp-name { font-size: 14px; font-weight: 600; color: #fff; }
+  .comp-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--red);
+  }
+
+  .comp-weakness {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .your-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  /* Footer note */
+  .footer-note {
+    background: rgba(124,106,247,0.07);
+    border: 1px solid rgba(124,106,247,0.2);
+    border-radius: 14px;
+    padding: 24px 28px;
+    text-align: center;
+    animation: fadeUp 0.6s 0.65s ease both;
+  }
+
+  .footer-note p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .footer-note strong { color: var(--accent); }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .phase { grid-template-columns: 48px 1fr; }
+    .comp-row { grid-template-columns: 1fr auto; }
+    .comp-price { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="badge">🗺 Product Roadmap 2026–2028</div>
+    <h1>Changelog SaaS<br>Thu nhập thụ động</h1>
+    <p class="subtitle">Micro SaaS cho dev & startup — xây bằng .NET + Angular, bán cho thị trường quốc tế, nhận ngoại tệ qua Stripe.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-value">$9–$79</span>
+      <span class="stat-label">Giá / tháng</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">$7.5k</span>
+      <span class="stat-label">MRR mục tiêu năm 3</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">4–6 tuần</span>
+      <span class="stat-label">Build MVP</span>
+    </div>
+  </div>
+
+  <!-- Phases -->
+  <div class="section-title">Lộ trình 3 giai đoạn</div>
+  <div class="phases">
+
+    <!-- Phase 1 -->
+    <div class="phase">
+      <div class="phase-timeline">
+        <div class="phase-dot p1">01</div>
+        <div class="phase-line"></div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div>
+            <div class="phase-title">Validate & Launch</div>
+            <div class="phase-sub">Tháng 1 – 12 / Năm 1</div>
+          </div>
+          <span class="phase-tag tag-p1">Build & Ship</span>
+        </div>
+        <ul class="task-list">
+          <li class="task-item"><span class="task-icon icon-build">🔍</span>Nghiên cứu thị trường, phỏng vấn 20+ SaaS owner về cách họ thông báo update</li>
+          <li class="task-item"><span class="task-icon icon-build">⚙️</span>Build MVP: changelog page + embed widget + email notification + Stripe</li>
+          <li class="task-item"><span class="task-icon icon-market">📣</span>Launch ProductHunt, Hacker News "Show HN", Reddit r/SideProject</li>
+          <li class="task-item"><span class="task-icon icon-market">✍️</span>Viết 4–6 bài blog so sánh: "Headway alternative", "Beamer alternative cheaper"</li>
+          <li class="task-item"><span class="task-icon icon-money">💳</span>Tích hợp Stripe → nhận thanh toán tự động, không cần làm gì thêm</li>
+        </ul>
+        <div class="phase-goal">🎯 Mục tiêu: <strong>20–30 khách trả tiền</strong>, MRR đầu tiên ~<strong>$200–$300/tháng</strong></div>
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="phase">
+      <div class="phase-timeline">
+        <div class="phase-dot p2">02</div>
+        <div class="phase-line"></div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div>
+            <div class="phase-title">Grow & Optimize</div>
+            <div class="phase-sub">Năm 2 — 12 tháng tiếp theo</div>
+          </div>
+          <span class="phase-tag tag-p2">Scale</span>
+        </div>
+        <ul class="task-list">
+          <li class="task-item"><span class="task-icon icon-build">🔗</span>Tích hợp GitHub / Jira: tự động tạo changelog từ commit message</li>
+          <li class="task-item"><span class="task-icon icon-build">🤖</span>Thêm AI tự viết release note từ diff code (tích hợp Claude API)</li>
+          <li class="task-item"><span class="task-icon icon-market">📈</span>SEO bền vững: 20+ bài blog, tăng organic traffic</li>
+          <li class="task-item"><span class="task-icon icon-market">🤝</span>Affiliate program: trả 25% cho người giới thiệu khách hàng mới</li>
+          <li class="task-item"><span class="task-icon icon-money">🏪</span>Launch AppSumo lifetime deal để boost cash flow</li>
+          <li class="task-item"><span class="task-icon icon-scale">📊</span>Tối ưu onboarding, giảm churn rate xuống dưới 5%/tháng</li>
+        </ul>
+        <div class="phase-goal">🎯 Mục tiêu: <strong>200 khách</strong>, MRR ~<strong>$2,000–$3,000/tháng</strong></div>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="phase">
+      <div class="phase-timeline">
+        <div class="phase-dot p3">03</div>
+        <div class="phase-line"></div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <div>
+            <div class="phase-title">Passive Income Mode</div>
+            <div class="phase-sub">Năm 3 — Thu nhập thụ động thật sự</div>
+          </div>
+          <span class="phase-tag tag-p3">Automate</span>
+        </div>
+        <ul class="task-list">
+          <li class="task-item"><span class="task-icon icon-scale">🤖</span>Tự động hóa support bằng chatbot + knowledge base</li>
+          <li class="task-item"><span class="task-icon icon-scale">📬</span>Email marketing tự động: onboarding sequence, upsell sequence</li>
+          <li class="task-item"><span class="task-icon icon-market">🌐</span>Lên marketplace: Notion, Slack, GitHub integrations</li>
+          <li class="task-item"><span class="task-icon icon-money">💰</span>Hoặc bán lại trên Acquire.com với giá ~3–5x ARR (~$270k–$450k)</li>
+        </ul>
+        <div class="phase-goal">🎯 Mục tiêu: <strong>500 khách</strong>, MRR ~<strong>$5,000–$7,500/tháng</strong> — <strong>chạy gần tự động</strong></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MVP Features -->
+  <div class="section-title">Tính năng MVP cần build</div>
+  <div class="mvp-grid">
+    <div class="mvp-card">
+      <div class="mvp-icon">📄</div>
+      <div>
+        <div class="mvp-name">Changelog Page</div>
+        <div class="mvp-desc">Trang public đẹp tại yourapp.com/changelog với custom domain</div>
+      </div>
+    </div>
+    <div class="mvp-card">
+      <div class="mvp-icon">🔌</div>
+      <div>
+        <div class="mvp-name">Embed Widget</div>
+        <div class="mvp-desc">Nhúng vào app bằng 1 dòng JS, hiện badge "N updates mới"</div>
+      </div>
+    </div>
+    <div class="mvp-card">
+      <div class="mvp-icon">✏️</div>
+      <div>
+        <div class="mvp-name">Rich Text Editor</div>
+        <div class="mvp-desc">Viết release note với ảnh, tag (New / Fix / Improvement)</div>
+      </div>
+    </div>
+    <div class="mvp-card">
+      <div class="mvp-icon">📧</div>
+      <div>
+        <div class="mvp-name">Email Notification</div>
+        <div class="mvp-desc">User subscribe → nhận email tự động khi có update mới</div>
+      </div>
+    </div>
+    <div class="mvp-card">
+      <div class="mvp-icon">💳</div>
+      <div>
+        <div class="mvp-name">Stripe Billing</div>
+        <div class="mvp-desc">Thanh toán tự động hàng tháng, không cần thao tác thủ công</div>
+      </div>
+    </div>
+    <div class="mvp-card">
+      <div class="mvp-icon">🔐</div>
+      <div>
+        <div class="mvp-name">Auth & Multi-project</div>
+        <div class="mvp-desc">Đăng nhập, quản lý nhiều sản phẩm trong 1 tài khoản</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section-title">Tech Stack</div>
+  <div class="stack-grid">
+    <div class="stack-item">
+      <span class="stack-emoji">⚙️</span>
+      <div>
+        <div class="stack-name">ASP.NET Core 8</div>
+        <div class="stack-role">Backend API</div>
+      </div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-emoji">🅰️</span>
+      <div>
+        <div class="stack-name">Angular 17+</div>
+        <div class="stack-role">Frontend SPA</div>
+      </div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-emoji">🐘</span>
+      <div>
+        <div class="stack-name">PostgreSQL</div>
+        <div class="stack-role">Database</div>
+      </div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-emoji">💳</span>
+      <div>
+        <div class="stack-name">Stripe</div>
+        <div class="stack-role">Billing & Payments</div>
+      </div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-emoji">📨</span>
+      <div>
+        <div class="stack-name">Resend / SendGrid</div>
+        <div class="stack-role">Email Service</div>
+      </div>
+    </div>
+    <div class="stack-item">
+      <span class="stack-emoji">🚀</span>
+      <div>
+        <div class="stack-name">Railway / Render</div>
+        <div class="stack-role">Hosting (rẻ ban đầu)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue Forecast -->
+  <div class="revenue-section">
+    <div class="section-title">Dự báo doanh thu</div>
+    <div class="rev-table-wrap">
+      <table class="rev-table">
+        <thead>
+          <tr>
+            <th>Mốc thời gian</th>
+            <th>Số khách</th>
+            <th>Giá TB</th>
+            <th>MRR / tháng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tháng 6</td>
+            <td>20 khách</td>
+            <td>$9</td>
+            <td class="rev-highlight">$180</td>
+          </tr>
+          <tr>
+            <td>Tháng 9</td>
+            <td>60 khách</td>
+            <td>$12</td>
+            <td class="rev-highlight">$720</td>
+          </tr>
+          <tr>
+            <td>Năm 2</td>
+            <td>200 khách</td>
+            <td>$15</td>
+            <td class="rev-highlight">$3,000</td>
+          </tr>
+          <tr>
+            <td>Năm 3</td>
+            <td>500 khách</td>
+            <td>$15</td>
+            <td class="rev-highlight">$7,500</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Competitors -->
+  <div class="section-title">Đối thủ & cơ hội</div>
+  <div class="comp-list">
+    <div class="comp-row">
+      <div>
+        <div class="comp-name">Headway</div>
+        <div class="comp-weakness">UI cũ, không có embed widget tốt</div>
+      </div>
+      <div class="comp-price">$29/tháng</div>
+      <div class="your-price">← Bạn: $9</div>
+    </div>
+    <div class="comp-row">
+      <div>
+        <div class="comp-name">Beamer</div>
+        <div class="comp-weakness">Quá nhiều tính năng, phức tạp không cần thiết</div>
+      </div>
+      <div class="comp-price">$49/tháng</div>
+      <div class="your-price">← Bạn: $9</div>
+    </div>
+    <div class="comp-row">
+      <div>
+        <div class="comp-name">Changelogfy</div>
+        <div class="comp-weakness">Ít tính năng, không được maintain tích cực</div>
+      </div>
+      <div class="comp-price">$19/tháng</div>
+      <div class="your-price">← Bạn: $9</div>
+    </div>
+    <div class="comp-row">
+      <div>
+        <div class="comp-name">LaunchNotes</div>
+        <div class="comp-weakness">Chỉ nhắm enterprise, quá đắt cho startup nhỏ</div>
+      </div>
+      <div class="comp-price">$149/tháng</div>
+      <div class="your-price">← Bạn: $9</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-note">
+    <p>🎯 Chiến lược cạnh tranh: <strong>Đơn giản — Rẻ hơn — Hỗ trợ tốt hơn.</strong><br>
+    Bạn không cần đánh bại Headway. Bạn chỉ cần <strong>500 khách hàng</strong> trong một thị trường có hàng triệu SaaS trên thế giới.</p>
+  </div>
+
+</div>
+</body>
+</html>

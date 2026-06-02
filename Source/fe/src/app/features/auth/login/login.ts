@@ -1,0 +1,34 @@
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
+import { LoginRequest } from '../../../core/models/user.model';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './login.html',
+  styleUrl: './login.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class Login {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  form = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', Validators.required),
+  });
+
+  onSubmit() {
+    if (this.form.invalid) return;
+    const req = this.form.getRawValue() as LoginRequest;
+    const { email, password } = this.form.getRawValue();
+    this.authService.login(req).subscribe({
+      next: () => this.router.navigate(['/app']),
+      error: (err) => console.error('Login failed', err),
+    });
+  }
+}
