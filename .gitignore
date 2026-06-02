@@ -1,1 +1,6 @@
 /Source/be/.vs
+/Source/fe/.vscode
+
+# .NET build outputs
+**/bin/
+**/obj/
