@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kế hoạch Build 6 Tuần — Changelog SaaS</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    /* Colors - light mode */
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5f4;
+    --color-background-info: #eff6ff;
+    --color-background-success: #f0fdf4;
+    --color-background-warning: #fffbeb;
+    --color-background-danger: #fef2f2;
+
+    --color-text-primary: #1c1917;
+    --color-text-secondary: #78716c;
+    --color-text-tertiary: #a8a29e;
+    --color-text-info: #2563eb;
+    --color-text-success: #16a34a;
+    --color-text-warning: #d97706;
+    --color-text-danger: #dc2626;
+
+    --color-border-primary: #1c1917;
+    --color-border-secondary: #e7e5e4;
+    --color-border-tertiary: #f0eeed;
+
+    --border-radius-sm: 4px;
+    --border-radius-md: 6px;
+    --border-radius-lg: 10px;
+
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: #fafaf9;
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Kế hoạch build Changelog SaaS theo tuần trong 6 tuần để ra MVP</h2>
+<style>
+.nav{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+.nb{padding:7px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);font-size:13px;cursor:pointer;transition:all .15s;}
+.nb.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500;}
+.pane{display:none;}
+.pane.active{display:block;}
+
+.week-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.week-title{font-size:20px;font-weight:500;color:var(--color-text-primary);}
+.week-sub{font-size:13px;color:var(--color-text-secondary);margin-top:3px;}
+.week-badge{font-size:11px;padding:4px 12px;border-radius:var(--border-radius-md);font-weight:500;white-space:nowrap;margin-top:4px;}
+.w-setup{background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-secondary);}
+.w-be{background:var(--color-background-info);color:var(--color-text-info);}
+.w-fe{background:var(--color-background-warning);color:var(--color-text-warning);}
+.w-int{background:var(--color-background-success);color:var(--color-text-success);}
+.w-pay{background:var(--color-background-danger);color:var(--color-text-danger);}
+.w-launch{background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-primary);}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;}
+.stat-n{font-size:20px;font-weight:500;color:var(--color-text-primary);}
+.stat-l{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+
+.day-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.day-row{display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:start;}
+.day-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);padding-top:10px;text-align:right;}
+.day-tasks{display:flex;flex-direction:column;gap:6px;}
+
+.task{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:9px 13px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:border-color .15s;}
+.task:hover{border-color:var(--color-border-secondary);}
+.task.done .task-text{text-decoration:line-through;color:var(--color-text-tertiary);}
+.task-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.task.done .task-check{background:var(--color-text-success);border-color:var(--color-text-success);}
+.task-text{font-size:13px;color:var(--color-text-primary);line-height:1.4;flex:1;}
+.task-tag{font-size:10px;padding:2px 7px;border-radius:var(--border-radius-md);font-weight:500;flex-shrink:0;margin-top:1px;}
+.tt-be{background:var(--color-background-info);color:var(--color-text-info);}
+.tt-fe{background:var(--color-background-warning);color:var(--color-text-warning);}
+.tt-ops{background:var(--color-background-success);color:var(--color-text-success);}
+.tt-mkt{background:var(--color-background-danger);color:var(--color-text-danger);}
+
+.milestone{background:var(--color-background-primary);border:1.5px solid var(--color-border-success);border-radius:var(--border-radius-lg);padding:14px 18px;margin-top:16px;display:flex;align-items:center;gap:12px;}
+.ms-icon{font-size:20px;}
+.ms-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.ms-sub{font-size:12px;color:var(--color-text-secondary);margin-top:2px;}
+
+.progress-bar{height:6px;background:var(--color-border-tertiary);border-radius:100px;margin-bottom:20px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:100px;background:var(--color-text-success);transition:width .4s;}
+
+.overview-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+.ov-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px 18px;}
+.ov-week{font-size:11px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.ov-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;}
+.ov-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.ov-goal{font-size:12px;color:var(--color-text-secondary);display:flex;align-items:flex-start;gap:6px;}
+.ov-goal i{font-size:14px;color:var(--color-text-success);flex-shrink:0;margin-top:1px;}
+.ov-hours{font-size:11px;color:var(--color-text-tertiary);margin-top:8px;display:flex;align-items:center;gap:4px;}
+
+.checklist-wrap{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;margin-bottom:12px;}
+.checklist-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+.check-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-text-primary);padding:4px 0;}
+.check-item i{font-size:14px;color:var(--color-text-success);}
+
+.warn-box{background:var(--color-background-warning);border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-md);padding:10px 14px;font-size:12px;color:var(--color-text-warning);display:flex;align-items:flex-start;gap:8px;margin-top:12px;}
+.warn-box i{font-size:15px;flex-shrink:0;margin-top:1px;}
+
+.done-count{font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;}
+</style>
+
+<div class="nav">
+  <button class="nb active" onclick="show('overview')"><i class="ti ti-map" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Tổng quan</button>
+  <button class="nb" onclick="show('w1')">Tuần 1</button>
+  <button class="nb" onclick="show('w2')">Tuần 2</button>
+  <button class="nb" onclick="show('w3')">Tuần 3</button>
+  <button class="nb" onclick="show('w4')">Tuần 4</button>
+  <button class="nb" onclick="show('w5')">Tuần 5</button>
+  <button class="nb" onclick="show('w6')">Tuần 6</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="pane-overview" class="pane active">
+  <div class="overview-grid">
+    <div class="ov-card" onclick="show('w1')" style="cursor:pointer">
+      <div class="ov-week">Tuần 1</div>
+      <div class="ov-title">Setup & Foundation</div>
+      <div class="ov-tags">
+        <span class="task-tag tt-ops">DevOps</span>
+        <span class="task-tag tt-be">Backend</span>
+      </div>
+      <div class="ov-goal"><i class="ti ti-flag" aria-hidden="true"></i>Project chạy được local, DB migrations xong, auth hoạt động</div>
+      <div class="ov-hours"><i class="ti ti-clock" style="font-size:12px;" aria-hidden="true"></i>15–17 giờ</div>
+    </div>
+    <div class="ov-card" onclick="show('w2')" style="cursor:pointer">
+      <div class="ov-week">Tuần 2</div>
+      <div class="ov-title">Core API</div>
+      <div class="ov-tags">
+        <span class="task-tag tt-be">Backend</span>
+      </div>
+      <div class="ov-goal"><i class="ti ti-flag" aria-hidden="true"></i>Toàn bộ endpoints CRUD hoạt động, test được bằng Postman</div>
+      <div class="ov-hours"><i class="ti ti-clock" style="font-size:12px;" aria-hidden="true"></i>16–18 giờ</div>
+    </div>
+    <div class="ov-card" onclick="show('w3')" style="cursor:pointer">
+      <div class="ov-week">Tuần 3</div>
+      <div class="ov-title">Angular Dashboard</div>
+      <div class="ov-tags">
+        <span class="task-tag tt-fe">Frontend</span>
+      </div>
+      <div class="ov-goal"><i class="ti ti-flag" aria-hidden="true"></i>Đăng nhập, xem/tạo/publish entry chạy được end-to-end</div>
+      <div class="ov-hours"><i class="ti ti-clock" style="font-size:12px;" aria-hidden="true"></i>17–19 giờ</div>
+    </div>
+    <div class="ov-card" onclick="show('w4')" style="cursor:pointer">
+      <div class="ov-week">Tuần 4</div>
+      <div class="ov-title">Public Page & Widget</div>
+      <div class="ov-tags">
+        <span class="task-tag tt-fe">Frontend</span>
+        <span class="task-tag tt-be">Backend</span>
+      </div>
+      <div class="ov-goal"><i class="ti ti-flag" aria-hidden="true"></i>Public page + embed widget nhúng được vào app ngoài</div>
+      <div class="ov-hours"><i class="ti ti-clock" style="font-size:12px;" aria-hidden="true"></i>16–18 giờ</div>
+    </div>
+    <div class="ov-card" onclick="show('w5')" style="cursor:pointer">
+      <div class="ov-week">Tuần 5</div>
+      <div class="ov-title">Stripe & Email</div>
+      <div class="ov-tags">
+        <span class="task-tag tt-be">Backend</span>
+        <span class="task-tag tt-fe">Frontend</span>
+      </div>
+      <div class="ov-goal"><i class="ti ti-flag" aria-hidden="true"></i>Checkout Stripe hoạt động, email notification gửi được</div>
+      <div class="ov-hours"><i class="ti ti-clock" style="font-size:12px;" aria-hidden="true"></i>16–18 giờ</div>
+    </div>
+    <div class="ov-card" onclick="show('w6')" style="cursor:pointer">
+      <div class="ov-week">Tuần 6</div>
+      <div class="ov-title">Deploy & Launch</div>
+      <div class="ov-tags">
+        <span class="task-tag tt-ops">DevOps</span>
+        <span class="task-tag tt-mkt">Marketing</span>
+      </div>
+      <div class="ov-goal"><i class="ti ti-flag" aria-hidden="true"></i>App live trên domain thật, landing page online, post đầu tiên</div>
+      <div class="ov-hours"><i class="ti ti-clock" style="font-size:12px;" aria-hidden="true"></i>14–16 giờ</div>
+    </div>
+  </div>
+
+  <div class="ov-card" style="grid-column:1/-1;">
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:14px;">Timeline tổng thể — 6 tuần × ~15–18 giờ = ~100 giờ</div>
+    <div style="display:flex;gap:0;height:32px;border-radius:var(--border-radius-md);overflow:hidden;border:0.5px solid var(--color-border-tertiary);">
+      <div style="flex:1;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--color-text-secondary);border-right:0.5px solid var(--color-border-tertiary);">W1 Setup</div>
+      <div style="flex:1;background:var(--color-background-info);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--color-text-info);border-right:0.5px solid var(--color-border-tertiary);">W2 API</div>
+      <div style="flex:1;background:var(--color-background-warning);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--color-text-warning);border-right:0.5px solid var(--color-border-tertiary);">W3 UI</div>
+      <div style="flex:1;background:var(--color-background-warning);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--color-text-warning);border-right:0.5px solid var(--color-border-tertiary);">W4 Widget</div>
+      <div style="flex:1;background:var(--color-background-danger);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--color-text-danger);border-right:0.5px solid var(--color-border-tertiary);">W5 Stripe</div>
+      <div style="flex:1;background:var(--color-background-success);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--color-text-success);">W6 Launch</div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;">
+      <div style="font-size:12px;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px;"><i class="ti ti-calendar" style="font-size:13px;" aria-hidden="true"></i>10–20 giờ/tuần</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px;"><i class="ti ti-clock" style="font-size:13px;" aria-hidden="true"></i>~100 giờ tổng</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px;"><i class="ti ti-target" style="font-size:13px;" aria-hidden="true"></i>MVP sẵn sàng charge tiền sau 6 tuần</div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK 1 -->
+<div id="pane-w1" class="pane">
+  <div class="week-header">
+    <div><div class="week-title">Tuần 1 — Setup & Foundation</div><div class="week-sub">Dựng nền tảng, không viết business logic vội</div></div>
+    <span class="week-badge w-setup">DevOps + Backend</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n">~16h</div><div class="stat-l">Tổng giờ</div></div>
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">Ngày làm việc</div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l">USD earned</div></div>
+  </div>
+  <div id="done-w1" class="done-count"></div>
+  <div class="day-grid" id="tasks-w1">
+    <div class="day-row"><div class="day-label">Thứ 2</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Tạo solution .NET: <code>dotnet new sln</code>, thêm 4 projects (Domain, Application, Infrastructure, API)</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Cài Docker Desktop, tạo <code>docker-compose.yml</code> cho PostgreSQL + Redis local</div><span class="task-tag tt-ops">DevOps</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Tạo Angular project: <code>ng new changelog-app --standalone --ssr --routing --style=scss</code></div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 3</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Viết Domain entities: <code>User</code>, <code>Project</code>, <code>ChangelogEntry</code>, <code>Subscriber</code>, <code>Subscription</code></div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Setup <code>AppDbContext</code> + EF Core configurations cho từng entity</div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 4</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Chạy EF Core migrations lần đầu, verify tables tạo đúng trong PostgreSQL</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Implement JWT auth: register, login endpoints, <code>AuthService</code>, middleware</div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 5</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Setup Angular: folder structure, <code>CoreModule</code>, <code>ApiService</code>, <code>AuthService</code>, interceptors</div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Tạo login/register page Angular, kết nối với .NET API, test đăng ký + đăng nhập</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 6</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Setup GitHub repo, <code>.gitignore</code>, <code>README.md</code>, branch strategy (main/develop)</div><span class="task-tag tt-ops">DevOps</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Review, fix bugs, viết notes những điểm cần cải thiện tuần sau</div><span class="task-tag tt-ops">DevOps</span></div>
+    </div></div>
+  </div>
+  <div class="milestone"><div class="ms-icon"><i class="ti ti-flag" style="font-size:20px;color:var(--color-text-success);" aria-hidden="true"></i></div><div><div class="ms-title">Milestone tuần 1</div><div class="ms-sub">Đăng ký + đăng nhập chạy được end-to-end. DB có đầy đủ tables. Angular kết nối được API.</div></div></div>
+</div>
+
+<!-- WEEK 2 -->
+<div id="pane-w2" class="pane">
+  <div class="week-header">
+    <div><div class="week-title">Tuần 2 — Core API</div><div class="week-sub">Toàn bộ business logic backend, test bằng Scalar/Postman</div></div>
+    <span class="week-badge w-be">Backend heavy</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n">~17h</div><div class="stat-l">Tổng giờ</div></div>
+    <div class="stat"><div class="stat-n">15+</div><div class="stat-l">API endpoints</div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l">USD earned</div></div>
+  </div>
+  <div id="done-w2" class="done-count"></div>
+  <div class="day-grid" id="tasks-w2">
+    <div class="day-row"><div class="day-label">Thứ 2</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">CRUD Projects: <code>GET /projects</code>, <code>POST /projects</code>, <code>PUT /projects/{id}</code>, <code>DELETE</code></div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Validate slug unique khi tạo project, slug auto-generate từ tên nếu bỏ trống</div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 3</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">CRUD Changelog Entries: tạo, sửa, xóa, lấy danh sách theo projectId (phân trang)</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Endpoint <code>POST /entries/{id}/publish</code>: đổi status + set <code>publishedAt</code></div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 4</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Public endpoints (không cần auth): <code>GET /public/{slug}/entries</code> cho SEO page</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Subscriber endpoints: <code>POST subscribe</code>, <code>GET confirm/{token}</code>, <code>GET unsubscribe/{token}</code></div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 5</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Setup Hangfire: cài package, config với PostgreSQL, tạo dashboard route <code>/hangfire</code></div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Setup Redis cache: cài StackExchange.Redis, implement <code>RedisCacheService</code></div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 6</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Widget endpoint: <code>GET /widget/{slug}</code> — trả JSON cached, cache 5 phút Redis</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Test toàn bộ endpoints bằng Scalar API docs, sửa bugs, thêm FluentValidation</div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+  </div>
+  <div class="milestone"><div class="ms-icon"><i class="ti ti-flag" style="font-size:20px;color:var(--color-text-success);" aria-hidden="true"></i></div><div><div class="ms-title">Milestone tuần 2</div><div class="ms-sub">Toàn bộ API hoạt động và test được. Không cần UI vẫn có thể tạo project + entry qua Postman.</div></div></div>
+</div>
+
+<!-- WEEK 3 -->
+<div id="pane-w3" class="pane">
+  <div class="week-header">
+    <div><div class="week-title">Tuần 3 — Angular Dashboard</div><div class="week-sub">Giao diện quản lý: sidebar, entry list, editor với rich text</div></div>
+    <span class="week-badge w-fe">Frontend heavy</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n">~18h</div><div class="stat-l">Tổng giờ</div></div>
+    <div class="stat"><div class="stat-n">8+</div><div class="stat-l">Components</div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l">USD earned</div></div>
+  </div>
+  <div id="done-w3" class="done-count"></div>
+  <div class="day-grid" id="tasks-w3">
+    <div class="day-row"><div class="day-label">Thứ 2</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Tạo <code>AppShellComponent</code>: sidebar + topbar layout, routing với <code>router-outlet</code></div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Implement <code>AuthGuard</code>, redirect về <code>/login</code> nếu chưa đăng nhập</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 3</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Dashboard page: stats cards (entries, subscribers, open rate), danh sách entry gần đây</div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text"><code>ProjectService</code>: load projects, active project signal, project switcher trong sidebar</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 4</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Entry list page: bảng entries với status badge, actions (edit/publish/delete)</div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Cài <code>ngx-quill</code> (rich text editor): tích hợp vào entry editor form</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 5</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Entry editor hoàn chỉnh: title, rich text, tags multi-select, version field, save draft</div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Nút "Publish & notify" với confirm dialog hiển thị số subscriber sẽ nhận email</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 6</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Test flow hoàn chỉnh: đăng nhập → tạo project → viết entry → publish</div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Responsive CSS cơ bản, fix UI bugs, polish sidebar và form</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+  </div>
+  <div class="milestone"><div class="ms-icon"><i class="ti ti-flag" style="font-size:20px;color:var(--color-text-success);" aria-hidden="true"></i></div><div><div class="ms-title">Milestone tuần 3</div><div class="ms-sub">Dashboard hoạt động đầy đủ. Có thể demo cho người khác xem qua localhost.</div></div></div>
+</div>
+
+<!-- WEEK 4 -->
+<div id="pane-w4" class="pane">
+  <div class="week-header">
+    <div><div class="week-title">Tuần 4 — Public Page & Widget</div><div class="week-sub">Phần khách hàng thấy — trang changelog + embed script</div></div>
+    <span class="week-badge w-int">Full-stack</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n">~17h</div><div class="stat-l">Tổng giờ</div></div>
+    <div class="stat"><div class="stat-n">2</div><div class="stat-l">Deliverables lớn</div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l">USD earned</div></div>
+  </div>
+  <div id="done-w4" class="done-count"></div>
+  <div class="day-grid" id="tasks-w4">
+    <div class="day-row"><div class="day-label">Thứ 2</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Public changelog page Angular (SSR): route <code>/c/:slug</code>, load entries, hiện tags</div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Filter theo tag (New/Fix/Improvement), subscribe form với email input</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 3</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">SEO: set <code>&lt;title&gt;</code> + meta description động theo project name, OG tags</div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Settings/Appearance page: đổi accent color, tên project, xem trước public page</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 4</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Build embed widget JS: file <code>widget.js</code> thuần JavaScript, không dùng framework</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Widget tạo FAB button góc dưới-phải, fetch <code>/api/widget/{slug}</code>, hiện popup entries</div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 5</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Widget Setup page trong dashboard: hiện embed code, copy button, preview widget</div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Test nhúng widget vào một HTML page ngoài, verify hoạt động cross-origin</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 6</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Custom domain: lưu domain vào DB, .NET đọc header <code>Host</code> để route đúng project</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">E2E test: tạo entry → publish → xem public page → nhúng widget → subscribe</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+  </div>
+  <div class="milestone"><div class="ms-icon"><i class="ti ti-flag" style="font-size:20px;color:var(--color-text-success);" aria-hidden="true"></i></div><div><div class="ms-title">Milestone tuần 4</div><div class="ms-sub">Có thể demo full product: public page live, widget nhúng được vào app khác. Sản phẩm "trông thật" rồi.</div></div></div>
+</div>
+
+<!-- WEEK 5 -->
+<div id="pane-w5" class="pane">
+  <div class="week-header">
+    <div><div class="week-title">Tuần 5 — Stripe & Email</div><div class="week-sub">Kết nối tiền và thông báo — hai tính năng quan trọng nhất để charge tiền</div></div>
+    <span class="week-badge w-pay">Billing + Email</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n">~17h</div><div class="stat-l">Tổng giờ</div></div>
+    <div class="stat"><div class="stat-n">$0→$9</div><div class="stat-l">Sắp charge được</div></div>
+    <div class="stat"><div class="stat-n">~0</div><div class="stat-l">USD earned (chưa)</div></div>
+  </div>
+  <div id="done-w5" class="done-count"></div>
+  <div class="day-grid" id="tasks-w5">
+    <div class="day-row"><div class="day-label">Thứ 2</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Tạo Stripe account, tạo 2 products (Pro $9/mo, Team $29/mo), lấy Price IDs</div><span class="task-tag tt-ops">DevOps</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Implement <code>POST /billing/checkout</code>: tạo Stripe Checkout session, redirect URL</div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 3</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Stripe webhook handler: <code>subscription.created</code>, <code>updated</code>, <code>deleted</code> → cập nhật plan trong DB</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Test webhook bằng Stripe CLI: <code>stripe listen --forward-to localhost:5000/webhooks/stripe</code></div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 4</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Billing page Angular: hiện plan hiện tại, nút Upgrade, nút Manage (→ Stripe Portal)</div><span class="task-tag tt-fe">Frontend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text"><code>PlanGuard</code>: chặn feature premium (custom domain, widget) nếu plan Free</div><span class="task-tag tt-fe">Frontend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 5</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Setup Resend account, verify domain, implement <code>EmailService</code> gửi notification</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Hangfire job <code>SendEmailNotificationJob</code>: khi publish entry → queue gửi email cho tất cả subscribers</div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 6</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Email confirm subscriber + unsubscribe link hoạt động đúng</div><span class="task-tag tt-be">Backend</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Test toàn bộ billing flow: Free → Upgrade → Pro → cancel → về Free</div><span class="task-tag tt-be">Backend</span></div>
+    </div></div>
+  </div>
+  <div class="milestone"><div class="ms-icon"><i class="ti ti-flag" style="font-size:20px;color:var(--color-text-success);" aria-hidden="true"></i></div><div><div class="ms-title">Milestone tuần 5</div><div class="ms-sub">Có thể nhận tiền thật qua Stripe. Email notification tự động. MVP về mặt kỹ thuật đã xong 100%.</div></div></div>
+  <div class="warn-box"><i class="ti ti-alert-triangle" aria-hidden="true"></i><div>Dùng Stripe test mode (<code>sk_test_...</code>) trong tuần này. Chỉ switch sang live mode khi deploy production tuần 6.</div></div>
+</div>
+
+<!-- WEEK 6 -->
+<div id="pane-w6" class="pane">
+  <div class="week-header">
+    <div><div class="week-title">Tuần 6 — Deploy & Launch</div><div class="week-sub">Đưa sản phẩm ra thế giới và kiếm khách hàng đầu tiên</div></div>
+    <span class="week-badge w-launch">Launch</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n">~15h</div><div class="stat-l">Tổng giờ</div></div>
+    <div class="stat"><div class="stat-n">Live</div><div class="stat-l">Trạng thái</div></div>
+    <div class="stat"><div class="stat-n">$9+</div><div class="stat-l">MRR mục tiêu</div></div>
+  </div>
+  <div id="done-w6" class="done-count"></div>
+  <div class="day-grid" id="tasks-w6">
+    <div class="day-row"><div class="day-label">Thứ 2</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Deploy .NET API lên Railway: tạo project, set env vars (DB, Stripe, Resend keys)</div><span class="task-tag tt-ops">DevOps</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Deploy Angular lên Vercel hoặc Netlify: build SSR, set API_URL production</div><span class="task-tag tt-ops">DevOps</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 3</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Mua domain (Namecheap ~$10/năm), setup DNS, kết nối với Railway + Vercel</div><span class="task-tag tt-ops">DevOps</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Switch Stripe sang live mode, update webhook URL production, test checkout thật</div><span class="task-tag tt-ops">DevOps</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 4</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Tạo landing page: headline, features, pricing, CTA "Start free" → link đến app</div><span class="task-tag tt-mkt">Marketing</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Viết bài "Show HN": mô tả vấn đề, giải pháp, link demo. Chuẩn bị trước, post cuối tuần</div><span class="task-tag tt-mkt">Marketing</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 5</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Smoke test production: đăng ký, tạo project, publish entry, subscribe, nhận email</div><span class="task-tag tt-ops">DevOps</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Setup Sentry (free tier) để track lỗi production, setup uptime monitor</div><span class="task-tag tt-ops">DevOps</span></div>
+    </div></div>
+    <div class="day-row"><div class="day-label">Thứ 6–7</div><div class="day-tasks">
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Post lên Reddit: r/SideProject, r/SaaS — "I built a changelog tool, feedback welcome"</div><span class="task-tag tt-mkt">Marketing</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Post "Show HN" lên Hacker News, share lên Twitter/X #buildinpublic</div><span class="task-tag tt-mkt">Marketing</span></div>
+      <div class="task" onclick="toggle(this)"><div class="task-check"><i class="ti ti-check" style="font-size:11px;color:#fff;" aria-hidden="true"></i></div><div class="task-text">Reply mọi comment, lắng nghe feedback, note lại feature request cho tuần sau</div><span class="task-tag tt-mkt">Marketing</span></div>
+    </div></div>
+  </div>
+  <div class="checklist-wrap">
+    <div class="checklist-title">Pre-launch checklist</div>
+    <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i>HTTPS trên tất cả domains</div>
+    <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i>Stripe live mode hoạt động</div>
+    <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i>Email từ domain thật (không vào spam)</div>
+    <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i>Privacy Policy + Terms of Service page</div>
+    <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i>Error tracking (Sentry) bật</div>
+    <div class="check-item"><i class="ti ti-check" aria-hidden="true"></i>Database backup tự động (Railway có sẵn)</div>
+  </div>
+  <div class="milestone"><div class="ms-icon"><i class="ti ti-rocket" style="font-size:20px;color:var(--color-text-success);" aria-hidden="true"></i></div><div><div class="ms-title">MVP live — sẵn sàng kiếm tiền!</div><div class="ms-sub">Sau 6 tuần × 15–18h = ~100 giờ. Mục tiêu: 3–5 khách trả tiền đầu tiên trong tháng đầu launch.</div></div></div>
+</div>
+
+<script>
+function show(name){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+name).classList.add('active');
+  const idx=['overview','w1','w2','w3','w4','w5','w6'].indexOf(name);
+  document.querySelectorAll('.nb')[idx].classList.add('active');
+}
+function toggle(el){
+  el.classList.toggle('done');
+  const week = el.closest('.day-grid').id.replace('tasks-','');
+  updateCount(week);
+}
+function updateCount(week){
+  const tasks = document.querySelectorAll('#tasks-'+week+' .task');
+  const done = document.querySelectorAll('#tasks-'+week+' .task.done').length;
+  const el = document.getElementById('done-'+week);
+  if(el) el.textContent = done + ' / ' + tasks.length + ' tasks xong';
+}
+['w1','w2','w3','w4','w5','w6'].forEach(w => updateCount(w));
+</script>
+
+</body>
+</html>

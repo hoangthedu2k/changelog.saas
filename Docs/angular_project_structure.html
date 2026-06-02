@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cấu trúc Angular Project — Changelog SaaS</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    /* Colors - light mode */
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5f4;
+    --color-background-info: #eff6ff;
+    --color-background-success: #f0fdf4;
+    --color-background-warning: #fffbeb;
+    --color-background-danger: #fef2f2;
+
+    --color-text-primary: #1c1917;
+    --color-text-secondary: #78716c;
+    --color-text-tertiary: #a8a29e;
+    --color-text-info: #2563eb;
+    --color-text-success: #16a34a;
+    --color-text-warning: #d97706;
+    --color-text-danger: #dc2626;
+
+    --color-border-primary: #1c1917;
+    --color-border-secondary: #e7e5e4;
+    --color-border-tertiary: #f0eeed;
+
+    --border-radius-sm: 4px;
+    --border-radius-md: 6px;
+    --border-radius-lg: 10px;
+
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: #fafaf9;
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">Cấu trúc project Angular cho Changelog SaaS gồm core, features, shared và các service chính</h2>
+
+<style>
+.nav{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+.nb{padding:7px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);font-size:13px;cursor:pointer;}
+.nb.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500;}
+.pane{display:none;}
+.pane.active{display:block;}
+.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;}
+.full{grid-column:1/-1;}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;}
+.card-head{padding:11px 16px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);}
+.card-title{font-size:13px;font-weight:500;color:var(--color-text-primary);font-family:var(--font-mono);}
+.card-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px;}
+.card-body{padding:14px 16px;}
+pre{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:13px 15px;font-family:var(--font-mono);font-size:11px;line-height:1.85;overflow-x:auto;color:var(--color-text-secondary);margin:0;}
+.kw{color:var(--color-text-info);}
+.dec{color:var(--color-text-danger);}
+.str{color:var(--color-text-warning);}
+.type{color:var(--color-text-success);}
+.cmt{color:var(--color-text-tertiary);font-style:italic;}
+.prop{color:var(--color-text-primary);}
+
+.tree{font-family:var(--font-mono);font-size:12px;line-height:2;color:var(--color-text-secondary);}
+.tf{color:var(--color-text-primary);font-weight:500;}
+.ts{color:var(--color-text-info);}
+.html{color:var(--color-text-warning);}
+.scss{color:var(--color-text-danger);}
+.json{color:var(--color-text-success);}
+.ti2{padding-left:16px;display:block;}
+.ti3{padding-left:32px;display:block;}
+.ti4{padding-left:48px;display:block;}
+
+.badge{font-size:10px;padding:2px 8px;border-radius:var(--border-radius-md);font-weight:500;}
+.b-core{background:var(--color-background-danger);color:var(--color-text-danger);}
+.b-feat{background:var(--color-background-info);color:var(--color-text-info);}
+.b-shared{background:var(--color-background-success);color:var(--color-text-success);}
+.b-env{background:var(--color-background-warning);color:var(--color-text-warning);}
+
+.flow-row{display:flex;align-items:center;gap:0;flex-wrap:wrap;padding:14px 16px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.flow-row:last-child{border-bottom:none;}
+.flow-box{padding:6px 12px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;white-space:nowrap;}
+.flow-arr{color:var(--color-text-tertiary);font-size:16px;padding:0 6px;}
+.flow-desc{font-size:11px;color:var(--color-text-secondary);padding-left:12px;flex:1;}
+</style>
+
+<div class="nav">
+  <button class="nb active" onclick="show('structure')"><i class="ti ti-folder" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Folder structure</button>
+  <button class="nb" onclick="show('core')"><i class="ti ti-shield" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Core</button>
+  <button class="nb" onclick="show('features')"><i class="ti ti-layout-grid" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Features</button>
+  <button class="nb" onclick="show('shared')"><i class="ti ti-components" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Shared</button>
+  <button class="nb" onclick="show('routing')"><i class="ti ti-route" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>Routing & Guards</button>
+  <button class="nb" onclick="show('state')"><i class="ti ti-database" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i>State & Services</button>
+</div>
+
+<!-- STRUCTURE -->
+<div id="pane-structure" class="pane active">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head">
+        <i class="ti ti-brand-angular" style="font-size:16px;color:var(--color-text-danger);" aria-hidden="true"></i>
+        <div><div class="card-title">src/app/</div><div class="card-sub">Angular 17 — Standalone Components</div></div>
+      </div>
+      <div class="card-body">
+        <div class="tree">
+          <span class="tf"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> core/</span>
+          <span class="ti2 cmt">— singleton services, guards, interceptors</span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> auth/</span></span>
+          <span class="ti3"><span class="ts">auth.service.ts</span></span>
+          <span class="ti3"><span class="ts">auth.guard.ts</span></span>
+          <span class="ti3"><span class="ts">auth.interceptor.ts</span></span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> http/</span></span>
+          <span class="ti3"><span class="ts">api.service.ts</span></span>
+          <span class="ti3"><span class="ts">error.interceptor.ts</span></span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> models/</span></span>
+          <span class="ti3"><span class="ts">project.model.ts</span></span>
+          <span class="ti3"><span class="ts">entry.model.ts</span></span>
+          <span class="ti3"><span class="ts">subscriber.model.ts</span></span>
+          <span class="ti3"><span class="ts">user.model.ts</span></span>
+          <br>
+          <span class="tf"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> features/</span>
+          <span class="ti2 cmt">— lazy-loaded feature modules</span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> auth/</span></span>
+          <span class="ti3"><span class="html">login.component.ts</span></span>
+          <span class="ti3"><span class="html">register.component.ts</span></span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> dashboard/</span></span>
+          <span class="ti3"><span class="html">dashboard.component.ts</span></span>
+          <span class="ti3"><span class="ts">dashboard.service.ts</span></span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> entries/</span></span>
+          <span class="ti3"><span class="html">entry-list.component.ts</span></span>
+          <span class="ti3"><span class="html">entry-editor.component.ts</span></span>
+          <span class="ti3"><span class="ts">entries.service.ts</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <i class="ti ti-folder" style="font-size:16px;color:var(--color-text-warning);" aria-hidden="true"></i>
+        <div><div class="card-title">Tiếp theo...</div><div class="card-sub">shared + public + config</div></div>
+      </div>
+      <div class="card-body">
+        <div class="tree">
+          <span class="tf"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> features/ (tiếp)</span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> subscribers/</span></span>
+          <span class="ti3"><span class="html">subscriber-list.component.ts</span></span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> settings/</span></span>
+          <span class="ti3"><span class="html">appearance.component.ts</span></span>
+          <span class="ti3"><span class="html">billing.component.ts</span></span>
+          <span class="ti3"><span class="html">custom-domain.component.ts</span></span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> widget/</span></span>
+          <span class="ti3"><span class="html">widget-setup.component.ts</span></span>
+          <br>
+          <span class="tf"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> shared/</span>
+          <span class="ti2 cmt">— reusable components</span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> components/</span></span>
+          <span class="ti3"><span class="html">button.component.ts</span></span>
+          <span class="ti3"><span class="html">badge.component.ts</span></span>
+          <span class="ti3"><span class="html">empty-state.component.ts</span></span>
+          <span class="ti3"><span class="html">confirm-dialog.component.ts</span></span>
+          <span class="ti2"><span class="tf"><i class="ti ti-folder" style="font-size:12px;" aria-hidden="true"></i> layout/</span></span>
+          <span class="ti3"><span class="html">sidebar.component.ts</span></span>
+          <span class="ti3"><span class="html">topbar.component.ts</span></span>
+          <span class="ti3"><span class="html">app-shell.component.ts</span></span>
+          <br>
+          <span class="tf"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> public/</span>
+          <span class="ti2 cmt">— public changelog page (SSR)</span>
+          <span class="ti2"><span class="html">changelog-page.component.ts</span></span>
+          <span class="ti2"><span class="html">entry-card.component.ts</span></span>
+          <br>
+          <span class="ts">app.routes.ts</span><br>
+          <span class="ts">app.config.ts</span><br>
+          <span class="html">app.component.ts</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card full">
+      <div class="card-head">
+        <i class="ti ti-arrow-right" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i>
+        <div><div class="card-title">Data flow — luồng dữ liệu</div></div>
+      </div>
+      <div>
+        <div class="flow-row">
+          <div class="flow-box" style="background:var(--color-background-info);color:var(--color-text-info);">Component</div>
+          <span class="flow-arr">→</span>
+          <div class="flow-box" style="background:var(--color-background-warning);color:var(--color-text-warning);">Feature Service</div>
+          <span class="flow-arr">→</span>
+          <div class="flow-box" style="background:var(--color-background-success);color:var(--color-text-success);">ApiService</div>
+          <span class="flow-arr">→</span>
+          <div class="flow-box" style="background:var(--color-background-danger);color:var(--color-text-danger);">HttpClient + Interceptor</div>
+          <span class="flow-arr">→</span>
+          <div class="flow-box" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">.NET API</div>
+          <span class="flow-desc">JWT tự động gắn vào header qua AuthInterceptor</span>
+        </div>
+        <div class="flow-row">
+          <div class="flow-box" style="background:var(--color-background-info);color:var(--color-text-info);">Component</div>
+          <span class="flow-arr">→</span>
+          <div class="flow-box" style="background:var(--color-background-warning);color:var(--color-text-warning);">Signal / RxJS</div>
+          <span class="flow-arr">→</span>
+          <div class="flow-box" style="background:var(--color-background-info);color:var(--color-text-info);">UI cập nhật</div>
+          <span class="flow-desc">Dùng Angular Signals cho local state, BehaviorSubject cho shared state</span>
+        </div>
+        <div class="flow-row">
+          <div class="flow-box" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Route change</div>
+          <span class="flow-arr">→</span>
+          <div class="flow-box" style="background:var(--color-background-danger);color:var(--color-text-danger);">AuthGuard</div>
+          <span class="flow-arr">→</span>
+          <div class="flow-box" style="background:var(--color-background-warning);color:var(--color-text-warning);">PlanGuard</div>
+          <span class="flow-arr">→</span>
+          <div class="flow-box" style="background:var(--color-background-info);color:var(--color-text-info);">Component load</div>
+          <span class="flow-desc">Guard kiểm tra JWT còn hạn + plan có đủ quyền không</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CORE -->
+<div id="pane-core" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><span class="badge b-core">Core</span><div class="card-title" style="margin-left:6px;">auth.service.ts</div></div>
+      <div class="card-body">
+<pre><span class="dec">@Injectable</span>({ providedIn: <span class="str">'root'</span> })
+<span class="kw">export class</span> <span class="type">AuthService</span> {
+  <span class="kw">private</span> router = inject(<span class="type">Router</span>);
+  <span class="kw">private</span> api = inject(<span class="type">ApiService</span>);
+
+  <span class="cmt">// Angular Signal — reactive state</span>
+  currentUser = signal&lt;<span class="type">User</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+  isLoggedIn = computed(() =>
+    <span class="kw">this</span>.currentUser() !== <span class="kw">null</span>);
+
+  login(email: <span class="type">string</span>, password: <span class="type">string</span>) {
+    <span class="kw">return this</span>.api.post&lt;<span class="type">LoginResponse</span>&gt;(
+      <span class="str">'/auth/login'</span>, { email, password }
+    ).pipe(
+      tap(res => {
+        localStorage.setItem(<span class="str">'token'</span>, res.token);
+        <span class="kw">this</span>.currentUser.set(res.user);
+      })
+    );
+  }
+
+  logout() {
+    localStorage.removeItem(<span class="str">'token'</span>);
+    <span class="kw">this</span>.currentUser.set(<span class="kw">null</span>);
+    <span class="kw">this</span>.router.navigate([<span class="str">'/login'</span>]);
+  }
+
+  getToken(): <span class="type">string</span> | <span class="kw">null</span> {
+    <span class="kw">return</span> localStorage.getItem(<span class="str">'token'</span>);
+  }
+
+  initFromStorage() {
+    <span class="kw">const</span> token = <span class="kw">this</span>.getToken();
+    <span class="kw">if</span> (token) {
+      <span class="cmt">// Decode JWT payload để lấy user info</span>
+      <span class="kw">const</span> payload = <span class="type">JSON</span>.parse(
+        atob(token.split(<span class="str">'.'</span>)[1]));
+      <span class="kw">this</span>.currentUser.set(payload);
+    }
+  }
+}</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="badge b-core">Core</span><div class="card-title" style="margin-left:6px;">auth.interceptor.ts + api.service.ts</div></div>
+      <div class="card-body">
+<pre><span class="cmt">// auth.interceptor.ts — tự gắn JWT</span>
+<span class="kw">export const</span> authInterceptor: <span class="type">HttpInterceptorFn</span> =
+  (req, next) => {
+    <span class="kw">const</span> token = inject(<span class="type">AuthService</span>).getToken();
+    <span class="kw">if</span> (token) {
+      req = req.clone({
+        setHeaders: {
+          Authorization: <span class="str">`Bearer <span class="kw">${token}</span>`</span>
+        }
+      });
+    }
+    <span class="kw">return</span> next(req);
+  };
+
+<span class="cmt">// error.interceptor.ts — xử lý 401/403</span>
+<span class="kw">export const</span> errorInterceptor: <span class="type">HttpInterceptorFn</span> =
+  (req, next) => {
+    <span class="kw">return</span> next(req).pipe(
+      catchError(err => {
+        <span class="kw">if</span> (err.status === 401)
+          inject(<span class="type">AuthService</span>).logout();
+        <span class="kw">if</span> (err.status === 403)
+          inject(<span class="type">Router</span>).navigate([<span class="str">'/upgrade'</span>]);
+        <span class="kw">return</span> throwError(() => err);
+      })
+    );
+  };
+
+<span class="cmt">// api.service.ts — wrapper cho HttpClient</span>
+<span class="dec">@Injectable</span>({ providedIn: <span class="str">'root'</span> })
+<span class="kw">export class</span> <span class="type">ApiService</span> {
+  <span class="kw">private</span> http = inject(<span class="type">HttpClient</span>);
+  <span class="kw">private</span> base = environment.apiUrl;
+
+  get&lt;<span class="type">T</span>&gt;(path: <span class="type">string</span>) {
+    <span class="kw">return this</span>.http.get&lt;<span class="type">T</span>&gt;(
+      <span class="str">`<span class="kw">${this.base}</span><span class="kw">${path}</span>`</span>);
+  }
+  post&lt;<span class="type">T</span>&gt;(path: <span class="type">string</span>, body: <span class="kw">unknown</span>) {
+    <span class="kw">return this</span>.http.post&lt;<span class="type">T</span>&gt;(
+      <span class="str">`<span class="kw">${this.base}</span><span class="kw">${path}</span>`</span>, body);
+  }
+  put&lt;<span class="type">T</span>&gt;(path: <span class="type">string</span>, body: <span class="kw">unknown</span>) {
+    <span class="kw">return this</span>.http.put&lt;<span class="type">T</span>&gt;(
+      <span class="str">`<span class="kw">${this.base}</span><span class="kw">${path}</span>`</span>, body);
+  }
+  delete&lt;<span class="type">T</span>&gt;(path: <span class="type">string</span>) {
+    <span class="kw">return this</span>.http.delete&lt;<span class="type">T</span>&gt;(
+      <span class="str">`<span class="kw">${this.base}</span><span class="kw">${path}</span>`</span>);
+  }
+}</pre>
+      </div>
+    </div>
+    <div class="card full">
+      <div class="card-head"><span class="badge b-core">Core</span><div class="card-title" style="margin-left:6px;">core/models/ — TypeScript interfaces</div></div>
+      <div class="card-body">
+<pre><span class="cmt">// entry.model.ts</span>
+<span class="kw">export interface</span> <span class="type">ChangelogEntry</span> {
+  id:          <span class="type">string</span>;
+  projectId:   <span class="type">string</span>;
+  title:       <span class="type">string</span>;
+  contentHtml: <span class="type">string</span>;
+  tags:        <span class="type">string</span>[];
+  status:      <span class="str">'draft'</span> | <span class="str">'published'</span>;
+  version?:    <span class="type">string</span>;
+  publishedAt?: <span class="type">string</span>;
+  createdAt:   <span class="type">string</span>;
+}
+
+<span class="kw">export interface</span> <span class="type">CreateEntryDto</span> {
+  projectId:   <span class="type">string</span>;
+  title:       <span class="type">string</span>;
+  contentHtml: <span class="type">string</span>;
+  tags:        <span class="type">string</span>[];
+  version?:    <span class="type">string</span>;
+}
+
+<span class="cmt">// project.model.ts</span>
+<span class="kw">export interface</span> <span class="type">Project</span> {
+  id:           <span class="type">string</span>;
+  name:         <span class="type">string</span>;
+  slug:         <span class="type">string</span>;
+  accentColor:  <span class="type">string</span>;
+  customDomain?: <span class="type">string</span>;
+  isPublic:     <span class="type">boolean</span>;
+  createdAt:    <span class="type">string</span>;
+}
+
+<span class="cmt">// user.model.ts</span>
+<span class="kw">export interface</span> <span class="type">User</span> {
+  id:       <span class="type">string</span>;
+  email:    <span class="type">string</span>;
+  fullName: <span class="type">string</span>;
+  plan:     <span class="str">'free'</span> | <span class="str">'pro'</span> | <span class="str">'team'</span>;
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div id="pane-features" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><span class="badge b-feat">Feature</span><div class="card-title" style="margin-left:6px;">entries.service.ts</div></div>
+      <div class="card-body">
+<pre><span class="dec">@Injectable</span>({ providedIn: <span class="str">'root'</span> })
+<span class="kw">export class</span> <span class="type">EntriesService</span> {
+  <span class="kw">private</span> api = inject(<span class="type">ApiService</span>);
+
+  <span class="cmt">// Signal-based state</span>
+  entries = signal&lt;<span class="type">ChangelogEntry</span>[]&gt;([]);
+  loading = signal(<span class="kw">false</span>);
+
+  loadEntries(projectId: <span class="type">string</span>) {
+    <span class="kw">this</span>.loading.set(<span class="kw">true</span>);
+    <span class="kw">return this</span>.api
+      .get&lt;<span class="type">ChangelogEntry</span>[]&gt;(
+        <span class="str">`/projects/<span class="kw">${projectId}</span>/entries`</span>)
+      .pipe(
+        tap(data => <span class="kw">this</span>.entries.set(data)),
+        finalize(() => <span class="kw">this</span>.loading.set(<span class="kw">false</span>))
+      );
+  }
+
+  createEntry(dto: <span class="type">CreateEntryDto</span>) {
+    <span class="kw">return this</span>.api
+      .post&lt;<span class="type">ChangelogEntry</span>&gt;(<span class="str">'/entries'</span>, dto)
+      .pipe(
+        tap(entry => <span class="kw">this</span>.entries.update(
+          list => [entry, ...list]))
+      );
+  }
+
+  publishEntry(id: <span class="type">string</span>) {
+    <span class="kw">return this</span>.api
+      .post(<span class="str">`/entries/<span class="kw">${id}</span>/publish`</span>, {})
+      .pipe(
+        tap(() => <span class="kw">this</span>.entries.update(list =>
+          list.map(e => e.id === id
+            ? { ...e, status: <span class="str">'published'</span> }
+            : e)
+        ))
+      );
+  }
+
+  deleteEntry(id: <span class="type">string</span>) {
+    <span class="kw">return this</span>.api.delete(<span class="str">`/entries/<span class="kw">${id}</span>`</span>)
+      .pipe(
+        tap(() => <span class="kw">this</span>.entries.update(
+          list => list.filter(e => e.id !== id)))
+      );
+  }
+}</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="badge b-feat">Feature</span><div class="card-title" style="margin-left:6px;">entry-editor.component.ts</div></div>
+      <div class="card-body">
+<pre><span class="dec">@Component</span>({
+  selector: <span class="str">'app-entry-editor'</span>,
+  standalone: <span class="kw">true</span>,
+  imports: [<span class="type">ReactiveFormsModule</span>, <span class="type">CommonModule</span>],
+  templateUrl: <span class="str">'./entry-editor.component.html'</span>
+})
+<span class="kw">export class</span> <span class="type">EntryEditorComponent</span> {
+  <span class="kw">private</span> svc = inject(<span class="type">EntriesService</span>);
+  <span class="kw">private</span> router = inject(<span class="type">Router</span>);
+  <span class="kw">private</span> route = inject(<span class="type">ActivatedRoute</span>);
+
+  saving = signal(<span class="kw">false</span>);
+  publishing = signal(<span class="kw">false</span>);
+
+  form = <span class="kw">new</span> <span class="type">FormGroup</span>({
+    title:       <span class="kw">new</span> <span class="type">FormControl</span>(<span class="str">''</span>,
+                   [<span class="type">Validators</span>.required]),
+    contentHtml: <span class="kw">new</span> <span class="type">FormControl</span>(<span class="str">''</span>,
+                   [<span class="type">Validators</span>.required]),
+    tags:        <span class="kw">new</span> <span class="type">FormControl</span>&lt;<span class="type">string</span>[]&gt;([]),
+    version:     <span class="kw">new</span> <span class="type">FormControl</span>(<span class="str">''</span>)
+  });
+
+  saveDraft() {
+    <span class="kw">if</span> (<span class="kw">this</span>.form.invalid) <span class="kw">return</span>;
+    <span class="kw">this</span>.saving.set(<span class="kw">true</span>);
+    <span class="kw">this</span>.svc.createEntry(<span class="kw">this</span>.form.value <span class="kw">as any</span>)
+      .subscribe({
+        next: (e) => <span class="kw">this</span>.router.navigate(
+          [<span class="str">'/entries'</span>, e.id]),
+        error: () => <span class="kw">this</span>.saving.set(<span class="kw">false</span>)
+      });
+  }
+
+  publish(entryId: <span class="type">string</span>) {
+    <span class="kw">this</span>.publishing.set(<span class="kw">true</span>);
+    <span class="kw">this</span>.svc.publishEntry(entryId)
+      .subscribe(() => <span class="kw">this</span>.publishing.set(<span class="kw">false</span>));
+  }
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHARED -->
+<div id="pane-shared" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><span class="badge b-shared">Shared</span><div class="card-title" style="margin-left:6px;">app-shell.component.ts</div></div>
+      <div class="card-body">
+<pre><span class="dec">@Component</span>({
+  selector: <span class="str">'app-shell'</span>,
+  standalone: <span class="kw">true</span>,
+  imports: [<span class="type">RouterOutlet</span>, <span class="type">SidebarComponent</span>,
+            <span class="type">TopbarComponent</span>],
+  template: <span class="str">`
+    &lt;div class="shell"&gt;
+      &lt;app-sidebar /&gt;
+      &lt;div class="main"&gt;
+        &lt;app-topbar /&gt;
+        &lt;main&gt;
+          &lt;router-outlet /&gt;
+        &lt;/main&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  `</span>
+})
+<span class="kw">export class</span> <span class="type">AppShellComponent</span> {}
+
+<span class="cmt">// badge.component.ts — dùng lại khắp nơi</span>
+<span class="dec">@Component</span>({
+  selector: <span class="str">'app-badge'</span>,
+  standalone: <span class="kw">true</span>,
+  template: <span class="str">`
+    &lt;span [class]="'badge badge-' + type()"&gt;
+      {{ label() }}
+    &lt;/span&gt;
+  `</span>
+})
+<span class="kw">export class</span> <span class="type">BadgeComponent</span> {
+  type = input&lt;<span class="str">'new'</span>|<span class="str">'fix'</span>|<span class="str">'improvement'</span>&gt;(<span class="str">'new'</span>);
+  label = input(<span class="str">''</span>);
+}
+
+<span class="cmt">// confirm-dialog.component.ts</span>
+<span class="dec">@Component</span>({
+  selector: <span class="str">'app-confirm-dialog'</span>,
+  standalone: <span class="kw">true</span>,
+  template: <span class="str">`
+    @if (visible()) {
+      &lt;div class="overlay"&gt;
+        &lt;div class="dialog"&gt;
+          &lt;p&gt;{{ message() }}&lt;/p&gt;
+          &lt;button (click)="confirm.emit()"&gt;Confirm&lt;/button&gt;
+          &lt;button (click)="visible.set(false)"&gt;Cancel&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    }
+  `</span>
+})
+<span class="kw">export class</span> <span class="type">ConfirmDialogComponent</span> {
+  visible = signal(<span class="kw">false</span>);
+  message = input(<span class="str">''</span>);
+  confirm = output();
+}</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="badge b-shared">Shared</span><div class="card-title" style="margin-left:6px;">public/changelog-page.component.ts</div></div>
+      <div class="card-body">
+<pre><span class="cmt">// Trang public — SEO với SSR</span>
+<span class="dec">@Component</span>({
+  selector: <span class="str">'app-changelog-page'</span>,
+  standalone: <span class="kw">true</span>,
+  imports: [<span class="type">CommonModule</span>, <span class="type">EntryCardComponent</span>],
+  templateUrl: <span class="str">'./changelog-page.component.html'</span>
+})
+<span class="kw">export class</span> <span class="type">ChangelogPageComponent</span>
+  <span class="kw">implements</span> <span class="type">OnInit</span> {
+
+  <span class="kw">private</span> route = inject(<span class="type">ActivatedRoute</span>);
+  <span class="kw">private</span> api = inject(<span class="type">ApiService</span>);
+  <span class="kw">private</span> meta = inject(<span class="type">Meta</span>);
+  <span class="kw">private</span> title = inject(<span class="type">Title</span>);
+
+  entries = signal&lt;<span class="type">ChangelogEntry</span>[]&gt;([]);
+  project = signal&lt;<span class="type">Project</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+  selectedTag = signal&lt;<span class="type">string</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+
+  filteredEntries = computed(() => {
+    <span class="kw">const</span> tag = <span class="kw">this</span>.selectedTag();
+    <span class="kw">if</span> (!tag) <span class="kw">return this</span>.entries();
+    <span class="kw">return this</span>.entries()
+      .filter(e => e.tags.includes(tag));
+  });
+
+  ngOnInit() {
+    <span class="kw">const</span> slug = <span class="kw">this</span>.route.snapshot
+      .params[<span class="str">'slug'</span>];
+
+    <span class="kw">this</span>.api.get&lt;<span class="type">PublicPageDto</span>&gt;(
+      <span class="str">`/public/<span class="kw">${slug}</span>/entries`</span>)
+      .subscribe(data => {
+        <span class="kw">this</span>.entries.set(data.entries);
+        <span class="kw">this</span>.project.set(data.project);
+        <span class="cmt">// SEO meta tags</span>
+        <span class="kw">this</span>.title.setTitle(
+          <span class="str">`<span class="kw">${data.project.name}</span> Changelog`</span>);
+        <span class="kw">this</span>.meta.updateTag({
+          name: <span class="str">'description'</span>,
+          content: <span class="str">`Latest updates for <span class="kw">${data.project.name}</span>`</span>
+        });
+      });
+  }
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROUTING -->
+<div id="pane-routing" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><span class="badge b-env">Routing</span><div class="card-title" style="margin-left:6px;">app.routes.ts</div></div>
+      <div class="card-body">
+<pre><span class="kw">export const</span> routes: <span class="type">Routes</span> = [
+  <span class="cmt">// Public routes — không cần login</span>
+  {
+    path: <span class="str">'login'</span>,
+    loadComponent: () => <span class="kw">import</span>(
+      <span class="str">'./features/auth/login.component'</span>)
+      .then(m => m.<span class="type">LoginComponent</span>)
+  },
+  {
+    path: <span class="str">'register'</span>,
+    loadComponent: () => <span class="kw">import</span>(
+      <span class="str">'./features/auth/register.component'</span>)
+      .then(m => m.<span class="type">RegisterComponent</span>)
+  },
+  <span class="cmt">// Public changelog page (SSR)</span>
+  {
+    path: <span class="str">'c/:slug'</span>,
+    loadComponent: () => <span class="kw">import</span>(
+      <span class="str">'./public/changelog-page.component'</span>)
+      .then(m => m.<span class="type">ChangelogPageComponent</span>)
+  },
+
+  <span class="cmt">// Protected routes — cần login</span>
+  {
+    path: <span class="str">''</span>,
+    component: <span class="type">AppShellComponent</span>,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: <span class="str">'dashboard'</span>,
+        loadComponent: () => <span class="kw">import</span>(
+          <span class="str">'./features/dashboard/dashboard.component'</span>)
+          .then(m => m.<span class="type">DashboardComponent</span>)
+      },
+      {
+        path: <span class="str">'entries'</span>,
+        loadComponent: () => <span class="kw">import</span>(
+          <span class="str">'./features/entries/entry-list.component'</span>)
+          .then(m => m.<span class="type">EntryListComponent</span>)
+      },
+      {
+        path: <span class="str">'entries/new'</span>,
+        loadComponent: () => <span class="kw">import</span>(
+          <span class="str">'./features/entries/entry-editor.component'</span>)
+          .then(m => m.<span class="type">EntryEditorComponent</span>)
+      },
+      {
+        path: <span class="str">'settings/billing'</span>,
+        loadComponent: () => <span class="kw">import</span>(
+          <span class="str">'./features/settings/billing.component'</span>)
+          .then(m => m.<span class="type">BillingComponent</span>)
+      },
+      { path: <span class="str">''</span>, redirectTo: <span class="str">'dashboard'</span>,
+        pathMatch: <span class="str">'full'</span> }
+    ]
+  },
+  { path: <span class="str">'**'</span>, redirectTo: <span class="str">'dashboard'</span> }
+];</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="badge b-env">Routing</span><div class="card-title" style="margin-left:6px;">auth.guard.ts + app.config.ts</div></div>
+      <div class="card-body">
+<pre><span class="cmt">// auth.guard.ts — kiểm tra đăng nhập</span>
+<span class="kw">export const</span> authGuard: <span class="type">CanActivateFn</span> =
+  (route, state) => {
+    <span class="kw">const</span> auth = inject(<span class="type">AuthService</span>);
+    <span class="kw">const</span> router = inject(<span class="type">Router</span>);
+
+    <span class="kw">if</span> (auth.isLoggedIn()) <span class="kw">return true</span>;
+
+    <span class="kw">return</span> router.createUrlTree([<span class="str">'/login'</span>],
+      { queryParams: { returnUrl: state.url } });
+  };
+
+<span class="cmt">// plan.guard.ts — kiểm tra Pro/Team plan</span>
+<span class="kw">export const</span> planGuard = (
+  required: <span class="str">'pro'</span> | <span class="str">'team'</span>
+): <span class="type">CanActivateFn</span> => () => {
+  <span class="kw">const</span> user = inject(<span class="type">AuthService</span>).currentUser();
+  <span class="kw">if</span> (!user) <span class="kw">return false</span>;
+  <span class="kw">const</span> plans = { free: 0, pro: 1, team: 2 };
+  <span class="kw">return</span> plans[user.plan] >= plans[required]
+    || inject(<span class="type">Router</span>).createUrlTree([<span class="str">'/upgrade'</span>]);
+};
+
+<span class="cmt">// app.config.ts — bootstrap config</span>
+<span class="kw">export const</span> appConfig: <span class="type">ApplicationConfig</span> = {
+  providers: [
+    provideRouter(routes,
+      withComponentInputBinding(),
+      withViewTransitions()),
+
+    provideHttpClient(
+      withInterceptors([
+        authInterceptor,
+        errorInterceptor
+      ])),
+
+    <span class="cmt">// SSR support cho public pages</span>
+    provideClientHydration(),
+
+    provideAnimationsAsync()
+  ]
+};</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATE -->
+<div id="pane-state" class="pane">
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><span class="badge b-env">State</span><div class="card-title" style="margin-left:6px;">project.service.ts — active project</div></div>
+      <div class="card-body">
+<pre><span class="dec">@Injectable</span>({ providedIn: <span class="str">'root'</span> })
+<span class="kw">export class</span> <span class="type">ProjectService</span> {
+  <span class="kw">private</span> api = inject(<span class="type">ApiService</span>);
+
+  <span class="cmt">// Global state — project đang chọn</span>
+  projects = signal&lt;<span class="type">Project</span>[]&gt;([]);
+  activeProject = signal&lt;<span class="type">Project</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+
+  <span class="cmt">// Computed values</span>
+  activeProjectId = computed(() =>
+    <span class="kw">this</span>.activeProject()?.id);
+
+  canAddProject = computed(() => {
+    <span class="kw">const</span> user = inject(<span class="type">AuthService</span>).currentUser();
+    <span class="kw">const</span> count = <span class="kw">this</span>.projects().length;
+    <span class="kw">if</span> (user?.plan === <span class="str">'team'</span>) <span class="kw">return true</span>;
+    <span class="kw">if</span> (user?.plan === <span class="str">'pro'</span>) <span class="kw">return</span> count < 3;
+    <span class="kw">return</span> count < 1; <span class="cmt">// free: 1 project</span>
+  });
+
+  loadProjects() {
+    <span class="kw">return this</span>.api.get&lt;<span class="type">Project</span>[]&gt;(<span class="str">'/projects'</span>)
+      .pipe(
+        tap(data => {
+          <span class="kw">this</span>.projects.set(data);
+          <span class="kw">if</span> (data.length > 0 &&
+              !<span class="kw">this</span>.activeProject())
+            <span class="kw">this</span>.activeProject.set(data[0]);
+        })
+      );
+  }
+
+  setActive(project: <span class="type">Project</span>) {
+    <span class="kw">this</span>.activeProject.set(project);
+  }
+
+  createProject(name: <span class="type">string</span>, slug: <span class="type">string</span>) {
+    <span class="kw">return this</span>.api
+      .post&lt;<span class="type">Project</span>&gt;(<span class="str">'/projects'</span>, { name, slug })
+      .pipe(
+        tap(p => <span class="kw">this</span>.projects.update(
+          list => [...list, p]))
+      );
+  }
+}</pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="badge b-env">Config</span><div class="card-title" style="margin-left:6px;">environment + angular.json</div></div>
+      <div class="card-body">
+<pre><span class="cmt">// environments/environment.ts</span>
+<span class="kw">export const</span> environment = {
+  production: <span class="kw">false</span>,
+  apiUrl: <span class="str">'http://localhost:5000/api'</span>
+};
+
+<span class="cmt">// environments/environment.prod.ts</span>
+<span class="kw">export const</span> environment = {
+  production: <span class="kw">true</span>,
+  apiUrl: <span class="str">'https://api.changelogapp.io/api'</span>
+};
+
+<span class="cmt">// package.json — scripts quan trọng</span>
+{
+  <span class="str">"scripts"</span>: {
+    <span class="str">"start"</span>:     <span class="str">"ng serve"</span>,
+    <span class="str">"build"</span>:     <span class="str">"ng build"</span>,
+    <span class="str">"build:ssr"</span>: <span class="str">"ng build --ssr"</span>,
+    <span class="str">"test"</span>:      <span class="str">"ng test"</span>
+  }
+}
+
+<span class="cmt">// Cài đặt ban đầu:</span>
+<span class="cmt">// ng new changelog-app --standalone</span>
+<span class="cmt">//   --routing --style=scss --ssr</span>
+<span class="cmt">// npm install @stripe/stripe-js</span>
+<span class="cmt">// npm install quill ngx-quill</span>
+
+<span class="cmt">// Lệnh generate nhanh:</span>
+<span class="cmt">// ng g c features/dashboard/dashboard</span>
+<span class="cmt">//   --standalone --skip-tests</span>
+<span class="cmt">// ng g s core/auth/auth --skip-tests</span></pre>
+      </div>
+    </div>
+    <div class="card full">
+      <div class="card-head"><span class="badge b-feat">Feature</span><div class="card-title" style="margin-left:6px;">billing.component.ts — tích hợp Stripe Checkout</div></div>
+      <div class="card-body">
+<pre><span class="dec">@Component</span>({ selector: <span class="str">'app-billing'</span>, standalone: <span class="kw">true</span>, ... })
+<span class="kw">export class</span> <span class="type">BillingComponent</span> {
+  <span class="kw">private</span> api = inject(<span class="type">ApiService</span>);
+  loading = signal(<span class="kw">false</span>);
+
+  checkout(priceId: <span class="type">string</span>) {
+    <span class="kw">this</span>.loading.set(<span class="kw">true</span>);
+    <span class="kw">this</span>.api.post&lt;{ url: <span class="type">string</span> }&gt;(
+      <span class="str">'/billing/checkout'</span>, { priceId })
+      .subscribe({
+        next: (res) => {
+          <span class="cmt">// Redirect sang Stripe Checkout page</span>
+          window.location.href = res.url;
+        },
+        error: () => <span class="kw">this</span>.loading.set(<span class="kw">false</span>)
+      });
+  }
+
+  openPortal() {
+    <span class="kw">this</span>.api.get&lt;{ url: <span class="type">string</span> }&gt;(<span class="str">'/billing/portal'</span>)
+      .subscribe(res => window.location.href = res.url);
+  }
+}
+<span class="cmt">// Template dùng trong billing.component.html:</span>
+<span class="cmt">// &lt;button (click)="checkout(proPriceId)"&gt;Upgrade to Pro — $9/mo&lt;/button&gt;</span>
+<span class="cmt">// &lt;button (click)="openPortal()"&gt;Manage subscription&lt;/button&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(name){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+name).classList.add('active');
+  const idx=['structure','core','features','shared','routing','state'].indexOf(name);
+  document.querySelectorAll('.nb')[idx].classList.add('active');
+}
+</script>
+
+</body>
+</html>

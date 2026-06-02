@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Changelog SaaS — Architecture & Database</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ee;
+    --surface: #fffefb;
+    --card: #ffffff;
+    --border: #e2ddd4;
+    --ink: #1a1714;
+    --muted: #8a8070;
+    --accent: #c84b2f;
+    --accent2: #2f6ec8;
+    --accent3: #2a9e5c;
+    --yellow: #d97706;
+    --purple: #7c3aed;
+    --shadow: 0 1px 4px rgba(26,23,20,0.08), 0 4px 16px rgba(26,23,20,0.05);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Subtle dot grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, #c5bfb0 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--border);
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    max-width: 420px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 9px 16px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    background: var(--card);
+    color: var(--ink);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Header */
+  .page-header {
+    margin-bottom: 40px;
+    animation: fadeIn 0.5s ease both;
+  }
+
+  .page-header h1 {
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .page-header p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .tag-pill {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-right: 6px;
+    margin-bottom: 14px;
+  }
+  .tag-net { background: #dbeafe; color: #1d4ed8; }
+  .tag-ng  { background: #fee2e2; color: #b91c1c; }
+  .tag-pg  { background: #d1fae5; color: #065f46; }
+
+  /* Section label */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after { content: ''; flex:1; height:1px; background: var(--border); }
+
+  /* Architecture diagram */
+  .arch-diagram {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 32px;
+    animation: fadeIn 0.5s 0.1s ease both;
+    overflow-x: auto;
+  }
+
+  .arch-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 540px;
+  }
+
+  .arch-layer {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .layer-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    min-width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .layer-boxes {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .box {
+    flex: 1;
+    min-width: 100px;
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1.5px solid;
+    position: relative;
+  }
+
+  .box-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .box-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    opacity: 0.7;
+    line-height: 1.5;
+  }
+
+  .box-client { background: #fff7ed; border-color: #fed7aa; }
+  .box-client .box-title { color: #c2410c; }
+
+  .box-api { background: #eff6ff; border-color: #bfdbfe; }
+  .box-api .box-title { color: #1d4ed8; }
+
+  .box-service { background: #f0fdf4; border-color: #bbf7d0; }
+  .box-service .box-title { color: #15803d; }
+
+  .box-infra { background: #faf5ff; border-color: #e9d5ff; }
+  .box-infra .box-title { color: #7c3aed; }
+
+  .box-ext { background: #fefce8; border-color: #fde68a; }
+  .box-ext .box-title { color: #b45309; }
+
+  .arch-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--muted);
+    font-size: 18px;
+    padding: 2px 0;
+  }
+
+  /* Flow section */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+    animation: fadeIn 0.5s 0.15s ease both;
+  }
+
+  .flow-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+
+  .flow-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .flow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .flow-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13px;
+    color: #3a3530;
+    line-height: 1.5;
+  }
+
+  .flow-step:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* API Endpoints */
+  .endpoint-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+    animation: fadeIn 0.5s 0.2s ease both;
+  }
+
+  .endpoint {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .method {
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 48px;
+    text-align: center;
+  }
+  .get    { background: #d1fae5; color: #065f46; }
+  .post   { background: #dbeafe; color: #1e40af; }
+  .put    { background: #fef3c7; color: #92400e; }
+  .delete { background: #fee2e2; color: #991b1b; }
+
+  .ep-path { color: var(--ink); flex: 1; }
+  .ep-desc { font-family: 'Cabinet Grotesk', sans-serif; font-size: 12px; color: var(--muted); }
+
+  /* ============ DATABASE SCHEMA ============ */
+  .schema-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .table-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    animation: fadeIn 0.5s ease both;
+  }
+
+  .table-card:nth-child(1) { animation-delay: 0.05s; }
+  .table-card:nth-child(2) { animation-delay: 0.10s; }
+  .table-card:nth-child(3) { animation-delay: 0.15s; }
+  .table-card:nth-child(4) { animation-delay: 0.20s; }
+  .table-card:nth-child(5) { animation-delay: 0.25s; }
+  .table-card:nth-child(6) { animation-delay: 0.30s; }
+
+  .table-header {
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+  }
+
+  .table-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .table-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  .field-list {
+    padding: 8px 0;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    align-items: center;
+    padding: 7px 18px;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    border-bottom: 1px solid rgba(226,221,212,0.5);
+    transition: background 0.15s;
+  }
+
+  .field-row:last-child { border-bottom: none; }
+  .field-row:hover { background: rgba(0,0,0,0.02); }
+
+  .field-name { color: var(--ink); font-weight: 500; }
+  .field-name.pk { color: var(--accent); }
+  .field-name.fk { color: var(--accent2); }
+
+  .field-type {
+    color: var(--accent3);
+    font-size: 10px;
+  }
+
+  .field-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-pk { background: #fee2e2; color: #b91c1c; }
+  .badge-fk { background: #dbeafe; color: #1d4ed8; }
+  .badge-idx { background: #f0fdf4; color: #15803d; }
+  .badge-uni { background: #faf5ff; color: #7c3aed; }
+  .badge-null { background: #f9fafb; color: #9ca3af; }
+
+  /* ERD Relations */
+  .erd-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+    animation: fadeIn 0.5s 0.35s ease both;
+  }
+
+  .erd-relations {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .rel-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 8px;
+  }
+
+  .rel-table {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .rel-arrow {
+    color: var(--muted);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .rel-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--border);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .rel-desc { font-size: 12px; color: var(--muted); flex: 1; }
+
+  /* SQL snippet */
+  .sql-block {
+    background: #1a1714;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 32px;
+    overflow-x: auto;
+    animation: fadeIn 0.5s 0.4s ease both;
+  }
+
+  .sql-block pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #e8e3dc;
+  }
+
+  .sql-kw { color: #c084fc; }
+  .sql-type { color: #6ee7b7; }
+  .sql-str { color: #fbbf24; }
+  .sql-comment { color: #6b7280; font-style: italic; }
+  .sql-table { color: #93c5fd; }
+  .sql-const { color: #f87171; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .flow-grid { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 120px 1fr; }
+    .field-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <span class="tag-pill tag-net">.NET 8</span>
+    <span class="tag-pill tag-ng">Angular 17</span>
+    <span class="tag-pill tag-pg">PostgreSQL</span>
+    <h1>Kiến trúc kỹ thuật &<br>Database Schema</h1>
+    <p>Thiết kế hệ thống cho Changelog SaaS — tối ưu cho 1 developer, dễ scale về sau.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('arch')">🏗 Kiến trúc</button>
+    <button class="tab" onclick="switchTab('db')">🗄 Database</button>
+    <button class="tab" onclick="switchTab('api')">🔌 API</button>
+  </div>
+
+  <!-- ========== ARCHITECTURE TAB ========== -->
+  <div id="tab-arch" class="tab-content active">
+
+    <div class="section-label">Tổng quan hệ thống</div>
+    <div class="arch-diagram">
+      <div class="arch-layers">
+
+        <!-- Client layer -->
+        <div class="arch-layer">
+          <div class="layer-label">Client</div>
+          <div class="layer-boxes">
+            <div class="box box-client">
+              <div class="box-title">Angular 17 SPA</div>
+              <div class="box-sub">Dashboard / Settings<br>Viết changelog, quản lý</div>
+            </div>
+            <div class="box box-client">
+              <div class="box-title">Public Page</div>
+              <div class="box-sub">SSR (Angular Universal)<br>SEO-friendly changelog</div>
+            </div>
+            <div class="box box-client">
+              <div class="box-title">Embed Widget</div>
+              <div class="box-sub">1 dòng &lt;script&gt;<br>Nhúng vào app khách</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-arrow">↕</div>
+
+        <!-- API layer -->
+        <div class="arch-layer">
+          <div class="layer-label">API</div>
+          <div class="layer-boxes">
+            <div class="box box-api">
+              <div class="box-title">ASP.NET Core 8</div>
+              <div class="box-sub">Minimal API / Controllers<br>JWT Auth · Rate Limiting</div>
+            </div>
+            <div class="box box-api">
+              <div class="box-title">SignalR</div>
+              <div class="box-sub">Realtime notification<br>Widget live update</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-arrow">↕</div>
+
+        <!-- Service layer -->
+        <div class="arch-layer">
+          <div class="layer-label">Services</div>
+          <div class="layer-boxes">
+            <div class="box box-service">
+              <div class="box-title">ChangelogService</div>
+              <div class="box-sub">CRUD entries<br>Publish / Schedule</div>
+            </div>
+            <div class="box box-service">
+              <div class="box-title">EmailService</div>
+              <div class="box-sub">Resend API<br>Notify subscribers</div>
+            </div>
+            <div class="box box-service">
+              <div class="box-title">BillingService</div>
+              <div class="box-sub">Stripe Webhooks<br>Plan management</div>
+            </div>
+            <div class="box box-service">
+              <div class="box-title">WidgetService</div>
+              <div class="box-sub">Generate embed script<br>CDN cache</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-arrow">↕</div>
+
+        <!-- Infrastructure layer -->
+        <div class="arch-layer">
+          <div class="layer-label">Infra</div>
+          <div class="layer-boxes">
+            <div class="box box-infra">
+              <div class="box-title">PostgreSQL</div>
+              <div class="box-sub">Primary database<br>EF Core migrations</div>
+            </div>
+            <div class="box box-infra">
+              <div class="box-title">Redis</div>
+              <div class="box-sub">Cache widget HTML<br>Session store</div>
+            </div>
+            <div class="box box-infra">
+              <div class="box-title">Hangfire</div>
+              <div class="box-sub">Background jobs<br>Email queue</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-arrow">↕</div>
+
+        <!-- External services -->
+        <div class="arch-layer">
+          <div class="layer-label">External</div>
+          <div class="layer-boxes">
+            <div class="box box-ext">
+              <div class="box-title">Stripe</div>
+              <div class="box-sub">Billing & Subscriptions</div>
+            </div>
+            <div class="box box-ext">
+              <div class="box-title">Resend</div>
+              <div class="box-sub">Transactional Email</div>
+            </div>
+            <div class="box box-ext">
+              <div class="box-title">Cloudflare</div>
+              <div class="box-sub">CDN · Custom Domain</div>
+            </div>
+            <div class="box box-ext">
+              <div class="box-title">Railway</div>
+              <div class="box-sub">Hosting Deploy</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- User flows -->
+    <div class="section-label">Luồng người dùng chính</div>
+    <div class="flow-grid">
+
+      <div class="flow-card">
+        <div class="flow-title">✍️ Đăng & publish changelog</div>
+        <div class="flow-steps">
+          <div class="flow-step"><span class="step-num">1</span>User đăng nhập Dashboard (Angular)</div>
+          <div class="flow-step"><span class="step-num">2</span>Viết entry bằng rich text editor (Quill)</div>
+          <div class="flow-step"><span class="step-num">3</span>Chọn tag: New / Fix / Improvement</div>
+          <div class="flow-step"><span class="step-num">4</span>POST /api/entries → ChangelogService lưu DB</div>
+          <div class="flow-step"><span class="step-num">5</span>Hangfire queue → gửi email cho subscribers</div>
+          <div class="flow-step"><span class="step-num">6</span>Redis cache widget HTML được clear</div>
+        </div>
+      </div>
+
+      <div class="flow-card">
+        <div class="flow-title">🔔 Widget hiển thị trên app khách</div>
+        <div class="flow-steps">
+          <div class="flow-step"><span class="step-num">1</span>App khách load script: cdn.yourapp.com/widget.js</div>
+          <div class="flow-step"><span class="step-num">2</span>Widget gọi GET /api/widget/{projectSlug}</div>
+          <div class="flow-step"><span class="step-num">3</span>Redis trả cache HTML (< 10ms)</div>
+          <div class="flow-step"><span class="step-num">4</span>Hiển thị badge "3 updates mới"</div>
+          <div class="flow-step"><span class="step-num">5</span>User click → popup danh sách changelog</div>
+        </div>
+      </div>
+
+      <div class="flow-card">
+        <div class="flow-title">💳 Đăng ký trả phí</div>
+        <div class="flow-steps">
+          <div class="flow-step"><span class="step-num">1</span>User chọn plan trên Billing page</div>
+          <div class="flow-step"><span class="step-num">2</span>Redirect sang Stripe Checkout</div>
+          <div class="flow-step"><span class="step-num">3</span>Stripe gửi webhook → BillingService</div>
+          <div class="flow-step"><span class="step-num">4</span>DB cập nhật subscription plan</div>
+          <div class="flow-step"><span class="step-num">5</span>Unlock tính năng premium ngay lập tức</div>
+        </div>
+      </div>
+
+      <div class="flow-card">
+        <div class="flow-title">📧 Subscribe nhận email</div>
+        <div class="flow-steps">
+          <div class="flow-step"><span class="step-num">1</span>Visitor vào public changelog page</div>
+          <div class="flow-step"><span class="step-num">2</span>Nhập email vào form subscribe</div>
+          <div class="flow-step"><span class="step-num">3</span>POST /api/subscribers → gửi confirm email</div>
+          <div class="flow-step"><span class="step-num">4</span>Click confirm link → status = verified</div>
+          <div class="flow-step"><span class="step-num">5</span>Nhận email mỗi khi có update mới</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========== DATABASE TAB ========== -->
+  <div id="tab-db" class="tab-content">
+
+    <div class="section-label">Các bảng chính</div>
+    <div class="schema-grid">
+
+      <!-- Users -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-icon" style="background:#fee2e2">👤</div>
+          <div>
+            <div class="table-name">users</div>
+            <div class="table-desc">Tài khoản người dùng SaaS</div>
+          </div>
+        </div>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-badge badge-pk">PK</span></div>
+          <div class="field-row"><span class="field-name">email</span><span class="field-type">VARCHAR(255)</span><span class="field-badge badge-uni">UNI</span></div>
+          <div class="field-row"><span class="field-name">password_hash</span><span class="field-type">TEXT</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">full_name</span><span class="field-type">VARCHAR(100)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">avatar_url</span><span class="field-type">TEXT</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">plan</span><span class="field-type">ENUM(free,pro,team)</span><span class="field-badge badge-idx">IDX</span></div>
+          <div class="field-row"><span class="field-name">stripe_customer_id</span><span class="field-type">VARCHAR(100)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">email_verified_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-idx">IDX</span></div>
+        </div>
+      </div>
+
+      <!-- Projects -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-icon" style="background:#dbeafe">📦</div>
+          <div>
+            <div class="table-name">projects</div>
+            <div class="table-desc">Mỗi sản phẩm của khách hàng</div>
+          </div>
+        </div>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-badge badge-pk">PK</span></div>
+          <div class="field-row"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-badge badge-fk">FK</span></div>
+          <div class="field-row"><span class="field-name">name</span><span class="field-type">VARCHAR(100)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">slug</span><span class="field-type">VARCHAR(100)</span><span class="field-badge badge-uni">UNI</span></div>
+          <div class="field-row"><span class="field-name">custom_domain</span><span class="field-type">VARCHAR(255)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">logo_url</span><span class="field-type">TEXT</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">accent_color</span><span class="field-type">VARCHAR(7)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">is_public</span><span class="field-type">BOOLEAN</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">widget_position</span><span class="field-type">ENUM(bl,br,tl,tr)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-idx">IDX</span></div>
+        </div>
+      </div>
+
+      <!-- Entries -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-icon" style="background:#d1fae5">📝</div>
+          <div>
+            <div class="table-name">changelog_entries</div>
+            <div class="table-desc">Nội dung từng bản cập nhật</div>
+          </div>
+        </div>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-badge badge-pk">PK</span></div>
+          <div class="field-row"><span class="field-name fk">project_id</span><span class="field-type">UUID</span><span class="field-badge badge-fk">FK</span></div>
+          <div class="field-row"><span class="field-name">title</span><span class="field-type">VARCHAR(255)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">content_html</span><span class="field-type">TEXT</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">content_json</span><span class="field-type">JSONB</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">tags</span><span class="field-type">TEXT[]</span><span class="field-badge badge-idx">IDX</span></div>
+          <div class="field-row"><span class="field-name">status</span><span class="field-type">ENUM(draft,published)</span><span class="field-badge badge-idx">IDX</span></div>
+          <div class="field-row"><span class="field-name">version</span><span class="field-type">VARCHAR(20)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">published_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-idx">IDX</span></div>
+          <div class="field-row"><span class="field-name">email_sent_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-null">null</span></div>
+        </div>
+      </div>
+
+      <!-- Subscribers -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-icon" style="background:#faf5ff">📬</div>
+          <div>
+            <div class="table-name">subscribers</div>
+            <div class="table-desc">Email subscribe nhận thông báo</div>
+          </div>
+        </div>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-badge badge-pk">PK</span></div>
+          <div class="field-row"><span class="field-name fk">project_id</span><span class="field-type">UUID</span><span class="field-badge badge-fk">FK</span></div>
+          <div class="field-row"><span class="field-name">email</span><span class="field-type">VARCHAR(255)</span><span class="field-badge badge-idx">IDX</span></div>
+          <div class="field-row"><span class="field-name">status</span><span class="field-type">ENUM(pending,verified,unsubscribed)</span><span class="field-badge badge-idx">IDX</span></div>
+          <div class="field-row"><span class="field-name">confirm_token</span><span class="field-type">VARCHAR(64)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">confirmed_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">unsubscribe_token</span><span class="field-type">VARCHAR(64)</span><span class="field-badge badge-uni">UNI</span></div>
+          <div class="field-row"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-idx">IDX</span></div>
+        </div>
+      </div>
+
+      <!-- Subscriptions -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-icon" style="background:#fef3c7">💳</div>
+          <div>
+            <div class="table-name">subscriptions</div>
+            <div class="table-desc">Gói trả phí Stripe</div>
+          </div>
+        </div>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-badge badge-pk">PK</span></div>
+          <div class="field-row"><span class="field-name fk">user_id</span><span class="field-type">UUID</span><span class="field-badge badge-fk">FK</span></div>
+          <div class="field-row"><span class="field-name">stripe_sub_id</span><span class="field-type">VARCHAR(100)</span><span class="field-badge badge-uni">UNI</span></div>
+          <div class="field-row"><span class="field-name">plan</span><span class="field-type">ENUM(free,pro,team)</span><span class="field-badge badge-idx">IDX</span></div>
+          <div class="field-row"><span class="field-name">status</span><span class="field-type">ENUM(active,canceled,past_due)</span><span class="field-badge badge-idx">IDX</span></div>
+          <div class="field-row"><span class="field-name">current_period_end</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">cancel_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-null">null</span></div>
+        </div>
+      </div>
+
+      <!-- Email logs -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-icon" style="background:#ecfdf5">📨</div>
+          <div>
+            <div class="table-name">email_logs</div>
+            <div class="table-desc">Lịch sử email đã gửi</div>
+          </div>
+        </div>
+        <div class="field-list">
+          <div class="field-row"><span class="field-name pk">id</span><span class="field-type">UUID</span><span class="field-badge badge-pk">PK</span></div>
+          <div class="field-row"><span class="field-name fk">entry_id</span><span class="field-type">UUID</span><span class="field-badge badge-fk">FK</span></div>
+          <div class="field-row"><span class="field-name fk">subscriber_id</span><span class="field-type">UUID</span><span class="field-badge badge-fk">FK</span></div>
+          <div class="field-row"><span class="field-name">status</span><span class="field-type">ENUM(sent,failed,opened)</span><span class="field-badge badge-idx">IDX</span></div>
+          <div class="field-row"><span class="field-name">resend_message_id</span><span class="field-type">VARCHAR(100)</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">opened_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-null">null</span></div>
+          <div class="field-row"><span class="field-name">sent_at</span><span class="field-type">TIMESTAMP</span><span class="field-badge badge-idx">IDX</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Relations -->
+    <div class="section-label">Quan hệ giữa các bảng</div>
+    <div class="erd-section">
+      <div class="erd-relations">
+        <div class="rel-row">
+          <span class="rel-table">users</span>
+          <span class="rel-arrow">──1──▶──N──</span>
+          <span class="rel-table">projects</span>
+          <span class="rel-type">1:N</span>
+          <span class="rel-desc">1 user có nhiều projects (sản phẩm)</span>
+        </div>
+        <div class="rel-row">
+          <span class="rel-table">projects</span>
+          <span class="rel-arrow">──1──▶──N──</span>
+          <span class="rel-table">changelog_entries</span>
+          <span class="rel-type">1:N</span>
+          <span class="rel-desc">1 project có nhiều entries (bản cập nhật)</span>
+        </div>
+        <div class="rel-row">
+          <span class="rel-table">projects</span>
+          <span class="rel-arrow">──1──▶──N──</span>
+          <span class="rel-table">subscribers</span>
+          <span class="rel-type">1:N</span>
+          <span class="rel-desc">1 project có nhiều subscriber</span>
+        </div>
+        <div class="rel-row">
+          <span class="rel-table">users</span>
+          <span class="rel-arrow">──1──▶──1──</span>
+          <span class="rel-table">subscriptions</span>
+          <span class="rel-type">1:1</span>
+          <span class="rel-desc">1 user có 1 gói Stripe subscription</span>
+        </div>
+        <div class="rel-row">
+          <span class="rel-table">changelog_entries</span>
+          <span class="rel-arrow">──1──▶──N──</span>
+          <span class="rel-table">email_logs</span>
+          <span class="rel-type">1:N</span>
+          <span class="rel-desc">1 entry → nhiều email gửi cho từng subscriber</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SQL Sample -->
+    <div class="section-label">SQL mẫu — tạo bảng chính</div>
+    <div class="sql-block"><pre><span class="sql-comment">-- Tạo bảng projects</span>
+<span class="sql-kw">CREATE TABLE</span> <span class="sql-table">projects</span> (
+  id              UUID <span class="sql-kw">PRIMARY KEY DEFAULT</span> <span class="sql-type">gen_random_uuid</span>(),
+  user_id         UUID <span class="sql-kw">NOT NULL REFERENCES</span> <span class="sql-table">users</span>(id) <span class="sql-kw">ON DELETE CASCADE</span>,
+  name            <span class="sql-type">VARCHAR</span>(100) <span class="sql-kw">NOT NULL</span>,
+  slug            <span class="sql-type">VARCHAR</span>(100) <span class="sql-kw">NOT NULL UNIQUE</span>,
+  custom_domain   <span class="sql-type">VARCHAR</span>(255),
+  accent_color    <span class="sql-type">VARCHAR</span>(7) <span class="sql-kw">DEFAULT</span> <span class="sql-str">'#6366f1'</span>,
+  is_public       <span class="sql-type">BOOLEAN</span> <span class="sql-kw">DEFAULT</span> <span class="sql-const">true</span>,
+  created_at      <span class="sql-type">TIMESTAMPTZ</span> <span class="sql-kw">DEFAULT NOW</span>()
+);
+
+<span class="sql-comment">-- Tạo bảng changelog_entries</span>
+<span class="sql-kw">CREATE TABLE</span> <span class="sql-table">changelog_entries</span> (
+  id              UUID <span class="sql-kw">PRIMARY KEY DEFAULT</span> <span class="sql-type">gen_random_uuid</span>(),
+  project_id      UUID <span class="sql-kw">NOT NULL REFERENCES</span> <span class="sql-table">projects</span>(id) <span class="sql-kw">ON DELETE CASCADE</span>,
+  title           <span class="sql-type">VARCHAR</span>(255) <span class="sql-kw">NOT NULL</span>,
+  content_html    <span class="sql-type">TEXT</span>,
+  tags            <span class="sql-type">TEXT</span>[],
+  status          <span class="sql-type">VARCHAR</span>(20) <span class="sql-kw">DEFAULT</span> <span class="sql-str">'draft'</span>,
+  version         <span class="sql-type">VARCHAR</span>(20),
+  published_at    <span class="sql-type">TIMESTAMPTZ</span>,
+  email_sent_at   <span class="sql-type">TIMESTAMPTZ</span>,
+  created_at      <span class="sql-type">TIMESTAMPTZ</span> <span class="sql-kw">DEFAULT NOW</span>()
+);
+
+<span class="sql-comment">-- Index quan trọng</span>
+<span class="sql-kw">CREATE INDEX</span> idx_entries_project <span class="sql-kw">ON</span> <span class="sql-table">changelog_entries</span>(project_id, published_at <span class="sql-kw">DESC</span>);
+<span class="sql-kw">CREATE INDEX</span> idx_subscribers_project <span class="sql-kw">ON</span> <span class="sql-table">subscribers</span>(project_id, status);</pre></div>
+
+  </div>
+
+  <!-- ========== API TAB ========== -->
+  <div id="tab-api" class="tab-content">
+
+    <div class="section-label">Auth endpoints</div>
+    <div class="endpoint-list">
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/auth/register</span><span class="ep-desc">Đăng ký tài khoản mới</span></div>
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/auth/login</span><span class="ep-desc">Đăng nhập → trả JWT token</span></div>
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/auth/refresh</span><span class="ep-desc">Refresh access token</span></div>
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/auth/logout</span><span class="ep-desc">Invalidate refresh token</span></div>
+    </div>
+
+    <div class="section-label">Projects endpoints</div>
+    <div class="endpoint-list">
+      <div class="endpoint"><span class="method get">GET</span><span class="ep-path">/api/projects</span><span class="ep-desc">Danh sách projects của user</span></div>
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/projects</span><span class="ep-desc">Tạo project mới</span></div>
+      <div class="endpoint"><span class="method get">GET</span><span class="ep-path">/api/projects/{id}</span><span class="ep-desc">Chi tiết 1 project</span></div>
+      <div class="endpoint"><span class="method put">PUT</span><span class="ep-path">/api/projects/{id}</span><span class="ep-desc">Cập nhật settings project</span></div>
+      <div class="endpoint"><span class="method delete">DEL</span><span class="ep-path">/api/projects/{id}</span><span class="ep-desc">Xóa project</span></div>
+    </div>
+
+    <div class="section-label">Changelog entries endpoints</div>
+    <div class="endpoint-list">
+      <div class="endpoint"><span class="method get">GET</span><span class="ep-path">/api/projects/{id}/entries</span><span class="ep-desc">Danh sách entries (phân trang)</span></div>
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/projects/{id}/entries</span><span class="ep-desc">Tạo entry mới (draft)</span></div>
+      <div class="endpoint"><span class="method put">PUT</span><span class="ep-path">/api/entries/{id}</span><span class="ep-desc">Cập nhật nội dung entry</span></div>
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/entries/{id}/publish</span><span class="ep-desc">Publish + gửi email subscribers</span></div>
+      <div class="endpoint"><span class="method delete">DEL</span><span class="ep-path">/api/entries/{id}</span><span class="ep-desc">Xóa entry</span></div>
+    </div>
+
+    <div class="section-label">Public endpoints (không cần auth)</div>
+    <div class="endpoint-list">
+      <div class="endpoint"><span class="method get">GET</span><span class="ep-path">/api/public/{slug}/entries</span><span class="ep-desc">Lấy entries cho public page (SEO)</span></div>
+      <div class="endpoint"><span class="method get">GET</span><span class="ep-path">/api/widget/{slug}</span><span class="ep-desc">Lấy data cho embed widget (cached)</span></div>
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/public/{slug}/subscribe</span><span class="ep-desc">Đăng ký nhận email</span></div>
+      <div class="endpoint"><span class="method get">GET</span><span class="ep-path">/api/unsubscribe/{token}</span><span class="ep-desc">Hủy subscribe qua link email</span></div>
+      <div class="endpoint"><span class="method get">GET</span><span class="ep-path">/api/confirm/{token}</span><span class="ep-desc">Xác nhận email subscriber</span></div>
+    </div>
+
+    <div class="section-label">Billing endpoints</div>
+    <div class="endpoint-list">
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/billing/checkout</span><span class="ep-desc">Tạo Stripe Checkout session</span></div>
+      <div class="endpoint"><span class="method get">GET</span><span class="ep-path">/api/billing/portal</span><span class="ep-desc">Redirect sang Stripe Customer Portal</span></div>
+      <div class="endpoint"><span class="method post">POST</span><span class="ep-path">/api/webhooks/stripe</span><span class="ep-desc">Nhận webhook từ Stripe (public)</span></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['arch','db','api'][i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => {
+    c.classList.toggle('active', c.id === 'tab-' + name);
+  });
+}
+</script>
+</body>
+</html>

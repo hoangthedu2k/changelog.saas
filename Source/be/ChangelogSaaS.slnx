@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/ChangelogSaaS.API/">
+    <Project Path="ChangelogSaaS.API/ChangelogSaas.API.csproj" />
+  </Folder>
+  <Folder Name="/ChangelogSaaS.Application/">
+    <Project Path="ChangelogSaaS.Application/ChangelogSaas.Application.csproj" />
+  </Folder>
+  <Folder Name="/ChangelogSaaS.Domain/">
+    <Project Path="ChangelogSaaS.Domain/ChangelogSaas.Domain.csproj" />
+  </Folder>
+  <Folder Name="/ChangelogSaaS.Infrastructure/">
+    <Project Path="ChangelogSaaS.Infrastructure/ChangelogSaas.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Project Path="ChangelogSaas.Tests/ChangelogSaas.Tests.csproj" />
+</Solution>
