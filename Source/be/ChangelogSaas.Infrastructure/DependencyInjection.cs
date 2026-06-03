@@ -1,7 +1,6 @@
 using ChangelogSaas.Application.Interfaces;
 using ChangelogSaas.Infrastructure.Auth;
 using ChangelogSaas.Infrastructure.Persistence;
-using ChangelogSaas.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,14 +16,17 @@ namespace ChangelogSaas.Infrastructure
 
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseNpgsql(connectionString);
+                options.UseNpgsql(connectionString, npgsql =>
+                    npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)
+                          .MigrationsHistoryTable("__EFMigrationsHistory"));
             });
+
+            services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
             services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
 
             services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
             services.AddSingleton<ITokenService, JwtTokenService>();
-            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }

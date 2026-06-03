@@ -23,16 +23,41 @@ dotnet test
 dotnet test --filter "ClassName=EntryServiceTests"
 ```
 
-## Architecture — Clean Architecture 4 layers
+## Architecture — Clean Architecture 4 layers + CQRS (MediatR)
 
 ```
 ChangelogSaas.Domain/          # Entities, Enums, Exceptions — no dependencies
-ChangelogSaas.Application/     # Commands, Queries, Interfaces — depends Domain only
-ChangelogSaas.Infrastructure/  # EF, Services, Jobs — implements Application interfaces
+ChangelogSaas.Application/     # Commands/Queries (MediatR), Validators (FluentValidation), Interfaces — depends Domain only
+ChangelogSaas.Infrastructure/  # EF (AppDbContext : IAppDbContext), Services, Jobs — implements Application interfaces
 ChangelogSaas.API/             # Minimal API endpoints, Middleware, Program.cs
 ```
 
 Dependency flow: API → Application → Domain; Infrastructure → Application + Domain.
+
+### Use case pattern — CQRS + MediatR (KHÔNG dùng service-based)
+
+Mỗi use case = 1 folder gồm `Command/Query` + `Handler` + `Validator`. Đặt **toàn bộ ở Application**, không tạo service wrapper trong Infrastructure.
+
+```
+ChangelogSaas.Application/Auth/Commands/Register/
+  RegisterCommand.cs            # record : IRequest<TResponse>
+  RegisterCommandHandler.cs     # IRequestHandler — inject IAppDbContext, IPasswordHasher, ITokenService...
+  RegisterCommandValidator.cs   # AbstractValidator<RegisterCommand>
+```
+
+Handler dùng EF qua `IAppDbContext` (interface ở Application, `AppDbContext` ở Infrastructure implement). Không inject `AppDbContext` trực tiếp.
+
+`ValidationBehavior` đăng ký ở `ChangelogSaas.Application/Common/Behaviors/` — tự động chạy trước mọi handler, ném `Domain.Exceptions.ValidationException` khi fail (ExceptionMiddleware map sang 400).
+
+Endpoint chỉ gọi `ISender.Send`, không validate thủ công:
+```csharp
+g.MapPost("/register", async (RegisterCommand cmd, ISender sender, CancellationToken ct)
+    => Results.Ok(await sender.Send(cmd, ct)));
+```
+
+DI: `Program.cs` gọi `AddApplication()` (MediatR + Validators + ValidationBehavior) trước `AddInfrastructure()` (DbContext + auth services).
+
+**Ngoại lệ — khi nào ở Infrastructure**: chỉ dành cho adapter đụng trực tiếp thư viện ngoài (BCrypt, JWT, Stripe, Redis, SMTP). Expose interface ở Application, implement ở Infrastructure. Không đặt use case logic ở đây.
 
 ## Coding Rules — KHÔNG ĐƯỢC VI PHẠM
 
@@ -71,8 +96,10 @@ modelBuilder.Entity<Entry>().Property(e => e.Tags).HasColumnType("text[]"); // �
 public static class EntryEndpoints {
     public static IEndpointRouteBuilder MapEntryEndpoints(this IEndpointRouteBuilder app) {
         var g = app.MapGroup("/api/entries").RequireAuthorization();
-        g.MapGet("/", GetAll);
-        g.MapPost("/", Create);
+        g.MapGet("/", async (ISender sender, CancellationToken ct)
+            => Results.Ok(await sender.Send(new GetEntriesQuery(), ct)));
+        g.MapPost("/", async (CreateEntryCommand cmd, ISender sender, CancellationToken ct)
+            => Results.Ok(await sender.Send(cmd, ct)));
         return app;
     }
 }
@@ -94,11 +121,12 @@ xUnit với coverlet. Test project: `ChangelogSaas.Tests/`.
 
 ## Build Plan Progress
 
-Tiến độ hiện tại (2026-06-01):
+Tiến độ hiện tại (2026-06-03):
 - ✅ Tuần 1, Buổi 1–2: Solution setup, Domain entities, EF config
 - ✅ Tuần 1, Buổi 3: EF migrations applied + JWT auth (register/login/me, BCrypt, ExceptionMiddleware)
+- ✅ Tuần 1, Buổi 3.5: Refactor Auth sang CQRS + MediatR + FluentValidation (xoá `AuthService`, `IAuthService`)
 - ⬜ Tuần 1, Buổi 4–5: Angular setup + login UI + GitHub repo
-- ⬜ Tuần 2: CRUD API, Hangfire, Redis, Widget endpoint
+- ⬜ Tuần 2: Project/Entry CRUD theo pattern CQRS, Hangfire, Redis, Widget endpoint
 - ⬜ Tuần 5: Stripe billing + Resend email
 
 ## Skills

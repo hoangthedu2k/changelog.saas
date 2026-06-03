@@ -1,6 +1,7 @@
 using System.Text;
 using ChangelogSaas.API.Endpoints;
 using ChangelogSaas.API.Middleware;
+using ChangelogSaas.Application;
 using ChangelogSaas.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +12,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
                      .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                      .AddEnvironmentVariables();
 
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 

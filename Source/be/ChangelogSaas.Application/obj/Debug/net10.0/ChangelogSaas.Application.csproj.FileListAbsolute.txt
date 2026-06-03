@@ -15,3 +15,4 @@ C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Application\obj\Debug\n
 C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Application\bin\Debug\net10.0\ChangelogSaas.Domain.dll
 C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Application\bin\Debug\net10.0\ChangelogSaas.Domain.pdb
 C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Application\obj\Debug\net10.0\Changelo.E6139AA8.Up2Date
+C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Application\obj\Debug\net10.0\ChangelogSaas.Application.sourcelink.json

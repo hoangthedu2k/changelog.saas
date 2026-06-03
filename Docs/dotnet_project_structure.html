@@ -150,28 +150,37 @@ pre { background:var(--color-background-secondary); border:0.5px solid var(--col
 <br>
 <span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> ChangelogSaaS.Application/</span>
 <div class="tree-indent">
-<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Entries/</span>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Auth/Commands/</span>
 <div class="tree-indent">
-<span class="tree-file cs">CreateEntryCommand.cs</span><br>
-<span class="tree-file cs">PublishEntryCommand.cs</span><br>
-<span class="tree-file cs">GetEntriesQuery.cs</span>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Register/</span>
+<div class="tree-indent">
+<span class="tree-file cs">RegisterCommand.cs</span><br>
+<span class="tree-file cs">RegisterCommandHandler.cs</span><br>
+<span class="tree-file cs">RegisterCommandValidator.cs</span>
 </div>
-<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Subscribers/</span>
-<div class="tree-indent">
-<span class="tree-file cs">SubscribeCommand.cs</span><br>
-<span class="tree-file cs">ConfirmSubscriberCommand.cs</span>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Login/</span>
 </div>
-<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Billing/</span>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Entries/Commands + Queries/</span>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Subscribers/Commands/</span>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Billing/Commands/</span>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Common/</span>
 <div class="tree-indent">
-<span class="tree-file cs">CreateCheckoutCommand.cs</span><br>
-<span class="tree-file cs">HandleStripeWebhookCommand.cs</span>
+<span class="tree-file cs">AuthResult.cs</span><br>
+<span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Behaviors/</span>
+<div class="tree-indent">
+<span class="tree-file cs">ValidationBehavior.cs</span>
+</div>
 </div>
 <span class="tree-folder"><i class="ti ti-folder" style="font-size:13px;" aria-hidden="true"></i> Interfaces/</span>
 <div class="tree-indent">
+<span class="tree-file cs">IAppDbContext.cs</span><br>
+<span class="tree-file cs">IPasswordHasher.cs</span><br>
+<span class="tree-file cs">ITokenService.cs</span><br>
 <span class="tree-file cs">IEmailService.cs</span><br>
 <span class="tree-file cs">IBillingService.cs</span><br>
 <span class="tree-file cs">ICacheService.cs</span>
 </div>
+<span class="tree-file cs">DependencyInjection.cs</span>
 </div>
         </div>
       </div>
@@ -365,14 +374,16 @@ pre { background:var(--color-background-secondary); border:0.5px solid var(--col
     <div class="card">
       <div class="card-head"><span class="layer-badge l-app">Application</span><div class="card-title" style="margin-left:4px;">PublishEntryCommand.cs</div></div>
       <div class="card-body">
-<pre><span class="cmt">// Command + Handler trong 1 file (Vertical Slice)</span>
+<pre><span class="cmt">// MediatR CQRS — Command + Handler + Validator</span>
 
-<span class="kw">public record</span> <span class="type">PublishEntryCommand</span>(<span class="type">Guid</span> EntryId, <span class="type">Guid</span> UserId);
+<span class="kw">public record</span> <span class="type">PublishEntryCommand</span>(<span class="type">Guid</span> EntryId, <span class="type">Guid</span> UserId)
+    : <span class="type">IRequest</span>;
 
 <span class="kw">public class</span> <span class="type">PublishEntryHandler</span>(
-    <span class="type">AppDbContext</span> db,
+    <span class="type">IAppDbContext</span> db,
     <span class="type">IEmailService</span> email,
     <span class="type">ICacheService</span> cache)
+    : <span class="type">IRequestHandler</span>&lt;<span class="type">PublishEntryCommand</span>&gt;
 {
     <span class="kw">public async</span> <span class="type">Task</span> Handle(
         <span class="type">PublishEntryCommand</span> cmd,
@@ -388,11 +399,9 @@ pre { background:var(--color-background-secondary); border:0.5px solid var(--col
         entry.Publish(); <span class="cmt">// Domain logic</span>
         <span class="kw">await</span> db.SaveChangesAsync(ct);
 
-        <span class="cmt">// Queue email job (không block response)</span>
         <span class="type">BackgroundJob</span>.Enqueue&lt;<span class="type">SendEmailNotificationJob</span>&gt;(
             j => j.Execute(entry.Id));
 
-        <span class="cmt">// Xóa cache widget</span>
         <span class="kw">await</span> cache.RemoveAsync(
             <span class="str">$"widget:{entry.Project.Slug}"</span>);
     }
@@ -400,38 +409,25 @@ pre { background:var(--color-background-secondary); border:0.5px solid var(--col
       </div>
     </div>
     <div class="card">
-      <div class="card-head"><span class="layer-badge l-app">Application</span><div class="card-title" style="margin-left:4px;">Interfaces + CreateEntryCommand</div></div>
+      <div class="card-head"><span class="layer-badge l-app">Application</span><div class="card-title" style="margin-left:4px;">CreateEntryCommand + Validator</div></div>
       <div class="card-body">
-<pre><span class="cmt">// Interfaces/IEmailService.cs</span>
-<span class="kw">public interface</span> <span class="type">IEmailService</span>
+<pre><span class="cmt">// Interfaces/IAppDbContext.cs — abstract DbContext cho Application</span>
+<span class="kw">public interface</span> <span class="type">IAppDbContext</span>
 {
-    <span class="type">Task</span> SendChangelogNotificationAsync(
-        <span class="type">ChangelogEntry</span> entry,
-        <span class="type">IEnumerable</span>&lt;<span class="type">Subscriber</span>&gt; subscribers);
-
-    <span class="type">Task</span> SendConfirmEmailAsync(
-        <span class="type">string</span> email, <span class="type">string</span> confirmUrl);
-}
-
-<span class="cmt">// Interfaces/ICacheService.cs</span>
-<span class="kw">public interface</span> <span class="type">ICacheService</span>
-{
-    <span class="type">Task</span>&lt;<span class="type">T</span>?&gt; GetAsync&lt;<span class="type">T</span>&gt;(<span class="type">string</span> key);
-    <span class="type">Task</span> SetAsync&lt;<span class="type">T</span>&gt;(<span class="type">string</span> key, <span class="type">T</span> value,
-        <span class="type">TimeSpan</span>? expiry = <span class="kw">null</span>);
-    <span class="type">Task</span> RemoveAsync(<span class="type">string</span> key);
+    <span class="type">DbSet</span>&lt;<span class="type">ChangelogEntry</span>&gt; ChangelogEntries { <span class="kw">get</span>; }
+    <span class="type">DbSet</span>&lt;<span class="type">Project</span>&gt; Projects { <span class="kw">get</span>; }
+    <span class="type">Task</span>&lt;<span class="type">int</span>&gt; SaveChangesAsync(<span class="type">CancellationToken</span> ct = <span class="kw">default</span>);
 }
 
 <span class="cmt">// CreateEntryCommand.cs</span>
 <span class="kw">public record</span> <span class="type">CreateEntryCommand</span>(
-    <span class="type">Guid</span> ProjectId,
-    <span class="type">Guid</span> UserId,
-    <span class="type">string</span> Title,
-    <span class="type">string</span> ContentHtml,
-    <span class="type">List</span>&lt;<span class="type">string</span>&gt; Tags,
-    <span class="type">string</span>? Version);
+    <span class="type">Guid</span> ProjectId, <span class="type">Guid</span> UserId,
+    <span class="type">string</span> Title, <span class="type">string</span> ContentHtml,
+    <span class="type">List</span>&lt;<span class="type">string</span>&gt; Tags, <span class="type">string</span>? Version)
+    : <span class="type">IRequest</span>&lt;<span class="type">Guid</span>&gt;;
 
-<span class="kw">public class</span> <span class="type">CreateEntryHandler</span>(<span class="type">AppDbContext</span> db)
+<span class="kw">public class</span> <span class="type">CreateEntryHandler</span>(<span class="type">IAppDbContext</span> db)
+    : <span class="type">IRequestHandler</span>&lt;<span class="type">CreateEntryCommand</span>, <span class="type">Guid</span>&gt;
 {
     <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">Guid</span>&gt; Handle(
         <span class="type">CreateEntryCommand</span> cmd, <span class="type">CancellationToken</span> ct)
@@ -443,6 +439,17 @@ pre { background:var(--color-background-secondary); border:0.5px solid var(--col
         db.ChangelogEntries.Add(entry);
         <span class="kw">await</span> db.SaveChangesAsync(ct);
         <span class="kw">return</span> entry.Id;
+    }
+}
+
+<span class="cmt">// CreateEntryCommandValidator.cs — chạy tự động qua ValidationBehavior</span>
+<span class="kw">public class</span> <span class="type">CreateEntryCommandValidator</span>
+    : <span class="type">AbstractValidator</span>&lt;<span class="type">CreateEntryCommand</span>&gt;
+{
+    <span class="kw">public</span> <span class="type">CreateEntryCommandValidator</span>()
+    {
+        RuleFor(x => x.Title).NotEmpty().MaximumLength(200);
+        RuleFor(x => x.ContentHtml).NotEmpty();
     }
 }</pre>
       </div>
@@ -555,10 +562,11 @@ pre { background:var(--color-background-secondary); border:0.5px solid var(--col
       <div class="card-body">
 <pre><span class="kw">var</span> builder = <span class="type">WebApplication</span>.CreateBuilder(args);
 
-<span class="cmt">// Database</span>
-builder.Services.AddDbContext&lt;<span class="type">AppDbContext</span>&gt;(o =>
-    o.UseNpgsql(builder.Configuration
-        .GetConnectionString(<span class="str">"Postgres"</span>)));
+<span class="cmt">// Application — MediatR + FluentValidation + ValidationBehavior</span>
+builder.Services.AddApplication();
+
+<span class="cmt">// Infrastructure — DbContext + IAppDbContext, Auth, Email, Stripe, Cache</span>
+builder.Services.AddInfrastructure(builder.Configuration);
 
 <span class="cmt">// Auth — JWT</span>
 builder.Services
@@ -568,19 +576,14 @@ builder.Services
             ValidateIssuerSigningKey = <span class="kw">true</span>,
             IssuerSigningKey = <span class="kw">new</span> <span class="type">SymmetricSecurityKey</span>(
                 <span class="type">Encoding</span>.UTF8.GetBytes(
-                    builder.Configuration[<span class="str">"Jwt:Secret"</span>]!))
+                    builder.Configuration[<span class="str">"Jwt:Key"</span>]!))
         };
     });
-
-<span class="cmt">// Redis cache</span>
-builder.Services.AddStackExchangeRedisCache(o =>
-    o.Configuration = builder.Configuration
-        .GetConnectionString(<span class="str">"Redis"</span>));
 
 <span class="cmt">// Hangfire background jobs</span>
 builder.Services.AddHangfire(c => c
     .UsePostgreSqlStorage(builder.Configuration
-        .GetConnectionString(<span class="str">"Postgres"</span>)));
+        .GetConnectionString(<span class="str">"DefaultConnection"</span>)));
 builder.Services.AddHangfireServer();
 
 <span class="cmt">// Rate limiting</span>
@@ -590,15 +593,10 @@ builder.Services.AddRateLimiter(o =>
         w.PermitLimit = 60;
     }));
 
-<span class="cmt">// DI — services</span>
-builder.Services.AddScoped&lt;<span class="type">IEmailService</span>, <span class="type">EmailService</span>&gt;();
-builder.Services.AddScoped&lt;<span class="type">IBillingService</span>, <span class="type">StripeService</span>&gt;();
-builder.Services.AddSingleton&lt;<span class="type">ICacheService</span>, <span class="type">RedisCacheService</span>&gt;();
-
 <span class="kw">var</span> app = builder.Build();
+app.UseMiddleware&lt;<span class="type">ExceptionMiddleware</span>&gt;();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware&lt;<span class="type">ExceptionMiddleware</span>&gt;();
 
 <span class="cmt">// Map endpoints</span>
 app.MapAuthEndpoints();
@@ -612,7 +610,7 @@ app.Run();</pre>
     <div class="card">
       <div class="card-head"><span class="layer-badge l-api">API</span><div class="card-title" style="margin-left:4px;">EntryEndpoints.cs + WidgetEndpoints.cs</div></div>
       <div class="card-body">
-<pre><span class="cmt">// EntryEndpoints.cs — Minimal API</span>
+<pre><span class="cmt">// EntryEndpoints.cs — Minimal API + MediatR ISender</span>
 <span class="kw">public static class</span> <span class="type">EntryEndpoints</span>
 {
     <span class="kw">public static void</span> MapEntryEndpoints(
@@ -623,21 +621,21 @@ app.Run();</pre>
 
         g.MapPost(<span class="str">"/"</span>, <span class="kw">async</span> (
             <span class="type">CreateEntryCommand</span> cmd,
-            <span class="type">CreateEntryHandler</span> handler,
+            <span class="type">ISender</span> sender,
             <span class="type">CancellationToken</span> ct) =>
         {
-            <span class="kw">var</span> id = <span class="kw">await</span> handler.Handle(cmd, ct);
+            <span class="kw">var</span> id = <span class="kw">await</span> sender.Send(cmd, ct);
             <span class="kw">return</span> <span class="type">Results</span>.Created(<span class="str">$"/api/entries/{id}"</span>, id);
         });
 
         g.MapPost(<span class="str">"/{id}/publish"</span>, <span class="kw">async</span> (
             <span class="type">Guid</span> id,
             <span class="type">ClaimsPrincipal</span> user,
-            <span class="type">PublishEntryHandler</span> handler,
+            <span class="type">ISender</span> sender,
             <span class="type">CancellationToken</span> ct) =>
         {
-            <span class="kw">await</span> handler.Handle(
-                <span class="kw">new</span>(id, user.GetUserId()), ct);
+            <span class="kw">await</span> sender.Send(
+                <span class="kw">new</span> <span class="type">PublishEntryCommand</span>(id, user.GetUserId()), ct);
             <span class="kw">return</span> <span class="type">Results</span>.Ok();
         });
     }
@@ -682,6 +680,8 @@ app.Run();</pre>
       <div class="card-body" style="padding:0;">
         <div class="dep-row"><div><div class="dep-name">Npgsql.EntityFrameworkCore.PostgreSQL</div><div class="dep-desc">EF Core provider cho PostgreSQL</div></div><div class="dep-ver">9.x</div></div>
         <div class="dep-row"><div><div class="dep-name">Microsoft.AspNetCore.Authentication.JwtBearer</div><div class="dep-desc">JWT authentication</div></div><div class="dep-ver">8.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">MediatR</div><div class="dep-desc">CQRS — Command/Query dispatcher cho Application layer</div></div><div class="dep-ver">12.x</div></div>
+        <div class="dep-row"><div><div class="dep-name">FluentValidation.DependencyInjectionExtensions</div><div class="dep-desc">Validators auto-discover; chạy qua MediatR ValidationBehavior</div></div><div class="dep-ver">11.x</div></div>
         <div class="dep-row"><div><div class="dep-name">Stripe.net</div><div class="dep-desc">Stripe API client chính thức</div></div><div class="dep-ver">46.x</div></div>
         <div class="dep-row"><div><div class="dep-name">Hangfire.PostgreSql</div><div class="dep-desc">Background jobs, email queue</div></div><div class="dep-ver">1.x</div></div>
         <div class="dep-row"><div><div class="dep-name">Microsoft.Extensions.Caching.StackExchangeRedis</div><div class="dep-desc">Redis distributed cache</div></div><div class="dep-ver">8.x</div></div>

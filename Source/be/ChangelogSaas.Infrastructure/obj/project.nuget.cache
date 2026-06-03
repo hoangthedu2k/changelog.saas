@@ -1,11 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "5Nih0STxAu8=",
+  "dgSpecHash": "1elHrkpGJt0=",
   "success": true,
   "projectFilePath": "C:\\MyWork\\Personal\\ChangeLogSaaS\\Source\\be\\ChangelogSaaS.Infrastructure\\ChangelogSaas.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\admin\\.nuget\\packages\\bcrypt.net-next\\4.2.0\\bcrypt.net-next.4.2.0.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.11.0\\fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\mediatr\\12.4.1\\mediatr.12.4.1.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\microsoft.build.framework\\18.0.2\\microsoft.build.framework.18.0.2.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.11.0\\microsoft.codeanalysis.analyzers.3.11.0.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\microsoft.codeanalysis.common\\5.0.0\\microsoft.codeanalysis.common.5.0.0.nupkg.sha512",
