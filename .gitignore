@@ -6,3 +6,11 @@
 **/obj/
 /Source/be/ChangelogSaas.API/obj
 /Source/be/ChangelogSaas.API/bin
+/Source/be/ChangelogSaas.Application/bin
+/Source/be/ChangelogSaas.Application/obj
+/Source/be/ChangelogSaas.Domain/bin
+/Source/be/ChangelogSaas.Domain/obj
+/Source/be/ChangelogSaas.Infrastructure/bin
+/Source/be/ChangelogSaas.Infrastructure/obj
+/Source/be/ChangelogSaas.Tests/bin
+/Source/be/ChangelogSaas.Tests/obj
