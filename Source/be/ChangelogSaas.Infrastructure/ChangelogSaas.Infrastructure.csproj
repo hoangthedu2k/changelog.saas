@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\ChangelogSaaS.Application\ChangelogSaas.Application.csproj" />
-    <ProjectReference Include="..\ChangelogSaaS.Domain\ChangelogSaas.Domain.csproj" />
+    <Compile Remove="Persistence\Configurations\Migrations\**" />
+    <EmbeddedResource Remove="Persistence\Configurations\Migrations\**" />
+    <None Remove="Persistence\Configurations\Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Persistence\Configurations\Migrations\" />
+    <ProjectReference Include="..\ChangelogSaaS.Application\ChangelogSaas.Application.csproj" />
+    <ProjectReference Include="..\ChangelogSaaS.Domain\ChangelogSaas.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
