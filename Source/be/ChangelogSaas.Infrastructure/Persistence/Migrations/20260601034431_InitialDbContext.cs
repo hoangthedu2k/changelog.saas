@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ChangelogSaas.Infrastructure.Persistence.Configurations.Migrations
+namespace ChangelogSaas.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class InitialDbContext : Migration

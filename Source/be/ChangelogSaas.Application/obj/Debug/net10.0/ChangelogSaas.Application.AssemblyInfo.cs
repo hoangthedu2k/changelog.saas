@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ChangelogSaas.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ad7440defac3a73a328722ddb33882887887b2b0")]
 [assembly: System.Reflection.AssemblyProductAttribute("ChangelogSaas.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ChangelogSaas.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

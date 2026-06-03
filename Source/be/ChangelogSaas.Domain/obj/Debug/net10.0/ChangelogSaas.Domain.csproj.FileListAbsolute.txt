@@ -12,3 +12,4 @@ C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Domain\obj\Debug\net10.
 C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Domain\obj\Debug\net10.0\ChangelogSaas.Domain.pdb
 C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Domain\obj\Debug\net10.0\ChangelogSaas.Domain.genruntimeconfig.cache
 C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Domain\obj\Debug\net10.0\ref\ChangelogSaas.Domain.dll
+C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Domain\obj\Debug\net10.0\ChangelogSaas.Domain.sourcelink.json

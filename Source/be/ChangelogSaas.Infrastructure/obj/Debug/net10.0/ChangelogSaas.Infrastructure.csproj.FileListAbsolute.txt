@@ -17,3 +17,4 @@ C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Infrastructure\obj\Debu
 C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Infrastructure\obj\Debug\net10.0\ChangelogSaas.Infrastructure.pdb
 C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Infrastructure\obj\Debug\net10.0\ChangelogSaas.Infrastructure.genruntimeconfig.cache
 C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Infrastructure\obj\Debug\net10.0\ref\ChangelogSaas.Infrastructure.dll
+C:\MyWork\Personal\ChangeLogSaaS\Source\be\ChangelogSaaS.Infrastructure\obj\Debug\net10.0\ChangelogSaas.Infrastructure.sourcelink.json
