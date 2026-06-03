@@ -4,3 +4,5 @@
 # .NET build outputs
 **/bin/
 **/obj/
+/Source/be/ChangelogSaas.API/obj
+/Source/be/ChangelogSaas.API/bin
