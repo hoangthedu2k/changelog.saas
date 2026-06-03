@@ -1,4 +1,5 @@
-﻿using ChangelogSaas.Domain.Enums;
+using System.Text;
+using ChangelogSaas.Domain.Enums;
 
 namespace ChangelogSaas.Domain.Entities
 {
@@ -22,6 +23,29 @@ namespace ChangelogSaas.Domain.Entities
                 Slug = slug.ToLowerInvariant(),
                 CreatedAt = DateTime.UtcNow
             };
+        }
+
+        public static string Slugify(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return "";
+
+            var sb = new StringBuilder(name.Length);
+            var prevDash = false;
+            foreach (var c in name.Trim().ToLowerInvariant())
+            {
+                if (char.IsLetterOrDigit(c))
+                {
+                    sb.Append(c);
+                    prevDash = false;
+                }
+                else if (!prevDash && sb.Length > 0)
+                {
+                    sb.Append('-');
+                    prevDash = true;
+                }
+            }
+
+            return sb.ToString().TrimEnd('-');
         }
 
         public void UpdateSettings(string name, string color)
