@@ -1,8 +1,5 @@
-﻿using ChangelogSaas.Domain.Enums;
+using ChangelogSaas.Domain.Enums;
 using ChangelogSaas.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ChangelogSaas.Domain.Entities
 {
@@ -16,7 +13,6 @@ namespace ChangelogSaas.Domain.Entities
         public string? Version { get; private set; }
         public DateTime? PublishedAt { get; private set; }
 
-        // Factory method — không dùng constructor public
         public static ChangelogEntry Create(
             Guid projectId, string title, string html,
             List<string> tags, string? version)
@@ -32,6 +28,14 @@ namespace ChangelogSaas.Domain.Entities
                 Status = EntryStatus.Draft,
                 CreatedAt = DateTime.UtcNow
             };
+        }
+
+        public void UpdateContent(string title, string html, List<string> tags, string? version)
+        {
+            Title = title;
+            ContentHtml = html;
+            Tags = tags;
+            Version = version;
         }
 
         public void Publish()
