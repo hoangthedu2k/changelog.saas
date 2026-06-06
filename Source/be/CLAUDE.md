@@ -128,7 +128,7 @@ Tiến độ hiện tại (2026-06-05):
 - ⬜ Tuần 1, Buổi 4–5: Angular setup + login UI + GitHub repo
 - ✅ Tuần 2, Buổi 1–2: Project CRUD + Entry CRUD (CQRS pattern, Commands/Queries/Validators)
 - ✅ Tuần 2, Buổi 3: Widget public endpoint `GET /api/widget/{slug}` — no auth, tested end-to-end
-- ⬜ Tuần 2, Buổi 4: Redis caching (widget TTL 5 phút, invalidate on publish) + Hangfire setup
+- ✅ Tuần 2, Buổi 4: Redis caching (widget TTL 5 phút, invalidate on publish) + Hangfire setup
 - ⬜ Tuần 5: Stripe billing + Resend email
 
 ## Skills
