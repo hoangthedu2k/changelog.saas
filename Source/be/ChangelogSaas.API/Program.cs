@@ -3,6 +3,8 @@ using ChangelogSaas.API.Endpoints;
 using ChangelogSaas.API.Middleware;
 using ChangelogSaas.Application;
 using ChangelogSaas.Infrastructure;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -14,6 +16,14 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+var pgConn = builder.Configuration.GetConnectionString("DefaultConnection")!;
+builder.Services.AddHangfire(cfg => cfg
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UsePostgreSqlStorage(opts => opts.UseNpgsqlConnection(pgConn)));
+builder.Services.AddHangfireServer();
 builder.Services.AddEndpointsApiExplorer();
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
@@ -58,9 +68,12 @@ app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseHangfireDashboard("/hangfire");
+
 app.MapAuthEndpoints();
 app.MapProjectEndpoints();
 app.MapEntryEndpoints();
 app.MapWidgetEndpoints();
+app.MapSubscriberEndpoints();
 
 app.Run();
