@@ -1,6 +1,7 @@
 using ChangelogSaas.Application.Interfaces;
 using ChangelogSaas.Infrastructure.Auth;
 using ChangelogSaas.Infrastructure.Persistence;
+using ChangelogSaas.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,11 @@ namespace ChangelogSaas.Infrastructure
 
             services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
             services.AddSingleton<ITokenService, JwtTokenService>();
+
+            var redisConn = configuration.GetConnectionString("Redis")
+                ?? throw new InvalidOperationException("Connection string 'Redis' not found.");
+            services.AddStackExchangeRedisCache(opts => opts.Configuration = redisConn);
+            services.AddScoped<ICacheService, RedisCacheService>();
 
             return services;
         }
