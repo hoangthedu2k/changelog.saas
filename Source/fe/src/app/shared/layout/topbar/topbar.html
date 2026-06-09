@@ -1,1 +1,11 @@
-<p>topbar works!</p>
+<header class="topbar">
+  <div class="topbar__left">
+    <!-- project switcher sẽ implement ở buổi 2 -->
+  </div>
+  <div class="topbar__right">
+    @if (currentUser(); as user) {
+      <span class="topbar__email">{{ user.email }}</span>
+    }
+    <button class="topbar__logout" (click)="logout()">Logout</button>
+  </div>
+</header>
