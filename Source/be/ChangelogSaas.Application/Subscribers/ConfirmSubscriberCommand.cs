@@ -1,10 +1,1 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ChangelogSaas.Application.Subscribers
-{
-    internal class ConfirmSubscriberCommand
-    {
-    }
-}
+// Stub removed — see Commands/ConfirmSubscriberCommand/ConfirmSubscriberCommand.cs

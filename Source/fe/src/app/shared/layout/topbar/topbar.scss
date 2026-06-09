@@ -1,0 +1,44 @@
+.topbar {
+  height: 52px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-secondary);
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__email {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+
+  &__logout {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    background: transparent;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+    }
+  }
+}

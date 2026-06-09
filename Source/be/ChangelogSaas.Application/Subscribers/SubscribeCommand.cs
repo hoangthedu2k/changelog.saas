@@ -1,10 +1,1 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ChangelogSaas.Application.Subscribers
-{
-    internal class SubscribeCommand
-    {
-    }
-}
+// Stub removed — see Commands/SubscribeCommand/SubscribeCommand.cs

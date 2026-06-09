@@ -7,6 +7,7 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,8 @@ builder.Services.AddHangfire(cfg => cfg
     .UseRecommendedSerializerSettings()
     .UsePostgreSqlStorage(opts => opts.UseNpgsqlConnection(pgConn)));
 builder.Services.AddHangfireServer();
-builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddOpenApi();
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var jwtKey = jwtSection["Key"] ?? throw new InvalidOperationException("Jwt:Key is missing.");
@@ -69,6 +71,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHangfireDashboard("/hangfire");
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.WithTitle("ChangelogSaaS API");
+        options.WithDefaultHttpClient(ScalarTarget.Http, ScalarClient.HttpClient);
+    });
+}
 
 app.MapAuthEndpoints();
 app.MapProjectEndpoints();
