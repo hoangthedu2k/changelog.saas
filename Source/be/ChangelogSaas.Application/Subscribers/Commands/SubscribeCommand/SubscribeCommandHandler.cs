@@ -2,6 +2,7 @@ using ChangelogSaas.Application.Interfaces;
 using ChangelogSaas.Domain.Entities;
 using ChangelogSaas.Domain.Enums;
 using ChangelogSaas.Domain.Exceptions;
+using ChangelogSaas.Domain.Plans;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,10 +16,18 @@ namespace ChangelogSaas.Application.Subscribers.Commands.SubscribeCommand
 
         public async Task<string> Handle(SubscribeCommand request, CancellationToken cancellationToken)
         {
-            var projectExists = await _db.Projects
-                .AnyAsync(p => p.Id == request.ProjectId, cancellationToken);
-            if (!projectExists)
+            var project = await _db.Projects
+                .FirstOrDefaultAsync(p => p.Id == request.ProjectId, cancellationToken);
+            if (project is null)
                 throw new NotFoundException(nameof(Project), request.ProjectId);
+
+            var subscription = await _db.Subscriptions
+                .FirstOrDefaultAsync(s => s.UserId == project.UserId, cancellationToken);
+            var plan = subscription?.Plan ?? SubscriptionPlan.Free;
+            var subscriberCount = await _db.Subscribers
+                .CountAsync(s => s.ProjectId == request.ProjectId && s.Status == SubscriberStatus.Verified, cancellationToken);
+            if (subscriberCount >= PlanLimits.MaxSubscribers(plan))
+                throw new PlanLimitException($"This project has reached the subscriber limit for the {plan} plan. The owner must upgrade to accept more subscribers.");
 
             var email = request.Email.Trim().ToLowerInvariant();
 
@@ -29,7 +38,6 @@ namespace ChangelogSaas.Application.Subscribers.Commands.SubscribeCommand
             {
                 if (existing.Status == SubscriberStatus.Verified)
                     throw new DomainException("Email is already subscribed.");
-                // Pending: return the existing confirm token so they can resend
                 return existing.ConfirmToken!;
             }
 
