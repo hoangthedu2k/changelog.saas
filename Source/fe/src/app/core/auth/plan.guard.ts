@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { map, of } from 'rxjs';
+import { map } from 'rxjs';
 import { BillingService } from '../services/billing.service';
 
 export const planGuard: CanActivateFn = () => {
@@ -13,13 +13,14 @@ export const planGuard: CanActivateFn = () => {
 
   const sub = billing.subscription();
 
-  // Already loaded — check synchronously
+  const isBlocked = (s: { plan: string; trialDaysLeft: number }) =>
+    s.plan === 'Free' && s.trialDaysLeft === 0;
+
   if (sub !== null) {
-    return sub.plan === 'Free' ? redirect : true;
+    return isBlocked(sub) ? redirect : true;
   }
 
-  // Not loaded yet — fetch then check
   return billing.loadSubscription().pipe(
-    map(s => (s.plan === 'Free' ? redirect : true))
+    map(s => (isBlocked(s) ? redirect : true))
   );
 };

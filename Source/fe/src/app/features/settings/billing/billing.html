@@ -23,14 +23,19 @@
     @if (billing.subscription(); as sub) {
       <div class="billing__current">
         <span class="billing__current-label">Current plan:</span>
-        <span class="billing__current-plan">{{ sub.plan }}</span>
-        @if (sub.currentPeriodEnd) {
-          <span class="billing__current-period">
-            · renews {{ sub.currentPeriodEnd | date: 'mediumDate' }}
-          </span>
-        }
-        @if (sub.status === 'Canceled') {
-          <span class="billing__badge billing__badge--canceled">Canceled</span>
+        @if (billing.isTrial()) {
+          <span class="billing__current-plan">Free Trial</span>
+          <span class="billing__current-period">· {{ billing.trialDaysLeft() }} ngày còn lại</span>
+        } @else {
+          <span class="billing__current-plan">{{ sub.plan }}</span>
+          @if (sub.currentPeriodEnd) {
+            <span class="billing__current-period">
+              · renews {{ sub.currentPeriodEnd | date: 'mediumDate' }}
+            </span>
+          }
+          @if (sub.status === 'Canceled') {
+            <span class="billing__badge billing__badge--canceled">Canceled</span>
+          }
         }
       </div>
     }
@@ -65,7 +70,9 @@
               (click)="upgrade(plan.priceId, plan.id)"
               [disabled]="upgrading === plan.id"
             >
-              @if (upgrading === plan.id) { Redirecting… } @else { {{ plan.cta }} }
+              @if (upgrading === plan.id) { Redirecting… }
+              @else if (billing.isTrial()) { Upgrade · keep access after trial }
+              @else { {{ plan.cta }} }
             </button>
           } @else if (!plan.priceId && currentPlan === 'free') {
             <button class="billing__upgrade-btn billing__upgrade-btn--outline">
