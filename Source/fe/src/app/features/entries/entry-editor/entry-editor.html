@@ -1,1 +1,109 @@
-<p>entry-editor works!</p>
+@if (loading()) {
+  <div class="ee__loading">Loading...</div>
+} @else {
+  <div class="ee" [formGroup]="form">
+    <div class="ee__header">
+      <div class="ee__back">
+        <a routerLink="/app/entries" class="link">← Back to entries</a>
+      </div>
+      <div class="ee__actions">
+        <!-- Save Draft: only shown when not yet published -->
+        @if (!isPublished) {
+          <button
+            class="btn btn--ghost"
+            [disabled]="form.invalid || saving()"
+            (click)="saveDraft()">
+            {{ saving() ? 'Saving...' : (entryId() ? 'Save Draft' : 'Create Draft') }}
+          </button>
+        }
+
+        <!-- Publish & Notify: only shown when entry exists and not yet published -->
+        @if (entryId() && !isPublished) {
+          <button
+            class="btn btn--primary"
+            [disabled]="form.invalid || saving() || publishing()"
+            (click)="openPublishDialog()">
+            🚀 Publish & Notify
+          </button>
+        }
+
+        <!-- Published badge -->
+        @if (isPublished) {
+          <span class="badge badge--success">✓ Published</span>
+        }
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="ee__field">
+      <input
+        class="ee__title-input"
+        type="text"
+        placeholder="Entry title..."
+        formControlName="title"
+        [class.ee__title-input--error]="form.controls.title.invalid && form.controls.title.touched"
+      />
+      @if (form.controls.title.invalid && form.controls.title.touched) {
+        <span class="ee__error">Title is required</span>
+      }
+    </div>
+
+    <!-- Meta row: version + tags -->
+    <div class="ee__meta">
+      <div class="ee__meta-field">
+        <label class="ee__label">Version</label>
+        <input
+          class="ee__input ee__input--mono"
+          type="text"
+          placeholder="e.g. 1.2.0"
+          formControlName="version"
+        />
+      </div>
+
+      <div class="ee__meta-field ee__meta-field--tags">
+        <label class="ee__label">Tags</label>
+        <div class="ee__tags-wrap">
+          @for (tag of tags; track tag) {
+            <span class="ee__tag">
+              {{ tag }}
+              <button class="ee__tag-remove" type="button" (click)="removeTag(tag)">×</button>
+            </span>
+          }
+          <input
+            class="ee__tag-input"
+            type="text"
+            placeholder="Add tag, press Enter"
+            [value]="tagInput()"
+            (input)="tagInput.set($any($event.target).value)"
+            (keydown)="onTagKeydown($event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Rich text editor -->
+    <div class="ee__field">
+      <label class="ee__label">Content</label>
+      <quill-editor
+        class="ee__quill"
+        formControlName="contentHtml"
+        [modules]="quillModules"
+        placeholder="Write your changelog entry..."
+      />
+    </div>
+  </div>
+}
+
+<!-- Publish Confirm Dialog -->
+@if (showPublishDialog()) {
+  <app-confirm-dialog
+    title="Publish & Notify"
+    message="The entry will be published and cannot be reverted to Draft."
+    confirmLabel="Publish"
+    confirmClass="btn--primary"
+    [subscriberCount]="subscriberCount()"
+    [loading]="publishing()"
+    (confirmed)="confirmPublish()"
+    (cancelled)="closePublishDialog()"
+  />
+}

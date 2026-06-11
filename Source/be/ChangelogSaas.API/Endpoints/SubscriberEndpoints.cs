@@ -1,7 +1,9 @@
 using ChangelogSaas.Application.Subscribers.Commands.ConfirmSubscriberCommand;
 using ChangelogSaas.Application.Subscribers.Commands.SubscribeCommand;
 using ChangelogSaas.Application.Subscribers.Commands.UnsubscribeCommand;
+using ChangelogSaas.Application.Subscribers.Queries.GetSubscriberCountQuery;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChangelogSaas.API.Endpoints
 {
@@ -10,6 +12,12 @@ namespace ChangelogSaas.API.Endpoints
         public static IEndpointRouteBuilder MapSubscriberEndpoints(this IEndpointRouteBuilder app)
         {
             var g = app.MapGroup("/api/subscribers");
+
+            g.MapGet("/count", async ([FromQuery] Guid projectId, ISender sender, CancellationToken ct) =>
+            {
+                var count = await sender.Send(new GetSubscriberCountQuery(projectId), ct);
+                return Results.Ok(new { count });
+            }).RequireAuthorization();
 
             g.MapPost("/", async (SubscribeCommand cmd, ISender sender, CancellationToken ct)
                 => Results.Ok(new { confirmToken = await sender.Send(cmd, ct) }));

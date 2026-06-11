@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using MediatR;
 
 namespace ChangelogSaas.Application.Billing
 {
-    internal class CreateCheckoutCommand
-    {
-    }
+    public sealed record CreateCheckoutCommand(
+        Guid UserId,
+        string PriceId,
+        string SuccessUrl,
+        string CancelUrl) : IRequest<string>;
 }

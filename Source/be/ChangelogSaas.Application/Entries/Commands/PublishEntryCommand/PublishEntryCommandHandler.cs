@@ -23,13 +23,15 @@ namespace ChangelogSaas.Application.Entries.Commands.PublishEntryCommand
             if (entry is null)
                 throw new NotFoundException(nameof(ChangelogEntry), request.EntryId);
 
+            var project = await _db.Projects
+                .FindAsync(new object[] { entry.ProjectId }, cancellationToken);
+            if (project is null || project.UserId != request.UserId)
+                throw new NotFoundException(nameof(ChangelogEntry), request.EntryId);
+
             entry.Publish();
             await _db.SaveChangesAsync(cancellationToken);
 
-            var project = await _db.Projects
-                .FindAsync(new object[] { entry.ProjectId }, cancellationToken);
-            if (project is not null)
-                await _cache.RemoveAsync($"widget:{project.Slug}");
+            await _cache.RemoveAsync($"widget:{project.Slug}");
 
             return entry.Id;
         }

@@ -27,6 +27,7 @@ export class AuthService {
 
   logout() {
     if (this.isBrowser) localStorage.removeItem('token');
+    this.currentUser.set(null);
     this.route.navigate(['/login']);
   }
 
@@ -34,7 +35,9 @@ export class AuthService {
     if (!this.isBrowser) return;
     const token = localStorage.getItem('token');
     if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(atob(base64));
       this.currentUser.set({ id: payload.sub, email: payload.email, displayName: payload.name } as User);
     }
   }

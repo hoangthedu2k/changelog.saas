@@ -1,1 +1,69 @@
-<p>changelog-page works!</p>
+@if (loading()) {
+  <div class="cl-loading">Loading…</div>
+} @else if (error()) {
+  <div class="cl-error">{{ error() }}</div>
+} @else if (data(); as d) {
+  <div class="cl">
+    <!-- Header -->
+    <header class="cl__header">
+      <div class="cl__header-left">
+        <h1 class="cl__title">{{ d.projectName }} Changelog</h1>
+        <p class="cl__sub">Updates &amp; release notes</p>
+      </div>
+      <div class="cl__header-right">
+        <p class="cl__sub-label">Get notified of new updates</p>
+        <form class="cl__sub-form" (submit)="$event.preventDefault(); subscribe()">
+          <input
+            class="cl__sub-input"
+            type="email"
+            placeholder="your@email.com"
+            [formControl]="emailControl"
+          />
+          <button class="cl__sub-btn" type="submit" [disabled]="emailControl.invalid || subscribing()">
+            {{ subscribing() ? '…' : 'Subscribe' }}
+          </button>
+        </form>
+        @if (subscribeState() === 'success') {
+          <p class="cl__sub-ok">✓ Check your email to confirm</p>
+        }
+        @if (subscribeState() === 'error') {
+          <p class="cl__sub-err">Something went wrong, try again.</p>
+        }
+      </div>
+    </header>
+
+    <!-- Body -->
+    <div class="cl__body">
+      <!-- Sidebar filters -->
+      <aside class="cl__sidebar">
+        <p class="cl__filter-title">Filter</p>
+        <button
+          class="cl__filter-item"
+          [class.cl__filter-item--active]="activeTag() === '__all__'"
+          (click)="setTag('__all__')"
+        >
+          All updates
+        </button>
+        @for (tag of allTags(); track tag) {
+          <button
+            class="cl__filter-item"
+            [class.cl__filter-item--active]="activeTag() === tag"
+            (click)="setTag(tag)"
+          >
+            {{ tag }}
+          </button>
+        }
+      </aside>
+
+      <!-- Entries -->
+      <main class="cl__entries">
+        @if (filteredEntries().length === 0) {
+          <p class="cl__empty">No entries yet.</p>
+        }
+        @for (entry of filteredEntries(); track entry.id) {
+          <app-entry-card [entry]="entry" />
+        }
+      </main>
+    </div>
+  </div>
+}

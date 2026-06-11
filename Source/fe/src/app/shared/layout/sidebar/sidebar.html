@@ -1,11 +1,57 @@
 <nav class="sidebar">
+  <!-- Logo + Project switcher -->
   <div class="sidebar__logo">
-    <span class="sidebar__logo-icon">📋</span>
     <span class="sidebar__logo-text">Changelog</span>
+
+    @if (projectService.projects().length === 0) {
+      <a class="sidebar__logo-sub sidebar__logo-sub--empty" routerLink="/app/settings/project">
+        + Create project
+      </a>
+    } @else {
+      <button class="sidebar__project-btn" (click)="toggleDropdown()">
+        <span class="sidebar__project-name">{{ projectService.activeProject()?.name ?? 'Select project' }}</span>
+        <span class="sidebar__project-chevron" [class.sidebar__project-chevron--open]="dropdownOpen()">▾</span>
+      </button>
+
+      @if (dropdownOpen()) {
+        <div class="sidebar__project-dropdown">
+          @for (project of projectService.projects(); track project.id) {
+            <button
+              class="sidebar__project-option"
+              [class.sidebar__project-option--active]="project.id === projectService.activeProject()?.id"
+              (click)="selectProject(project)"
+            >
+              {{ project.name }}
+            </button>
+          }
+          <div class="sidebar__project-divider"></div>
+          <a class="sidebar__project-new" routerLink="/app/settings/project" [queryParams]="{mode: 'new'}" (click)="dropdownOpen.set(false)">
+            + New project
+          </a>
+        </div>
+      }
+    }
   </div>
 
   <ul class="sidebar__nav">
-    @for (item of navItems; track item.path) {
+    @for (item of mainNavItems; track item.path) {
+      <li>
+        <a
+          class="sidebar__link"
+          [routerLink]="item.path"
+          routerLinkActive="sidebar__link--active"
+        >
+          <span class="sidebar__link-icon">{{ item.icon }}</span>
+          <span>{{ item.label }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+
+  <div class="sidebar__section">Settings</div>
+
+  <ul class="sidebar__nav">
+    @for (item of settingsNavItems; track item.path) {
       <li>
         <a
           class="sidebar__link"

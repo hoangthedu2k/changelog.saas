@@ -1,6 +1,15 @@
 /Source/be/.vs
 /Source/fe/.vscode
 
+# Secrets — không commit keys thật
+appsettings.Secrets.json
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
+
+# Local test files
+widget-test.html
+
 # .NET build outputs
 **/bin/
 **/obj/

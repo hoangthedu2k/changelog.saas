@@ -1,13 +1,25 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from './auth.service';
+import { map, of } from 'rxjs';
+import { BillingService } from '../services/billing.service';
 
-const PLAN_RANK: Record<string, number> = { free: 0, pro: 1, team: 2 };
+export const planGuard: CanActivateFn = () => {
+  const billing = inject(BillingService);
+  const router = inject(Router);
 
-export const planGuard = (required: 'pro' | 'team'): CanActivateFn => () => {
-  const user = inject(AuthService).currentUser();
-  if (!user) return inject(Router).createUrlTree(['/login']);
+  const redirect = router.createUrlTree(['/app/settings/billing'], {
+    queryParams: { upgrade: true },
+  });
 
-  return (PLAN_RANK[user.plan===undefined ? 'free' : user.plan] ?? 0) >= PLAN_RANK[required]
-    || inject(Router).createUrlTree(['/upgrade']);
+  const sub = billing.subscription();
+
+  // Already loaded — check synchronously
+  if (sub !== null) {
+    return sub.plan === 'Free' ? redirect : true;
+  }
+
+  // Not loaded yet — fetch then check
+  return billing.loadSubscription().pipe(
+    map(s => (s.plan === 'Free' ? redirect : true))
+  );
 };

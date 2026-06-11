@@ -50,3 +50,62 @@ body {
   background: var(--color-bg-page);
   -webkit-font-smoothing: antialiased;
 }
+
+/* Global utilities */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 0.5px solid transparent;
+  text-decoration: none;
+  transition: opacity 0.15s;
+
+  &:hover { opacity: 0.85; }
+
+  &--primary {
+    background: var(--color-text-primary);
+    color: #fff;
+  }
+
+  &--ghost {
+    background: transparent;
+    border-color: var(--color-border-secondary);
+    color: var(--color-text-secondary);
+  }
+
+  &--danger {
+    background: var(--color-bg-danger);
+    color: var(--color-text-danger);
+    border-color: var(--color-text-danger);
+  }
+}
+
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+
+  &--success {
+    background: var(--color-bg-success);
+    color: var(--color-text-success);
+  }
+
+  &--warning {
+    background: var(--color-bg-warning);
+    color: var(--color-text-warning);
+  }
+}
+
+.link {
+  font-size: 13px;
+  color: var(--color-text-info);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}

@@ -1,1 +1,30 @@
-<p>confirm-dialog works!</p>
+<div class="cd-backdrop" (click)="cancelled.emit()"></div>
+
+<div class="cd" role="dialog" [attr.aria-label]="title">
+  <h3 class="cd__title">{{ title }}</h3>
+
+  @if (message) {
+    <p class="cd__message">{{ message }}</p>
+  }
+
+  @if (subscriberCount !== null) {
+    <div class="cd__info">
+      @if (subscriberCount === 0) {
+        <span class="cd__info-icon">ℹ️</span>
+        <span>No subscribers yet. The entry will be published but <strong>no emails</strong> will be sent.</span>
+      } @else {
+        <span class="cd__info-icon">📧</span>
+        <span><strong>{{ subscriberCount }}</strong> subscriber(s) will receive an email notification.</span>
+      }
+    </div>
+  }
+
+  <div class="cd__actions">
+    <button class="btn btn--ghost" [disabled]="loading" (click)="cancelled.emit()">
+      Cancel
+    </button>
+    <button class="btn" [class]="confirmClass" [disabled]="loading" (click)="confirmed.emit()">
+      {{ loading ? 'Publishing...' : confirmLabel }}
+    </button>
+  </div>
+</div>

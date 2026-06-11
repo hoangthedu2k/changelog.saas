@@ -3,5 +3,5 @@ using MediatR;
 
 namespace ChangelogSaas.Application.Projects.Commands.UpdateProjectCommand
 {
-    public sealed record UpdateProjectCommand(UpdateProjectRequest Request) : IRequest<Guid>;
+    public sealed record UpdateProjectCommand(UpdateProjectRequest Request) : IRequest<ProjectDTO>;
 }

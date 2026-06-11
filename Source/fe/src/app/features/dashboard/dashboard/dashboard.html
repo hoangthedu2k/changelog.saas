@@ -1,1 +1,61 @@
-<p>dashboard works!</p>
+@if (loading()) {
+  <div class="dashboard__loading">Loading...</div>
+} @else if (!projectService.activeProject()) {
+  <div class="dashboard__empty">
+    <h2>No projects yet</h2>
+    <p>Create your first project to get started.</p>
+    <a routerLink="/app/settings/project" [queryParams]="{mode: 'new'}" class="btn btn--primary">Create project</a>
+  </div>
+} @else {
+  <div class="dashboard">
+    <div class="dashboard__header">
+      <h1 class="dashboard__title">{{ projectService.activeProject()!.name }}</h1>
+      <a routerLink="/app/entries/new" class="btn btn--primary">+ New Entry</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-card__value">{{ stats().total }}</span>
+        <span class="stat-card__label">Total Entries</span>
+      </div>
+      <div class="stat-card stat-card--success">
+        <span class="stat-card__value">{{ stats().published }}</span>
+        <span class="stat-card__label">Published</span>
+      </div>
+      <div class="stat-card stat-card--warning">
+        <span class="stat-card__value">{{ stats().draft }}</span>
+        <span class="stat-card__label">Drafts</span>
+      </div>
+    </div>
+
+    <div class="dashboard__section">
+      <div class="dashboard__section-header">
+        <h2>Recent Entries</h2>
+        <a routerLink="/app/entries" class="link">View all →</a>
+      </div>
+
+      @if (recentEntries().length === 0) {
+        <p class="dashboard__no-entries">No entries yet. <a routerLink="/app/entries/new">Create your first entry</a>.</p>
+      } @else {
+        <ul class="entry-list">
+          @for (entry of recentEntries(); track entry.id) {
+            <li class="entry-item">
+              <div class="entry-item__info">
+                <span class="entry-item__title">{{ entry.title }}</span>
+                @if (entry.version) {
+                  <span class="entry-item__version">v{{ entry.version }}</span>
+                }
+              </div>
+              <div class="entry-item__meta">
+                <span class="badge" [class.badge--success]="entry.status === 'Published'" [class.badge--warning]="entry.status === 'Draft'">
+                  {{ entry.status }}
+                </span>
+                <span class="entry-item__date">{{ entry.createdAt | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+}

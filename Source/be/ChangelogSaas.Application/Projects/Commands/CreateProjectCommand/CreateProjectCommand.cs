@@ -3,5 +3,5 @@ using MediatR;
 
 namespace ChangelogSaas.Application.Projects.Commands.CreateProjectCommand
 {
-    public sealed record CreateProjectCommand(Guid UserId, CreateProjectRequest Request) : IRequest<Guid>;
+    public sealed record CreateProjectCommand(Guid UserId, CreateProjectRequest Request) : IRequest<ProjectDTO>;
 }

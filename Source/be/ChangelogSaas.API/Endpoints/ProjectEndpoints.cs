@@ -22,10 +22,9 @@ namespace ChangelogSaas.API.Endpoints
             return app;
 
         }
-        private static async Task<IResult> GetList([AsParameters] GetProjectsRequest request, ISender sender, CancellationToken cancellationToken)
+        private static async Task<IResult> GetList([AsParameters] GetProjectsRequest request, ClaimsPrincipal user, ISender sender, CancellationToken cancellationToken)
         {
-
-            var result = await sender.Send(new GetProjectsQuery(request), cancellationToken);
+            var result = await sender.Send(new GetProjectsQuery(user.GetUserId(), request), cancellationToken);
             return Results.Ok(result);
         }
         private static async Task<IResult> Create(CreateProjectRequest request, ClaimsPrincipal user, ISender sender, CancellationToken cancellationToken)
@@ -33,15 +32,16 @@ namespace ChangelogSaas.API.Endpoints
             var result = await sender.Send(new CreateProjectCommand(user.GetUserId(), request), cancellationToken);
             return Results.Ok(result);
         }
-        private static async Task<IResult> Update([FromRoute] Guid projectId, UpdateProjectRequest request, ISender sender, CancellationToken cancellationToken)
+        private static async Task<IResult> Update([FromRoute] Guid projectId, UpdateProjectRequest request, ClaimsPrincipal user, ISender sender, CancellationToken cancellationToken)
         {
             request.Id = projectId;
+            request.UserId = user.GetUserId();
             var result = await sender.Send(new UpdateProjectCommand(request), cancellationToken);
             return Results.Ok(result);
         }
-        private static async Task<IResult> Delete([FromRoute] Guid projectId, ISender sender, CancellationToken cancellationToken)
+        private static async Task<IResult> Delete([FromRoute] Guid projectId, ClaimsPrincipal user, ISender sender, CancellationToken cancellationToken)
         {
-            await sender.Send(new DeleteProjectCommand(projectId), cancellationToken);
+            await sender.Send(new DeleteProjectCommand(projectId, user.GetUserId()), cancellationToken);
             return Results.NoContent();
         }
     }

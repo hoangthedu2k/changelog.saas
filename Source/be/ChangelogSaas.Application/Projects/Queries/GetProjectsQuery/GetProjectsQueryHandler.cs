@@ -16,7 +16,7 @@ namespace ChangelogSaas.Application.Projects.Queries.GetProjectsQuery
 
         public async Task<List<ProjectDTO>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
         {
-            var query = _db.Projects.AsQueryable();
+            var query = _db.Projects.Where(p => p.UserId == request.UserId);
 
             if (!string.IsNullOrWhiteSpace(request.Request.Name))
                 query = query.Where(p => p.Name.Contains(request.Request.Name!));
@@ -27,6 +27,7 @@ namespace ChangelogSaas.Application.Projects.Queries.GetProjectsQuery
             return await query
                 .Select(p => new ProjectDTO
                 {
+                    Id = p.Id,
                     UserId = p.UserId,
                     Name = p.Name,
                     Slug = p.Slug,
