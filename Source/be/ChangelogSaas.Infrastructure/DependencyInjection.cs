@@ -20,6 +20,7 @@ namespace ChangelogSaas.Infrastructure
                 options.UseNpgsql(connectionString, npgsql =>
                     npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)
                           .MigrationsHistoryTable("__EFMigrationsHistory"));
+                options.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
             });
 
             services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
