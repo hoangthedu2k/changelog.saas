@@ -55,7 +55,7 @@ export class Billing {
         { label: 'Remove branding', available: true },
         { label: 'API access', available: false },
       ],
-      cta: 'Start 14-day trial',
+      cta: 'Upgrade to Pro',
       priceId: environment.stripe.proPriceId,
     },
     {
@@ -73,7 +73,7 @@ export class Billing {
         { label: 'Remove branding', available: true },
         { label: 'API access', available: true },
       ],
-      cta: 'Start 14-day trial',
+      cta: 'Upgrade to Team',
       priceId: environment.stripe.teamPriceId,
     },
   ];
