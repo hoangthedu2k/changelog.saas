@@ -8,7 +8,12 @@
         + Create project
       </a>
     } @else if (isFree()) {
-      <span class="sidebar__project-label">{{ projectService.activeProject()?.name }}</span>
+      <div class="sidebar__project-label">
+        <span>{{ projectService.activeProject()?.name }}</span>
+        @if (billingService.isTrial()) {
+          <span class="sidebar__trial-badge">Trial</span>
+        }
+      </div>
     } @else {
       <button class="sidebar__project-btn" (click)="toggleDropdown()">
         <span class="sidebar__project-name">{{ projectService.activeProject()?.name ?? 'Select project' }}</span>

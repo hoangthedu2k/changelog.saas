@@ -21,7 +21,7 @@ interface NavItem {
 })
 export class Sidebar {
   projectService = inject(ProjectService);
-  private billingService = inject(BillingService);
+  billingService = inject(BillingService);
 
   dropdownOpen = signal(false);
 

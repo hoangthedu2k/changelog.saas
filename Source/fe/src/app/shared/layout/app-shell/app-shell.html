@@ -2,6 +2,12 @@
   <app-sidebar />
   <div class="shell__main">
     <app-topbar />
+    @if (billing.isTrial()) {
+      <div class="shell__trial-banner">
+        <span>🎉 Trial: còn <strong>{{ billing.trialDaysLeft() }} ngày</strong> dùng thử miễn phí với đầy đủ tính năng Pro.</span>
+        <a class="shell__trial-upgrade" routerLink="/app/settings/billing">Nâng cấp ngay →</a>
+      </div>
+    }
     <main class="shell__content">
       <router-outlet />
     </main>

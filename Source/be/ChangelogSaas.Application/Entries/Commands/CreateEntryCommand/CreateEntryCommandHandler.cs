@@ -24,12 +24,15 @@ namespace ChangelogSaas.Application.Entries.Commands.CreateEntryCommand
             if (project is null)
                 throw new NotFoundException(nameof(Project), request.Request.ProjectId);
 
+            var user = await _db.Users.FindAsync(new object[] { project.UserId }, cancellationToken);
             var subscription = await _db.Subscriptions
                 .FirstOrDefaultAsync(s => s.UserId == project.UserId, cancellationToken);
             var plan = subscription?.Plan ?? SubscriptionPlan.Free;
+            var inTrial = user?.IsInTrial ?? false;
+
             var entryCount = await _db.ChangelogEntries.CountAsync(e => e.ProjectId == request.Request.ProjectId, cancellationToken);
-            if (entryCount >= PlanLimits.MaxEntries(plan))
-                throw new PlanLimitException($"Your {plan} plan allows up to {PlanLimits.MaxEntries(plan)} entries per project. Upgrade to create more.");
+            if (entryCount >= PlanLimits.MaxEntries(plan, inTrial))
+                throw new PlanLimitException($"Your {plan} plan allows up to {PlanLimits.MaxEntries(plan, inTrial)} entries per project. Upgrade to create more.");
 
             var entry = ChangelogEntry.Create(
                 request.Request.ProjectId,
