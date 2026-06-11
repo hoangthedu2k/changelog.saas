@@ -1,7 +1,7 @@
 <div class="billing">
   @if (upgradePrompt()) {
     <div class="billing__upgrade-banner">
-      ✦ This feature requires a paid plan. Upgrade below to unlock it.
+      ✦ This feature requires a paid plan. Start a free trial or upgrade below.
     </div>
   }
 
@@ -19,19 +19,16 @@
   @if (billing.loading()) {
     <div class="billing__loading">Loading…</div>
   } @else {
-    <!-- Current plan banner -->
     @if (billing.subscription(); as sub) {
       <div class="billing__current">
         <span class="billing__current-label">Current plan:</span>
-        @if (billing.isTrial()) {
-          <span class="billing__current-plan">Free Trial</span>
-          <span class="billing__current-period">· {{ billing.trialDaysLeft() }} ngày còn lại</span>
+        @if (sub.isTrialing) {
+          <span class="billing__current-plan">{{ sub.trialPlan }} Trial</span>
+          <span class="billing__current-period">· {{ sub.trialDaysLeft }} ngày còn lại</span>
         } @else {
           <span class="billing__current-plan">{{ sub.plan }}</span>
           @if (sub.currentPeriodEnd) {
-            <span class="billing__current-period">
-              · renews {{ sub.currentPeriodEnd | date: 'mediumDate' }}
-            </span>
+            <span class="billing__current-period">· renews {{ sub.currentPeriodEnd | date:'mediumDate' }}</span>
           }
           @if (sub.status === 'Canceled') {
             <span class="billing__badge billing__badge--canceled">Canceled</span>
@@ -40,21 +37,27 @@
       </div>
     }
 
-    <!-- Plan cards -->
     <div class="billing__plans">
       @for (plan of plans; track plan.id) {
-        <div class="billing__plan" [class.billing__plan--active]="currentPlan === plan.id" [class.billing__plan--popular]="plan.popular">
+        <div class="billing__plan"
+          [class.billing__plan--active]="currentPlan === plan.id"
+          [class.billing__plan--popular]="plan.popular">
+
           @if (plan.popular) {
             <span class="billing__popular-badge">Most popular</span>
           }
-          @if (currentPlan === plan.id) {
+          @if (currentPlan === plan.id && !billing.isTrial()) {
             <span class="billing__plan-badge">Current</span>
           }
+          @if (billing.isTrial() && billing.trialPlan()?.toLowerCase() === plan.id) {
+            <span class="billing__plan-badge">Trial</span>
+          }
+
           <div class="billing__plan-name">{{ plan.name }}</div>
           <div class="billing__plan-price">
             {{ plan.price }}<span class="billing__plan-period">{{ plan.period }}</span>
           </div>
-          <div class="billing__plan-tagline">{{ plan.tagline }}</div>
+
           <ul class="billing__plan-features">
             @for (f of plan.features; track f.label) {
               <li [class.billing__feature--locked]="!f.available">
@@ -63,25 +66,44 @@
               </li>
             }
           </ul>
-          @if (plan.priceId && currentPlan !== plan.id) {
-            <button
-              class="billing__upgrade-btn"
-              [class.billing__upgrade-btn--popular]="plan.popular"
-              (click)="upgrade(plan.priceId, plan.id)"
-              [disabled]="upgrading === plan.id"
-            >
-              @if (upgrading === plan.id) { Redirecting… }
-              @else if (billing.isTrial()) { {{ plan.cta }} · giữ access sau trial }
-              @else { {{ plan.cta }} }
-            </button>
-          } @else if (!plan.priceId && currentPlan === 'free') {
-            <button class="billing__upgrade-btn billing__upgrade-btn--outline">
-              {{ plan.cta }}
-            </button>
-          } @else if (!plan.priceId && currentPlan !== 'free') {
-            <button class="billing__downgrade-btn" (click)="manageSubscription()">
-              Downgrade via portal
-            </button>
+
+          @if (plan.id === 'free') {
+            @if (currentPlan === 'free' && !billing.isTrial()) {
+              <button class="billing__upgrade-btn billing__upgrade-btn--outline" disabled>Current plan</button>
+            } @else if (billing.isTrial()) {
+              <button class="billing__downgrade-btn" (click)="manageSubscription()">Hết trial về Free</button>
+            }
+          } @else {
+            @if (billing.isTrial() && billing.trialPlan()?.toLowerCase() === plan.id) {
+              <!-- Đang trial plan này -->
+              <button
+                class="billing__upgrade-btn"
+                [class.billing__upgrade-btn--popular]="plan.popular"
+                (click)="upgrade(plan.priceId!, plan.id)"
+                [disabled]="upgrading === plan.id">
+                @if (upgrading === plan.id) { Redirecting… } @else { Upgrade to paid · giữ access }
+              </button>
+            } @else if (canStartTrial(plan.id)) {
+              <!-- Chưa trial, chưa trả tiền -->
+              <button
+                class="billing__upgrade-btn"
+                [class.billing__upgrade-btn--popular]="plan.popular"
+                (click)="startTrial(plan.id)"
+                [disabled]="startingTrial === plan.id">
+                @if (startingTrial === plan.id) { Starting… } @else { Start 14-day free trial }
+              </button>
+            } @else if (currentPlan !== plan.id && !billing.isTrial()) {
+              <!-- Free, đã hết trial (hoặc không có trial) → upgrade thẳng -->
+              <button
+                class="billing__upgrade-btn"
+                [class.billing__upgrade-btn--popular]="plan.popular"
+                (click)="upgrade(plan.priceId!, plan.id)"
+                [disabled]="upgrading === plan.id">
+                @if (upgrading === plan.id) { Redirecting… } @else { Upgrade to {{ plan.name }} }
+              </button>
+            } @else if (currentPlan === plan.id) {
+              <button class="billing__upgrade-btn billing__upgrade-btn--outline" disabled>Current plan</button>
+            }
           }
         </div>
       }
