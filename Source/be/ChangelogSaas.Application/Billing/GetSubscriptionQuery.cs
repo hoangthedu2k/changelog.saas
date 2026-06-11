@@ -10,6 +10,7 @@ namespace ChangelogSaas.Application.Billing
         SubscriptionStatus Status,
         DateTime? CurrentPeriodEnd,
         string? StripeCustomerId,
-        DateTime TrialEndsAt,
+        bool IsTrialing,
+        SubscriptionPlan? TrialPlan,
         int TrialDaysLeft);
 }
