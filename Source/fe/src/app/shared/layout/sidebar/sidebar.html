@@ -7,6 +7,8 @@
       <a class="sidebar__logo-sub sidebar__logo-sub--empty" routerLink="/app/settings/project">
         + Create project
       </a>
+    } @else if (isFree()) {
+      <span class="sidebar__project-label">{{ projectService.activeProject()?.name }}</span>
     } @else {
       <button class="sidebar__project-btn" (click)="toggleDropdown()">
         <span class="sidebar__project-name">{{ projectService.activeProject()?.name ?? 'Select project' }}</span>
