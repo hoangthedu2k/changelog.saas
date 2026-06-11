@@ -110,6 +110,25 @@
   text-align: center;
 }
 
+.alert {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  margin-bottom: 12px;
+
+  &.alert-success {
+    background: color-mix(in srgb, var(--color-text-success, #22c55e) 12%, transparent);
+    color: var(--color-text-success, #16a34a);
+    border: 0.5px solid color-mix(in srgb, var(--color-text-success, #22c55e) 30%, transparent);
+  }
+
+  &.alert-error {
+    background: color-mix(in srgb, var(--color-text-danger) 12%, transparent);
+    color: var(--color-text-danger);
+    border: 0.5px solid color-mix(in srgb, var(--color-text-danger) 30%, transparent);
+  }
+}
+
 .auth-link {
   color: var(--color-text-primary);
   font-weight: 500;

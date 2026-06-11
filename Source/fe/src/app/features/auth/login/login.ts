@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -22,12 +22,20 @@ export class Login {
     password: new FormControl('', Validators.required),
   });
 
+  errorMessage = signal<string | null>(null);
+  isLoading = signal(false);
+
   onSubmit() {
     if (this.form.invalid) return;
+    this.errorMessage.set(null);
+    this.isLoading.set(true);
     const req = this.form.getRawValue() as LoginRequest;
     this.authService.login(req).subscribe({
       next: () => this.router.navigate(['/app']),
-      error: (err) => console.error('Login failed', err),
+      error: (err) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(err?.error?.message ?? 'Invalid email or password.');
+      },
     });
   }
 }

@@ -28,6 +28,10 @@ namespace ChangelogSaas.API.Middleware
             {
                 await WriteProblemAsync(context, StatusCodes.Status404NotFound, "Not found", ex.Message);
             }
+            catch (PlanLimitException ex)
+            {
+                await WriteProblemAsync(context, StatusCodes.Status402PaymentRequired, "Plan limit reached", ex.Message);
+            }
             catch (DomainException ex)
             {
                 await WriteProblemAsync(context, StatusCodes.Status400BadRequest, "Domain rule violated", ex.Message);

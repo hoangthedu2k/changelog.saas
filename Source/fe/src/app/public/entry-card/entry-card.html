@@ -1,1 +1,13 @@
-<p>entry-card works!</p>
+<article class="entry-card">
+  <div class="entry-card__meta">
+    <span class="entry-card__date">{{ entry().publishedAt | date:'MMM d, yyyy' }}</span>
+    @for (tag of entry().tags; track tag) {
+      <span [class]="'entry-card__tag ' + tagClass(tag)">{{ tag }}</span>
+    }
+    @if (entry().version) {
+      <span class="entry-card__version">{{ entry().version }}</span>
+    }
+  </div>
+  <h2 class="entry-card__title">{{ entry().title }}</h2>
+  <div class="entry-card__body" [innerHTML]="entry().contentHtml"></div>
+</article>

@@ -21,6 +21,11 @@ namespace ChangelogSaas.Application.Entries.Commands.DeleteEntryCommand
             if (entry is null)
                 throw new NotFoundException(nameof(ChangelogEntry), request.EntryId);
 
+            var project = await _db.Projects
+                .FindAsync(new object[] { entry.ProjectId }, cancellationToken);
+            if (project is null || project.UserId != request.UserId)
+                throw new NotFoundException(nameof(ChangelogEntry), request.EntryId);
+
             _db.ChangelogEntries.Remove(entry);
             await _db.SaveChangesAsync(cancellationToken);
         }

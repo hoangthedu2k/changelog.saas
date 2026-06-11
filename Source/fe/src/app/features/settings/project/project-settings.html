@@ -1,0 +1,106 @@
+<div class="project-settings">
+  <div class="project-settings__header">
+    <h2 class="project-settings__title">
+      @if (isNewMode() || !projectService.activeProject()) {
+        Create new project
+      } @else {
+        Project settings
+      }
+    </h2>
+    <button
+      class="project-settings__save-btn"
+      (click)="save()"
+      [disabled]="form.invalid || saving()"
+    >
+      @if (saving()) { Saving… }
+      @else if (saved()) { ✓ Saved }
+      @else if (isNewMode() || !projectService.activeProject()) { Create project }
+      @else { Save changes }
+    </button>
+  </div>
+
+  @if (isNewMode() || !projectService.activeProject()) {
+    <p class="project-settings__hint">
+      Give your project a name to get started. You can always change it later.
+    </p>
+  }
+
+  <form [formGroup]="form" class="project-settings__form">
+    <div class="project-settings__card">
+      <div class="project-settings__field">
+        <label class="project-settings__label">Project name</label>
+        <input
+          class="project-settings__input"
+          type="text"
+          formControlName="name"
+          placeholder="My Awesome SaaS"
+        />
+        @if (form.controls.name.invalid && form.controls.name.touched) {
+          <span class="project-settings__error">Project name is required</span>
+        }
+      </div>
+
+      <div class="project-settings__field">
+        <label class="project-settings__label">Slug</label>
+        <input
+          class="project-settings__input project-settings__input--mono"
+          type="text"
+          formControlName="slug"
+          placeholder="my-awesome-saas"
+        />
+        <span class="project-settings__hint-text">
+          Public URL: changelog.app/c/<strong>{{ form.controls.slug.value || 'your-slug' }}</strong>
+        </span>
+        @if (form.controls.slug.invalid && form.controls.slug.touched) {
+          <span class="project-settings__error">Only lowercase letters, numbers and hyphens</span>
+        }
+      </div>
+
+      @if (!isNewMode() && projectService.activeProject()) {
+        <div class="project-settings__field">
+          <label class="project-settings__label">
+            Custom domain
+            @if (!isPaidPlan) {
+              <span class="project-settings__plan-badge">Pro+</span>
+            }
+          </label>
+          @if (isPaidPlan) {
+            <input
+              class="project-settings__input project-settings__input--mono"
+              type="text"
+              formControlName="customDomain"
+              placeholder="changelog.yourdomain.com"
+            />
+            <span class="project-settings__hint-text">
+              Point a CNAME record to our server, then enter the hostname here.
+            </span>
+          } @else {
+            <a class="project-settings__upgrade-hint" routerLink="/app/settings/billing" [queryParams]="{upgrade: true}">
+              Upgrade to Pro to use a custom domain →
+            </a>
+          }
+        </div>
+      }
+    </div>
+
+    @if (projectService.activeProject() && !isNewMode()) {
+      <div class="project-settings__danger-zone">
+        <h3 class="project-settings__danger-title">Danger zone</h3>
+        <div class="project-settings__danger-row">
+          <div>
+            <div class="project-settings__danger-label">Delete project</div>
+            <div class="project-settings__danger-desc">All entries and subscribers will be permanently deleted.</div>
+          </div>
+          <button
+            type="button"
+            class="project-settings__delete-btn"
+            (click)="delete()"
+            [disabled]="deleting()"
+          >
+            {{ deleting() ? 'Deleting…' : 'Delete project' }}
+          </button>
+        </div>
+      </div>
+    }
+  </form>
+</div>

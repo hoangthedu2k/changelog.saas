@@ -2,6 +2,7 @@ namespace ChangelogSaas.Application.Common.DTOs.Widget
 {
     public class WidgetResponse
     {
+        public Guid ProjectId { get; init; }
         public string ProjectName { get; init; } = "";
         public string Slug { get; init; } = "";
         public string AccentColor { get; init; } = "#6366f1";

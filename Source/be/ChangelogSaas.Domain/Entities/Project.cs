@@ -48,15 +48,14 @@ namespace ChangelogSaas.Domain.Entities
             return sb.ToString().TrimEnd('-');
         }
 
-        public void UpdateSettings(string name, string color)
+        public void Update(string name, string slug, string accentColor, bool isPublic, WidgetPosition widgetPosition, string? customDomain)
         {
             Name = name;
-            AccentColor = color;
-        }
-
-        public void SetCustomDomain(string? domain)
-        {
-            CustomDomain = domain;
+            Slug = slug.ToLowerInvariant();
+            AccentColor = accentColor;
+            IsPublic = isPublic;
+            WidgetPosition = widgetPosition;
+            CustomDomain = customDomain;
         }
     }
 }

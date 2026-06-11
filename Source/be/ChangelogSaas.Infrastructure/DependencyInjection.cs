@@ -33,6 +33,7 @@ namespace ChangelogSaas.Infrastructure
                 ?? throw new InvalidOperationException("Connection string 'Redis' not found.");
             services.AddStackExchangeRedisCache(opts => opts.Configuration = redisConn);
             services.AddScoped<ICacheService, RedisCacheService>();
+            services.AddScoped<IBillingService, BillingService>();
 
             return services;
         }

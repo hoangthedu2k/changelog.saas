@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using ChangelogSaas.API.Endpoints;
 using ChangelogSaas.API.Middleware;
 using ChangelogSaas.Application;
@@ -13,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                      .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                     .AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: true)
                      .AddEnvironmentVariables();
 
 builder.Services.AddApplication();
@@ -25,6 +27,11 @@ builder.Services.AddHangfire(cfg => cfg
     .UseRecommendedSerializerSettings()
     .UsePostgreSqlStorage(opts => opts.UseNpgsqlConnection(pgConn)));
 builder.Services.AddHangfireServer();
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddOpenApi();
 
@@ -59,12 +66,18 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
               .AllowAnyMethod());
+
+    options.AddPolicy("Widget", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .WithMethods("GET"));
 });
 
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseCors("Frontend");
 
 app.UseAuthentication();
@@ -87,5 +100,6 @@ app.MapProjectEndpoints();
 app.MapEntryEndpoints();
 app.MapWidgetEndpoints();
 app.MapSubscriberEndpoints();
+app.MapBillingEndpoints();
 
 app.Run();

@@ -5,6 +5,13 @@
       <p class="auth-tagline">Create your account</p>
     </div>
 
+    @if (successMessage()) {
+      <div class="alert alert-success">{{ successMessage() }}</div>
+    }
+    @if (errorMessage()) {
+      <div class="alert alert-error">{{ errorMessage() }}</div>
+    }
+
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
       <div class="form-field">
         <label for="displayName" class="field-label">Display name</label>
@@ -51,7 +58,7 @@
         }
       </div>
 
-      <button type="submit" class="btn-submit" [disabled]="form.invalid">
+      <button type="submit" class="btn-submit" [disabled]="form.invalid || isSubmitting()">
         Create account
       </button>
     </form>

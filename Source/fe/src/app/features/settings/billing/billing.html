@@ -1,1 +1,83 @@
-<p>billing works!</p>
+<div class="billing">
+  @if (upgradePrompt()) {
+    <div class="billing__upgrade-banner">
+      ✦ This feature requires a paid plan. Upgrade below to unlock it.
+    </div>
+  }
+
+  <div class="billing__header">
+    <h2 class="billing__title">Billing</h2>
+    @if (billing.subscription(); as sub) {
+      @if (sub.plan !== 'Free' && sub.stripeCustomerId) {
+        <button class="billing__manage-btn" (click)="manageSubscription()">
+          Manage subscription ↗
+        </button>
+      }
+    }
+  </div>
+
+  @if (billing.loading()) {
+    <div class="billing__loading">Loading…</div>
+  } @else {
+    <!-- Current plan banner -->
+    @if (billing.subscription(); as sub) {
+      <div class="billing__current">
+        <span class="billing__current-label">Current plan:</span>
+        <span class="billing__current-plan">{{ sub.plan }}</span>
+        @if (sub.currentPeriodEnd) {
+          <span class="billing__current-period">
+            · renews {{ sub.currentPeriodEnd | date: 'mediumDate' }}
+          </span>
+        }
+        @if (sub.status === 'Canceled') {
+          <span class="billing__badge billing__badge--canceled">Canceled</span>
+        }
+      </div>
+    }
+
+    <!-- Plan cards -->
+    <div class="billing__plans">
+      @for (plan of plans; track plan.id) {
+        <div class="billing__plan" [class.billing__plan--active]="currentPlan === plan.id" [class.billing__plan--popular]="plan.popular">
+          @if (plan.popular) {
+            <span class="billing__popular-badge">Most popular</span>
+          }
+          @if (currentPlan === plan.id) {
+            <span class="billing__plan-badge">Current</span>
+          }
+          <div class="billing__plan-name">{{ plan.name }}</div>
+          <div class="billing__plan-price">
+            {{ plan.price }}<span class="billing__plan-period">{{ plan.period }}</span>
+          </div>
+          <div class="billing__plan-tagline">{{ plan.tagline }}</div>
+          <ul class="billing__plan-features">
+            @for (f of plan.features; track f.label) {
+              <li [class.billing__feature--locked]="!f.available">
+                <span class="billing__feature-icon">{{ f.available ? '✓' : '✕' }}</span>
+                {{ f.label }}
+              </li>
+            }
+          </ul>
+          @if (plan.priceId && currentPlan !== plan.id) {
+            <button
+              class="billing__upgrade-btn"
+              [class.billing__upgrade-btn--popular]="plan.popular"
+              (click)="upgrade(plan.priceId, plan.id)"
+              [disabled]="upgrading === plan.id"
+            >
+              @if (upgrading === plan.id) { Redirecting… } @else { {{ plan.cta }} }
+            </button>
+          } @else if (!plan.priceId && currentPlan === 'free') {
+            <button class="billing__upgrade-btn billing__upgrade-btn--outline">
+              {{ plan.cta }}
+            </button>
+          } @else if (!plan.priceId && currentPlan !== 'free') {
+            <button class="billing__downgrade-btn" (click)="manageSubscription()">
+              Downgrade via portal
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

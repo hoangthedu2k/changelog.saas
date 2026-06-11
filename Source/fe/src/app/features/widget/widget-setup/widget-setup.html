@@ -1,1 +1,70 @@
-<p>widget-setup works!</p>
+<div class="widget-setup">
+  <div class="widget-setup__header">
+    <h2 class="widget-setup__title">Widget Setup</h2>
+    <p class="widget-setup__desc">Embed the changelog widget on your website with one line of code.</p>
+  </div>
+
+  @if (projectService.activeProject(); as p) {
+    <div class="widget-setup__card">
+      <h3 class="widget-setup__card-title">Embed code</h3>
+      <p class="widget-setup__card-desc">Paste this snippet before the closing <code>&lt;/body&gt;</code> tag of your website.</p>
+      <div class="widget-setup__code-block">
+        <pre class="widget-setup__code">{{ embedCode() }}</pre>
+        <button class="widget-setup__copy-btn" (click)="copyCode()" [class.widget-setup__copy-btn--copied]="copied()">
+          @if (copied()) { ✓ Copied } @else { Copy }
+        </button>
+      </div>
+    </div>
+
+    <div class="widget-setup__card">
+      <h3 class="widget-setup__card-title">How it works</h3>
+      <div class="widget-setup__steps">
+        <div class="widget-setup__step">
+          <span class="widget-setup__step-num">1</span>
+          <div>Copy the embed code above and paste it into your site's HTML.</div>
+        </div>
+        <div class="widget-setup__step">
+          <span class="widget-setup__step-num">2</span>
+          <div>A <strong>"What's new"</strong> button appears on your site in the position configured in Appearance settings.</div>
+        </div>
+        <div class="widget-setup__step">
+          <span class="widget-setup__step-num">3</span>
+          <div>Visitors click to see latest entries. New entries show a red badge count.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="widget-setup__card">
+      <h3 class="widget-setup__card-title">Current settings</h3>
+      <div class="widget-setup__settings-row">
+        <span class="widget-setup__settings-label">Project</span>
+        <span class="widget-setup__settings-value">{{ p.name }}</span>
+      </div>
+      <div class="widget-setup__settings-row">
+        <span class="widget-setup__settings-label">Slug</span>
+        <code class="widget-setup__settings-code">{{ p.slug }}</code>
+      </div>
+      <div class="widget-setup__settings-row">
+        <span class="widget-setup__settings-label">Accent color</span>
+        <span class="widget-setup__color-dot" [style.background]="p.accentColor"></span>
+        <code class="widget-setup__settings-code">{{ p.accentColor }}</code>
+      </div>
+      <div class="widget-setup__settings-row">
+        <span class="widget-setup__settings-label">Widget position</span>
+        <span class="widget-setup__settings-value">{{ p.widgetPosition?.toUpperCase() }}</span>
+      </div>
+      <a class="widget-setup__settings-link" routerLink="../settings/appearance">Edit in Appearance →</a>
+    </div>
+
+    <div class="widget-setup__card widget-setup__card--muted">
+      <h3 class="widget-setup__card-title">Test your widget</h3>
+      <p class="widget-setup__card-desc">Open your public changelog page to verify the widget appears correctly.</p>
+      <a class="widget-setup__btn" [href]="'/c/' + p.slug" target="_blank" rel="noopener">View public page ↗</a>
+    </div>
+  } @else {
+    <div class="widget-setup__empty">
+      <p>No project selected. Create a project first to get your embed code.</p>
+      <a class="widget-setup__btn" routerLink="../settings/project" [queryParams]="{mode: 'new'}">Create project</a>
+    </div>
+  }
+</div>

@@ -1,1 +1,84 @@
-<p>appearance works!</p>
+<div class="appearance">
+  <div class="appearance__header">
+    <div class="appearance__header-left">
+      <h2 class="appearance__title">Appearance</h2>
+      @if (projectService.activeProject(); as p) {
+        <a
+          class="appearance__preview-link"
+          [href]="'/c/' + p.slug"
+          target="_blank"
+          rel="noopener"
+        >
+          View public page ↗
+        </a>
+      }
+    </div>
+    <button class="appearance__save-btn" (click)="save()" [disabled]="form.invalid || saving()">
+      @if (saving()) {
+        Saving…
+      } @else if (saved()) {
+        ✓ Saved
+      } @else {
+        Save changes
+      }
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="appearance__form">
+    <!-- Brand -->
+    <div class="appearance__card">
+      <h3 class="appearance__card-title">Brand</h3>
+      <div class="appearance__field">
+        <label class="appearance__label">Project name</label>
+        <input
+          class="appearance__input"
+          type="text"
+          formControlName="name"
+          placeholder="My Awesome SaaS"
+        />
+        @if (form.controls.name.invalid && form.controls.name.touched) {
+          <span class="appearance__error">Project name is required</span>
+        }
+      </div>
+    </div>
+
+    <!-- Accent color -->
+    <div class="appearance__card">
+      <h3 class="appearance__card-title">Accent color</h3>
+      <div class="appearance__color-row">
+        @for (color of accentColors; track color) {
+          <button
+            type="button"
+            class="appearance__swatch"
+            [style.background]="color"
+            [class.appearance__swatch--active]="form.controls.accentColor.value === color"
+            (click)="selectColor(color)"
+          ></button>
+        }
+        <input
+          class="appearance__color-input"
+          type="text"
+          formControlName="accentColor"
+          placeholder="#6366f1"
+        />
+      </div>
+    </div>
+
+    <!-- Widget position -->
+    <div class="appearance__card">
+      <h3 class="appearance__card-title">Widget position</h3>
+      <div class="appearance__position-grid">
+        @for (pos of widgetPositions; track pos.value) {
+          <button
+            type="button"
+            class="appearance__position-btn"
+            [class.appearance__position-btn--active]="form.controls.widgetPosition.value === pos.value"
+            (click)="selectPosition(pos.value)"
+          >
+            {{ pos.label }}
+          </button>
+        }
+      </div>
+    </div>
+  </form>
+</div>

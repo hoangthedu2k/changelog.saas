@@ -49,6 +49,7 @@ namespace ChangelogSaas.Application.Widget.Queries.GetWidgetQuery
 
             var response = new WidgetResponse
             {
+                ProjectId = project.Id,
                 ProjectName = project.Name,
                 Slug = project.Slug,
                 AccentColor = project.AccentColor,

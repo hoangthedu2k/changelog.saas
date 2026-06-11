@@ -17,7 +17,7 @@ namespace ChangelogSaas.Application.Projects.Commands.DeleteProjectCommand
         public async Task Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
         {
             var project = await _db.Projects.FindAsync(new object[] { request.ProjectId }, cancellationToken);
-            if (project is null)
+            if (project is null || project.UserId != request.UserId)
                 throw new NotFoundException(nameof(Project), request.ProjectId);
 
             _db.Projects.Remove(project);

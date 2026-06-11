@@ -21,6 +21,11 @@ namespace ChangelogSaas.Application.Entries.Commands.UpdateEntryCommand
             if (entry is null)
                 throw new NotFoundException(nameof(ChangelogEntry), request.Request.Id);
 
+            var project = await _db.Projects
+                .FindAsync(new object[] { entry.ProjectId }, cancellationToken);
+            if (project is null || project.UserId != request.Request.UserId)
+                throw new NotFoundException(nameof(ChangelogEntry), request.Request.Id);
+
             entry.UpdateContent(
                 request.Request.Title,
                 request.Request.ContentHtml,

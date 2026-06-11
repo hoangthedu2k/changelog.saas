@@ -69,6 +69,9 @@ namespace ChangelogSaas.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("EntryID")
                         .HasColumnType("uuid");
 
@@ -77,9 +80,6 @@ namespace ChangelogSaas.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("ResendMessageID")
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("SendAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -229,6 +229,10 @@ namespace ChangelogSaas.Infrastructure.Persistence.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("StripeCustomerId")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.HasKey("Id");
 
