@@ -71,7 +71,7 @@
               [disabled]="upgrading === plan.id"
             >
               @if (upgrading === plan.id) { Redirecting… }
-              @else if (billing.isTrial()) { Upgrade · keep access after trial }
+              @else if (billing.isTrial()) { {{ plan.cta }} · giữ access sau trial }
               @else { {{ plan.cta }} }
             </button>
           } @else if (!plan.priceId && currentPlan === 'free') {
