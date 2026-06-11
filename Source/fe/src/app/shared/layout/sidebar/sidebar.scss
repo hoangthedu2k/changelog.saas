@@ -39,6 +39,18 @@
     }
   }
 
+  // Free plan: plain label, no dropdown
+  &__project-label {
+    display: block;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   // Project switcher button (shows current project name + chevron)
   &__project-btn {
     width: 100%;
