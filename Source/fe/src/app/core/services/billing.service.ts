@@ -10,7 +10,8 @@ export interface SubscriptionDto {
   status: SubscriptionStatus;
   currentPeriodEnd: string | null;
   stripeCustomerId: string | null;
-  trialEndsAt: string;
+  isTrialing: boolean;
+  trialPlan: SubscriptionPlan | null;
   trialDaysLeft: number;
 }
 
@@ -21,12 +22,9 @@ export class BillingService {
   subscription = signal<SubscriptionDto | null>(null);
   loading = signal(false);
 
-  isTrial = computed(() => {
-    const s = this.subscription();
-    return s !== null && s.plan === 'Free' && s.trialDaysLeft > 0;
-  });
-
+  isTrial = computed(() => this.subscription()?.isTrialing ?? false);
   trialDaysLeft = computed(() => this.subscription()?.trialDaysLeft ?? 0);
+  trialPlan = computed(() => this.subscription()?.trialPlan ?? null);
 
   loadSubscription() {
     this.loading.set(true);
@@ -35,6 +33,12 @@ export class BillingService {
         this.subscription.set(s);
         this.loading.set(false);
       })
+    );
+  }
+
+  startTrial(plan: 'Pro' | 'Team') {
+    return this.api.post<void>('/billing/trial', { plan }).pipe(
+      tap(() => this.loadSubscription().subscribe())
     );
   }
 

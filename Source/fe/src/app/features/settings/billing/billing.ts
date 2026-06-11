@@ -20,6 +20,8 @@ export class Billing {
   private destroyRef = inject(DestroyRef);
 
   upgradePrompt = signal(false);
+  startingTrial: string | null = null;
+  upgrading: string | null = null;
 
   readonly plans = [
     {
@@ -37,7 +39,6 @@ export class Billing {
         { label: 'Custom domain', available: false },
         { label: 'Remove branding', available: false },
       ],
-      cta: 'Get started free',
       priceId: null,
     },
     {
@@ -55,7 +56,6 @@ export class Billing {
         { label: 'Remove branding', available: true },
         { label: 'API access', available: false },
       ],
-      cta: 'Upgrade to Pro',
       priceId: environment.stripe.proPriceId,
     },
     {
@@ -73,12 +73,9 @@ export class Billing {
         { label: 'Remove branding', available: true },
         { label: 'API access', available: true },
       ],
-      cta: 'Upgrade to Team',
       priceId: environment.stripe.teamPriceId,
     },
   ];
-
-  upgrading: string | null = null;
 
   constructor() {
     this.route.queryParamMap
@@ -92,6 +89,26 @@ export class Billing {
 
   get currentPlan() {
     return this.billing.subscription()?.plan?.toLowerCase() ?? 'free';
+  }
+
+  canStartTrial(planId: string) {
+    const sub = this.billing.subscription();
+    if (!sub) return false;
+    // Already trialing or paid — no trial button
+    if (sub.isTrialing || sub.plan !== 'Free') return false;
+    // Already trialed this plan before? (trialPlan was set but expired)
+    // We allow re-trial only if never trialed — handled by BE
+    return planId !== 'free';
+  }
+
+  startTrial(planId: string) {
+    if (this.startingTrial) return;
+    this.startingTrial = planId;
+    const plan = planId === 'pro' ? 'Pro' : 'Team';
+    this.billing.startTrial(plan).subscribe({
+      next: () => { this.startingTrial = null; },
+      error: () => { this.startingTrial = null; },
+    });
   }
 
   upgrade(priceId: string, planId: string) {
