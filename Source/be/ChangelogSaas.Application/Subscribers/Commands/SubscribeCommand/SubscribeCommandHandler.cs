@@ -21,12 +21,15 @@ namespace ChangelogSaas.Application.Subscribers.Commands.SubscribeCommand
             if (project is null)
                 throw new NotFoundException(nameof(Project), request.ProjectId);
 
+            var user = await _db.Users.FindAsync(new object[] { project.UserId }, cancellationToken);
             var subscription = await _db.Subscriptions
                 .FirstOrDefaultAsync(s => s.UserId == project.UserId, cancellationToken);
             var plan = subscription?.Plan ?? SubscriptionPlan.Free;
+            var inTrial = user?.IsInTrial ?? false;
+
             var subscriberCount = await _db.Subscribers
                 .CountAsync(s => s.ProjectId == request.ProjectId && s.Status == SubscriberStatus.Verified, cancellationToken);
-            if (subscriberCount >= PlanLimits.MaxSubscribers(plan))
+            if (subscriberCount >= PlanLimits.MaxSubscribers(plan, inTrial))
                 throw new PlanLimitException($"This project has reached the subscriber limit for the {plan} plan. The owner must upgrade to accept more subscribers.");
 
             var email = request.Email.Trim().ToLowerInvariant();

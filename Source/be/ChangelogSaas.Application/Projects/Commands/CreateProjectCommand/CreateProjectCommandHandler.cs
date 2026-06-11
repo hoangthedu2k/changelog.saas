@@ -20,12 +20,15 @@ namespace ChangelogSaas.Application.Projects.Commands.CreateProjectCommand
 
         public async Task<ProjectDTO> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
         {
+            var user = await _db.Users.FindAsync(new object[] { request.UserId }, cancellationToken);
             var subscription = await _db.Subscriptions
                 .FirstOrDefaultAsync(s => s.UserId == request.UserId, cancellationToken);
             var plan = subscription?.Plan ?? SubscriptionPlan.Free;
+            var inTrial = user?.IsInTrial ?? false;
+
             var projectCount = await _db.Projects.CountAsync(p => p.UserId == request.UserId, cancellationToken);
-            if (projectCount >= PlanLimits.MaxProjects(plan))
-                throw new PlanLimitException($"Your {plan} plan allows up to {PlanLimits.MaxProjects(plan)} project(s). Upgrade to create more.");
+            if (projectCount >= PlanLimits.MaxProjects(plan, inTrial))
+                throw new PlanLimitException($"Your {plan} plan allows up to {PlanLimits.MaxProjects(plan, inTrial)} project(s). Upgrade to create more.");
 
             var slug = string.IsNullOrWhiteSpace(request.Request.Slug)
                 ? Project.Slugify(request.Request.Name)

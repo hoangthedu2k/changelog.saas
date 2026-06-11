@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { tap } from 'rxjs';
 import { ApiService } from '../http/api.service';
 
@@ -10,6 +10,8 @@ export interface SubscriptionDto {
   status: SubscriptionStatus;
   currentPeriodEnd: string | null;
   stripeCustomerId: string | null;
+  trialEndsAt: string;
+  trialDaysLeft: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -18,6 +20,13 @@ export class BillingService {
 
   subscription = signal<SubscriptionDto | null>(null);
   loading = signal(false);
+
+  isTrial = computed(() => {
+    const s = this.subscription();
+    return s !== null && s.plan === 'Free' && s.trialDaysLeft > 0;
+  });
+
+  trialDaysLeft = computed(() => this.subscription()?.trialDaysLeft ?? 0);
 
   loadSubscription() {
     this.loading.set(true);

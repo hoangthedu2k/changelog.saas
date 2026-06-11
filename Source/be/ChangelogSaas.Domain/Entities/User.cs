@@ -1,4 +1,4 @@
-﻿namespace ChangelogSaas.Domain.Entities
+namespace ChangelogSaas.Domain.Entities
 {
     public class User : BaseEntity
     {
@@ -6,6 +6,9 @@
         public string PasswordHash { get; private set; } = "";
         public string? DisplayName { get; private set; }
         public string? StripeCustomerId { get; private set; }
+        public DateTime TrialEndsAt { get; private set; }
+
+        public bool IsInTrial => DateTime.UtcNow < TrialEndsAt;
 
         public static User Create(string email, string passwordHash, string? displayName = null)
         {
@@ -15,6 +18,7 @@
                 Email = email.Trim().ToLowerInvariant(),
                 PasswordHash = passwordHash,
                 DisplayName = displayName,
+                TrialEndsAt = DateTime.UtcNow.AddDays(14),
                 CreatedAt = DateTime.UtcNow
             };
         }
