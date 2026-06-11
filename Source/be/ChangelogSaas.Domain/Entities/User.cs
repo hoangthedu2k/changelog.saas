@@ -1,3 +1,5 @@
+using ChangelogSaas.Domain.Enums;
+
 namespace ChangelogSaas.Domain.Entities
 {
     public class User : BaseEntity
@@ -6,9 +8,11 @@ namespace ChangelogSaas.Domain.Entities
         public string PasswordHash { get; private set; } = "";
         public string? DisplayName { get; private set; }
         public string? StripeCustomerId { get; private set; }
-        public DateTime TrialEndsAt { get; private set; }
+        public SubscriptionPlan? TrialPlan { get; private set; }
+        public DateTime? TrialEndsAt { get; private set; }
 
-        public bool IsInTrial => DateTime.UtcNow < TrialEndsAt;
+        public bool IsInTrial => TrialEndsAt.HasValue && DateTime.UtcNow < TrialEndsAt.Value;
+        public SubscriptionPlan EffectivePlan => IsInTrial && TrialPlan.HasValue ? TrialPlan.Value : SubscriptionPlan.Free;
 
         public static User Create(string email, string passwordHash, string? displayName = null)
         {
@@ -18,19 +22,18 @@ namespace ChangelogSaas.Domain.Entities
                 Email = email.Trim().ToLowerInvariant(),
                 PasswordHash = passwordHash,
                 DisplayName = displayName,
-                TrialEndsAt = DateTime.UtcNow.AddDays(14),
                 CreatedAt = DateTime.UtcNow
             };
         }
 
-        public void UpdateDisplayName(string displayName)
-        {
-            DisplayName = displayName;
-        }
+        public void UpdateDisplayName(string displayName) => DisplayName = displayName;
 
-        public void SetStripeCustomerId(string customerId)
+        public void SetStripeCustomerId(string customerId) => StripeCustomerId = customerId;
+
+        public void StartTrial(SubscriptionPlan plan)
         {
-            StripeCustomerId = customerId;
+            TrialPlan = plan;
+            TrialEndsAt = DateTime.UtcNow.AddDays(14);
         }
     }
 }

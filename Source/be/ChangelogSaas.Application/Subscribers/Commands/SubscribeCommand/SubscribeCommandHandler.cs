@@ -17,23 +17,20 @@ namespace ChangelogSaas.Application.Subscribers.Commands.SubscribeCommand
         public async Task<string> Handle(SubscribeCommand request, CancellationToken cancellationToken)
         {
             var project = await _db.Projects
-                .FirstOrDefaultAsync(p => p.Id == request.ProjectId, cancellationToken);
-            if (project is null)
-                throw new NotFoundException(nameof(Project), request.ProjectId);
+                .FirstOrDefaultAsync(p => p.Id == request.ProjectId, cancellationToken)
+                ?? throw new NotFoundException(nameof(Project), request.ProjectId);
 
             var user = await _db.Users.FindAsync(new object[] { project.UserId }, cancellationToken);
             var subscription = await _db.Subscriptions
                 .FirstOrDefaultAsync(s => s.UserId == project.UserId, cancellationToken);
-            var plan = subscription?.Plan ?? SubscriptionPlan.Free;
-            var inTrial = user?.IsInTrial ?? false;
+            var plan = subscription?.Plan ?? user?.EffectivePlan ?? SubscriptionPlan.Free;
 
             var subscriberCount = await _db.Subscribers
                 .CountAsync(s => s.ProjectId == request.ProjectId && s.Status == SubscriberStatus.Verified, cancellationToken);
-            if (subscriberCount >= PlanLimits.MaxSubscribers(plan, inTrial))
+            if (subscriberCount >= PlanLimits.MaxSubscribers(plan))
                 throw new PlanLimitException($"This project has reached the subscriber limit for the {plan} plan. The owner must upgrade to accept more subscribers.");
 
             var email = request.Email.Trim().ToLowerInvariant();
-
             var existing = await _db.Subscribers
                 .FirstOrDefaultAsync(s => s.ProjectId == request.ProjectId && s.Email == email, cancellationToken);
 
@@ -47,7 +44,6 @@ namespace ChangelogSaas.Application.Subscribers.Commands.SubscribeCommand
             var subscriber = Subscriber.Create(request.ProjectId, email);
             _db.Subscribers.Add(subscriber);
             await _db.SaveChangesAsync(cancellationToken);
-
             return subscriber.ConfirmToken!;
         }
     }

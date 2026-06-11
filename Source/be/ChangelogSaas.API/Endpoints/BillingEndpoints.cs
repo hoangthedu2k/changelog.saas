@@ -42,6 +42,18 @@ namespace ChangelogSaas.API.Endpoints
                 return Results.Ok(new { url });
             }).RequireAuthorization();
 
+            g.MapPost("/trial", async (
+                [FromBody] StartTrialRequest req,
+                ClaimsPrincipal user,
+                ISender sender,
+                CancellationToken ct) =>
+            {
+                if (!Enum.TryParse<ChangelogSaas.Domain.Enums.SubscriptionPlan>(req.Plan, true, out var plan))
+                    return Results.BadRequest("Invalid plan. Use 'Pro' or 'Team'.");
+                await sender.Send(new StartTrialCommand(user.GetUserId(), plan), ct);
+                return Results.Ok();
+            }).RequireAuthorization();
+
             // Stripe calls this — no JWT auth, verified by webhook signature
             g.MapPost("/webhook", async (HttpContext ctx, ISender sender) =>
             {
@@ -57,4 +69,5 @@ namespace ChangelogSaas.API.Endpoints
 
     public record CheckoutRequest(string PriceId, string SuccessUrl, string CancelUrl);
     public record PortalRequest(string ReturnUrl);
+    public record StartTrialRequest(string Plan);
 }

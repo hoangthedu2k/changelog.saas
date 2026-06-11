@@ -14,7 +14,9 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.PasswordHash).IsRequired();
         builder.Property(x => x.DisplayName).HasMaxLength(100);
         builder.Property(x => x.StripeCustomerId).HasMaxLength(200);
-        builder.Property(x => x.TrialEndsAt).IsRequired();
+        builder.Property(x => x.TrialPlan).IsRequired(false);
+        builder.Property(x => x.TrialEndsAt).IsRequired(false);
         builder.Ignore(x => x.IsInTrial);
+        builder.Ignore(x => x.EffectivePlan);
     }
 }

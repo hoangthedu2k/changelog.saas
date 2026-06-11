@@ -9,10 +9,7 @@ namespace ChangelogSaas.Application.Billing
     {
         private readonly IAppDbContext _db;
 
-        public GetSubscriptionQueryHandler(IAppDbContext db)
-        {
-            _db = db;
-        }
+        public GetSubscriptionQueryHandler(IAppDbContext db) => _db = db;
 
         public async Task<SubscriptionDto> Handle(GetSubscriptionQuery request, CancellationToken cancellationToken)
         {
@@ -20,13 +17,18 @@ namespace ChangelogSaas.Application.Billing
             var sub = await _db.Subscriptions
                 .FirstOrDefaultAsync(s => s.UserId == request.UserId, cancellationToken);
 
-            var trialEndsAt = user?.TrialEndsAt ?? DateTime.UtcNow;
-            var trialDaysLeft = Math.Max(0, (int)Math.Ceiling((trialEndsAt - DateTime.UtcNow).TotalDays));
+            var isTrialing = user?.IsInTrial ?? false;
+            var trialPlan = isTrialing ? user!.TrialPlan : null;
+            var trialDaysLeft = isTrialing
+                ? Math.Max(0, (int)Math.Ceiling((user!.TrialEndsAt!.Value - DateTime.UtcNow).TotalDays))
+                : 0;
 
-            if (sub is null)
-                return new SubscriptionDto(SubscriptionPlan.Free, SubscriptionStatus.Active, null, user?.StripeCustomerId, trialEndsAt, trialDaysLeft);
+            // Paid subscription takes precedence over trial
+            if (sub is not null)
+                return new SubscriptionDto(sub.Plan, sub.Status, sub.CurrentPeriodEnd, user?.StripeCustomerId, false, null, 0);
 
-            return new SubscriptionDto(sub.Plan, sub.Status, sub.CurrentPeriodEnd, user?.StripeCustomerId, trialEndsAt, trialDaysLeft);
+            var effectivePlan = isTrialing && trialPlan.HasValue ? trialPlan.Value : SubscriptionPlan.Free;
+            return new SubscriptionDto(effectivePlan, SubscriptionStatus.Active, null, user?.StripeCustomerId, isTrialing, trialPlan, trialDaysLeft);
         }
     }
 }
