@@ -22,9 +22,6 @@
               (click)="selectProject(project)"
             >
               {{ project.name }}
-              @if (project.isLocked) {
-                <span class="sidebar__locked-badge">🔒</span>
-              }
             </button>
           }
           <div class="sidebar__project-divider"></div>
@@ -74,7 +71,7 @@
     <div class="sidebar__avatar">{{ userInitials() }}</div>
     <div class="sidebar__user-info">
       <span class="sidebar__user-name">{{ authService.currentUser()?.displayName || authService.currentUser()?.email }}</span>
-      <span class="sidebar__user-plan">{{ billingService.subscription()?.plan ?? 'Free' }}</span>
+      <!-- <span class="sidebar__user-plan">{{ billingService.subscription()?.plan ?? 'Free' }}</span> -->
     </div>
   </div>
 </nav>

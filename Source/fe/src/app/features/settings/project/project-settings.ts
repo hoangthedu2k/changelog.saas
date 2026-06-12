@@ -5,7 +5,6 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProjectService } from '../../../core/services/project.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { BillingService } from '../../../core/services/billing.service';
 
 @Component({
   selector: 'app-project-settings',
@@ -17,18 +16,12 @@ import { BillingService } from '../../../core/services/billing.service';
 })
 export class ProjectSettings implements OnInit {
   projectService = inject(ProjectService);
-  billingService = inject(BillingService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
   private toast = inject(ToastService);
 
   isNewMode = signal(false);
-
-  get isPaidPlan() {
-    const plan = this.billingService.subscription()?.plan;
-    return plan === 'Pro' || plan === 'Team';
-  }
 
   saving = signal(false);
   saved = signal(false);
