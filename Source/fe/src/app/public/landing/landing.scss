@@ -1,0 +1,440 @@
+$primary: #1c1917;
+$accent: #f97316;
+$muted: #78716c;
+$border: #e7e5e4;
+$bg-soft: #fafaf9;
+
+.lp {
+  min-height: 100vh;
+  background: #fff;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  color: $primary;
+
+  // ── Nav ──────────────────────────────────────────────────────────────────
+  &__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 56px;
+    border-bottom: 0.5px solid $border;
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+
+  &__logo {
+    font-size: 15px;
+    color: $primary;
+    letter-spacing: -0.3px;
+
+    strong {
+      font-weight: 700;
+    }
+  }
+
+  &__nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__nav-link {
+    font-size: 13px;
+    color: $muted;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: color 0.15s;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+
+  &__nav-cta {
+    font-size: 13px;
+    color: #fff;
+    background: $primary;
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 7px;
+    font-weight: 500;
+    transition: opacity 0.15s;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  // ── Hero ─────────────────────────────────────────────────────────────────
+  &__hero {
+    display: flex;
+    align-items: center;
+    gap: 64px;
+    padding: 80px 48px 72px;
+    max-width: 1100px;
+    margin: 0 auto;
+
+    @media (max-width: 860px) {
+      flex-direction: column;
+      gap: 48px;
+      padding: 48px 24px;
+    }
+  }
+
+  &__hero-inner {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: $accent;
+    background: lighten($accent, 38%);
+    border-radius: 20px;
+    padding: 4px 10px;
+    margin-bottom: 20px;
+  }
+
+  &__headline {
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+    margin: 0 0 18px;
+
+    @media (max-width: 640px) {
+      font-size: 32px;
+    }
+  }
+
+  &__headline-accent {
+    color: $accent;
+  }
+
+  &__subheadline {
+    font-size: 16px;
+    line-height: 1.65;
+    color: $muted;
+    margin: 0 0 32px;
+    max-width: 480px;
+  }
+
+  &__hero-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  &__hero-note {
+    font-size: 12px;
+    color: #a8a29e;
+    margin: 0;
+  }
+
+  // ── Buttons ───────────────────────────────────────────────────────────────
+  &__btn {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 20px;
+    transition: opacity 0.15s, background 0.15s;
+    cursor: pointer;
+
+    &--primary {
+      background: $primary;
+      color: #fff;
+
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+
+    &--ghost {
+      background: transparent;
+      color: $muted;
+      border: 0.5px solid $border;
+
+      &:hover {
+        color: $primary;
+        border-color: #c4c0bd;
+      }
+    }
+
+    &--lg {
+      font-size: 15px;
+      padding: 12px 28px;
+    }
+  }
+
+  // ── Mock browser preview ──────────────────────────────────────────────────
+  &__preview {
+    flex: 0 0 380px;
+    border: 0.5px solid $border;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+
+    @media (max-width: 860px) {
+      flex: 1;
+      width: 100%;
+    }
+  }
+
+  &__preview-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: $bg-soft;
+    border-bottom: 0.5px solid $border;
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+
+    &--red    { background: #ff5f57; }
+    &--yellow { background: #febc2e; }
+    &--green  { background: #28c840; }
+  }
+
+  &__preview-url {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    color: $muted;
+    background: #fff;
+    border: 0.5px solid $border;
+    border-radius: 4px;
+    padding: 3px 8px;
+  }
+
+  &__preview-body {
+    padding: 16px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  &__mock-entry {
+    padding: 12px 14px;
+    border: 0.5px solid $border;
+    border-radius: 8px;
+    background: #fff;
+
+    &--dim {
+      opacity: 0.45;
+    }
+  }
+
+  &__mock-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-bottom: 6px;
+
+    &--feature     { background: #dbeafe; color: #1d4ed8; }
+    &--fix         { background: #fee2e2; color: #b91c1c; }
+    &--improvement { background: #d1fae5; color: #065f46; }
+  }
+
+  &__mock-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 3px;
+    color: $primary;
+  }
+
+  &__mock-date {
+    font-size: 11px;
+    color: #a8a29e;
+    margin: 0 0 6px;
+  }
+
+  &__mock-desc {
+    font-size: 12px;
+    color: $muted;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  // ── Shared section wrapper ────────────────────────────────────────────────
+  &__section-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 48px;
+
+    &--center {
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      padding: 0 24px;
+    }
+  }
+
+  &__section-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin: 0 0 8px;
+  }
+
+  &__section-sub {
+    font-size: 15px;
+    color: $muted;
+    margin: 0 0 48px;
+  }
+
+  // ── Steps ─────────────────────────────────────────────────────────────────
+  &__steps {
+    background: $bg-soft;
+    padding: 72px 0;
+    border-top: 0.5px solid $border;
+    border-bottom: 0.5px solid $border;
+  }
+
+  &__steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+  }
+
+  &__step {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__step-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: lighten($muted, 20%);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  &__step-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: $primary;
+  }
+
+  &__step-desc {
+    font-size: 13px;
+    color: $muted;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  // ── Features ──────────────────────────────────────────────────────────────
+  &__features {
+    padding: 72px 0;
+  }
+
+  &__features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  &__feature-card {
+    border: 0.5px solid $border;
+    border-radius: 10px;
+    padding: 20px 22px;
+    background: #fff;
+    transition: box-shadow 0.2s;
+
+    &:hover {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  &__feature-icon {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  &__feature-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+
+  &__feature-desc {
+    font-size: 13px;
+    color: $muted;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  // ── CTA ───────────────────────────────────────────────────────────────────
+  &__cta {
+    background: $primary;
+    padding: 72px 0;
+    color: #fff;
+  }
+
+  &__cta-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin: 0 0 10px;
+    color: #fff;
+  }
+
+  &__cta-sub {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 0 0 32px;
+  }
+
+  .lp__btn--primary {
+    background: #fff;
+    color: $primary;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  // ── Footer ────────────────────────────────────────────────────────────────
+  &__footer {
+    padding: 24px 48px;
+    border-top: 0.5px solid $border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    @media (max-width: 640px) {
+      padding: 20px 24px;
+    }
+  }
+
+  &__footer-copy {
+    font-size: 12px;
+    color: #a8a29e;
+    margin: 0;
+  }
+}

@@ -2,29 +2,42 @@
   <div class="dashboard__loading">Loading...</div>
 } @else if (!projectService.activeProject()) {
   <div class="dashboard__empty">
+    <div class="dashboard__empty-icon">📋</div>
     <h2>No projects yet</h2>
-    <p>Create your first project to get started.</p>
+    <p>Create your first project to start publishing changelogs.</p>
     <a routerLink="/app/settings/project" [queryParams]="{mode: 'new'}" class="btn btn--primary">Create project</a>
   </div>
 } @else {
   <div class="dashboard">
     <div class="dashboard__header">
-      <h1 class="dashboard__title">{{ projectService.activeProject()!.name }}</h1>
+      <div>
+        <h1 class="dashboard__title">{{ projectService.activeProject()!.name }}</h1>
+        <p class="dashboard__subtitle">Overview of your changelog activity</p>
+      </div>
       <a routerLink="/app/entries/new" class="btn btn--primary">+ New Entry</a>
     </div>
 
     <div class="stats">
-      <div class="stat-card">
-        <span class="stat-card__value">{{ stats().total }}</span>
-        <span class="stat-card__label">Total Entries</span>
+      <div class="stat-card stat-card--primary">
+        <div class="stat-card__icon">📄</div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">{{ stats().total }}</span>
+          <span class="stat-card__label">Total Entries</span>
+        </div>
       </div>
       <div class="stat-card stat-card--success">
-        <span class="stat-card__value">{{ stats().published }}</span>
-        <span class="stat-card__label">Published</span>
+        <div class="stat-card__icon">✅</div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">{{ stats().published }}</span>
+          <span class="stat-card__label">Published</span>
+        </div>
       </div>
       <div class="stat-card stat-card--warning">
-        <span class="stat-card__value">{{ stats().draft }}</span>
-        <span class="stat-card__label">Drafts</span>
+        <div class="stat-card__icon">✏️</div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">{{ stats().draft }}</span>
+          <span class="stat-card__label">Drafts</span>
+        </div>
       </div>
     </div>
 

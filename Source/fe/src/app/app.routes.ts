@@ -24,6 +24,8 @@ export const routes: Routes = [
         ],
     },
     { path: 'c/:slug', loadComponent: () => import('./public/changelog-page/changelog-page').then(m => m.ChangelogPage) },
-    { path: '', redirectTo: '/app', pathMatch: 'full' },
+    { path: 'confirm', loadComponent: () => import('./public/confirm-subscription/confirm-subscription').then(m => m.ConfirmSubscription) },
+    { path: 'unsubscribe', loadComponent: () => import('./public/unsubscribe/unsubscribe').then(m => m.Unsubscribe) },
+    { path: '', loadComponent: () => import('./public/landing/landing').then(m => m.Landing) },
     { path: '**', redirectTo: '/app' },
 ];

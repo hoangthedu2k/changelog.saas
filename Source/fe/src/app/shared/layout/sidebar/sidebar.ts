@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProjectService } from '../../../core/services/project.service';
 import { BillingService } from '../../../core/services/billing.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { Project } from '../../../core/models/project.model';
 
 interface NavItem {
@@ -22,6 +23,14 @@ interface NavItem {
 export class Sidebar {
   projectService = inject(ProjectService);
   billingService = inject(BillingService);
+  authService = inject(AuthService);
+
+  userInitials = computed(() => {
+    const user = this.authService.currentUser();
+    if (!user) return '?';
+    const name = user.displayName || user.email;
+    return name.split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2);
+  });
 
   dropdownOpen = signal(false);
 
