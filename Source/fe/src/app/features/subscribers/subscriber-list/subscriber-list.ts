@@ -2,9 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../core/http/api.service';
 import { ProjectService } from '../../../core/services/project.service';
-import { BillingService } from '../../../core/services/billing.service';
 import { Subscriber, SubscriberStatus } from '../../../core/models/subscriber.model';
-import { PlanLimits } from '../../../core/utils/plan-limits';
 
 interface PagedResult<T> {
   items: T[];
@@ -29,11 +27,11 @@ const PAGE_SIZE = 20;
 export class SubscriberList {
   private api = inject(ApiService);
   projectService = inject(ProjectService);
-  billing = inject(BillingService);
 
   result = signal<PagedResult<Subscriber> | null>(null);
   loading = signal(false);
   page = signal(1);
+
   statusFilter = signal<SubscriberStatus | ''>('');
 
   subscribers = computed(() => this.result()?.items ?? []);
@@ -42,11 +40,7 @@ export class SubscriberList {
   hasPrev = computed(() => this.result()?.hasPrev ?? false);
   hasNext = computed(() => this.result()?.hasNext ?? false);
 
-  maxSubscribers = computed(() => PlanLimits.maxSubscribers(this.billing.subscription()?.plan ?? 'Free'));
-  maxSubscribersLabel = computed(() => {
-    const m = this.maxSubscribers();
-    return m === Infinity ? '∞' : m.toString();
-  });
+  readonly maxSubscribersLabel = '∞';
 
   readonly statusOptions: { label: string; value: SubscriberStatus | '' }[] = [
     { label: 'All', value: '' },

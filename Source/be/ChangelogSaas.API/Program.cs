@@ -100,6 +100,5 @@ app.MapProjectEndpoints();
 app.MapEntryEndpoints();
 app.MapWidgetEndpoints();
 app.MapSubscriberEndpoints();
-app.MapBillingEndpoints();
 
 app.Run();

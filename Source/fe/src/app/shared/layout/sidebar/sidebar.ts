@@ -48,7 +48,6 @@ export class Sidebar {
 
   settingsNavItems: NavItem[] = [
     { label: 'Appearance', path: '/app/settings/appearance', icon: '◈' },
-    { label: 'Billing', path: '/app/settings/billing', icon: '▣' },
     { label: 'Project', path: '/app/settings/project', icon: '⊞' },
   ];
 

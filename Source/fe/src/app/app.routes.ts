@@ -19,7 +19,6 @@ export const routes: Routes = [
             { path: 'widget', loadComponent: () => import('./features/widget/widget-setup/widget-setup').then(m => m.WidgetSetup) },
             { path: 'settings', redirectTo: 'settings/appearance', pathMatch: 'full' },
             { path: 'settings/appearance', loadComponent: () => import('./features/settings/appearance/appearance').then(m => m.Appearance) },
-            { path: 'settings/billing', loadComponent: () => import('./features/settings/billing/billing').then(m => m.Billing) },
             { path: 'settings/project', loadComponent: () => import('./features/settings/project/project-settings').then(m => m.ProjectSettings) },
         ],
     },
