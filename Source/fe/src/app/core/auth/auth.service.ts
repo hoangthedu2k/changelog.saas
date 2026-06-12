@@ -50,4 +50,13 @@ export class AuthService {
       })
     );
   }
+
+  oauthLogin(provider: 'google' | 'facebook', token: string) {
+    return this.api.post<LoginResponse>('/auth/oauth', { provider, token }).pipe(
+      tap(response => {
+        this.currentUser.set({ id: response.userId, email: response.email, displayName: response.displayName } as User);
+        if (this.isBrowser) localStorage.setItem('token', response.token);
+      })
+    );
+  }
 }

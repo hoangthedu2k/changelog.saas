@@ -74,4 +74,14 @@
       </li>
     }
   </ul>
+
+  <div class="sidebar__spacer"></div>
+
+  <div class="sidebar__user">
+    <div class="sidebar__avatar">{{ userInitials() }}</div>
+    <div class="sidebar__user-info">
+      <span class="sidebar__user-name">{{ authService.currentUser()?.displayName || authService.currentUser()?.email }}</span>
+      <span class="sidebar__user-plan">{{ billingService.subscription()?.plan ?? 'Free' }}</span>
+    </div>
+  </div>
 </nav>

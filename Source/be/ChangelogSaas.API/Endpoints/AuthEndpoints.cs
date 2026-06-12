@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using ChangelogSaas.Application.Auth.Commands.Login;
+using ChangelogSaas.Application.Auth.Commands.OAuthLogin;
 using ChangelogSaas.Application.Auth.Commands.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace ChangelogSaas.API.Endpoints
             var g = app.MapGroup("/api/auth");
             g.MapPost("/register", Register);
             g.MapPost("/login", Login);
+            g.MapPost("/oauth", OAuthLogin);
             g.MapGet("/me", Me).RequireAuthorization();
             return app;
         }
@@ -21,6 +23,9 @@ namespace ChangelogSaas.API.Endpoints
             => Results.Ok(await sender.Send(command, ct));
 
         private static async Task<IResult> Login([FromBody] LoginCommand command, ISender sender, CancellationToken ct)
+            => Results.Ok(await sender.Send(command, ct));
+
+        private static async Task<IResult> OAuthLogin([FromBody] OAuthLoginCommand command, ISender sender, CancellationToken ct)
             => Results.Ok(await sender.Send(command, ct));
 
         private static IResult Me(ClaimsPrincipal user)

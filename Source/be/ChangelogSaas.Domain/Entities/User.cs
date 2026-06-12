@@ -14,6 +14,9 @@ namespace ChangelogSaas.Domain.Entities
         public bool IsInTrial => TrialEndsAt.HasValue && DateTime.UtcNow < TrialEndsAt.Value;
         public SubscriptionPlan EffectivePlan => IsInTrial && TrialPlan.HasValue ? TrialPlan.Value : SubscriptionPlan.Free;
 
+        public string? OAuthProvider { get; private set; }
+        public string? OAuthProviderId { get; private set; }
+
         public static User Create(string email, string passwordHash, string? displayName = null)
         {
             return new User
@@ -24,6 +27,26 @@ namespace ChangelogSaas.Domain.Entities
                 DisplayName = displayName,
                 CreatedAt = DateTime.UtcNow
             };
+        }
+
+        public static User CreateFromOAuth(string email, string? displayName, string provider, string providerId)
+        {
+            return new User
+            {
+                Id = Guid.NewGuid(),
+                Email = email.Trim().ToLowerInvariant(),
+                PasswordHash = "",
+                DisplayName = displayName,
+                OAuthProvider = provider,
+                OAuthProviderId = providerId,
+                CreatedAt = DateTime.UtcNow
+            };
+        }
+
+        public void LinkOAuth(string provider, string providerId)
+        {
+            OAuthProvider = provider;
+            OAuthProviderId = providerId;
         }
 
         public void UpdateDisplayName(string displayName) => DisplayName = displayName;

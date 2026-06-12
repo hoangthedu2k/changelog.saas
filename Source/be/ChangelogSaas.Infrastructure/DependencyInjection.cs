@@ -46,6 +46,9 @@ namespace ChangelogSaas.Infrastructure
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IBackgroundJobService, HangfireBackgroundJobService>();
 
+            services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
+            services.AddHttpClient<IFacebookTokenValidator, FacebookTokenValidator>();
+
             return services;
         }
     }

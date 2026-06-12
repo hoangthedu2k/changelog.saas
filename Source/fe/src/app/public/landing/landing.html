@@ -1,0 +1,112 @@
+<div class="lp">
+
+  <!-- Nav -->
+  <nav class="lp__nav">
+    <span class="lp__logo">Changelog<strong>SaaS</strong></span>
+    <div class="lp__nav-actions">
+      <a class="lp__nav-link" routerLink="/login">Sign in</a>
+      <a class="lp__nav-cta" routerLink="/register">Get started free</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="lp__hero">
+    <div class="lp__hero-inner">
+      <span class="lp__badge">Simple changelog publishing</span>
+      <h1 class="lp__headline">
+        Keep your users in the loop.<br />
+        <span class="lp__headline-accent">Every single update.</span>
+      </h1>
+      <p class="lp__subheadline">
+        ChangelogSaaS gives your product a beautiful, shareable changelog page in minutes.
+        Publish release notes, collect subscribers, and notify your audience automatically.
+      </p>
+      <div class="lp__hero-actions">
+        <a class="lp__btn lp__btn--primary" routerLink="/register">Start for free</a>
+        <a class="lp__btn lp__btn--ghost" routerLink="/login">Sign in</a>
+      </div>
+      <p class="lp__hero-note">No credit card required &nbsp;·&nbsp; Free plan available</p>
+    </div>
+
+    <!-- Mock preview -->
+    <div class="lp__preview">
+      <div class="lp__preview-bar">
+        <span class="lp__dot lp__dot--red"></span>
+        <span class="lp__dot lp__dot--yellow"></span>
+        <span class="lp__dot lp__dot--green"></span>
+        <span class="lp__preview-url">yourapp.changelogsaas.com</span>
+      </div>
+      <div class="lp__preview-body">
+        <div class="lp__mock-entry">
+          <span class="lp__mock-tag lp__mock-tag--feature">Feature</span>
+          <p class="lp__mock-title">New dashboard analytics</p>
+          <p class="lp__mock-date">Jun 10, 2026</p>
+          <p class="lp__mock-desc">We shipped a completely redesigned analytics dashboard with real-time charts and export support.</p>
+        </div>
+        <div class="lp__mock-entry">
+          <span class="lp__mock-tag lp__mock-tag--fix">Fix</span>
+          <p class="lp__mock-title">Login redirect issue resolved</p>
+          <p class="lp__mock-date">Jun 7, 2026</p>
+          <p class="lp__mock-desc">Fixed a bug where users were redirected to the wrong page after OAuth login.</p>
+        </div>
+        <div class="lp__mock-entry lp__mock-entry--dim">
+          <span class="lp__mock-tag lp__mock-tag--improvement">Improvement</span>
+          <p class="lp__mock-title">Faster entry loading</p>
+          <p class="lp__mock-date">Jun 2, 2026</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="lp__steps">
+    <div class="lp__section-inner">
+      <h2 class="lp__section-title">How it works</h2>
+      <p class="lp__section-sub">Up and running in under 5 minutes.</p>
+      <div class="lp__steps-grid">
+        @for (step of steps; track step.number) {
+          <div class="lp__step">
+            <span class="lp__step-num">{{ step.number }}</span>
+            <h3 class="lp__step-title">{{ step.title }}</h3>
+            <p class="lp__step-desc">{{ step.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="lp__features">
+    <div class="lp__section-inner">
+      <h2 class="lp__section-title">Everything you need</h2>
+      <p class="lp__section-sub">Built for indie makers, startups, and growing teams.</p>
+      <div class="lp__features-grid">
+        @for (feat of features; track feat.title) {
+          <div class="lp__feature-card">
+            <span class="lp__feature-icon">{{ feat.icon }}</span>
+            <h3 class="lp__feature-title">{{ feat.title }}</h3>
+            <p class="lp__feature-desc">{{ feat.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="lp__cta">
+    <div class="lp__section-inner lp__section-inner--center">
+      <h2 class="lp__cta-title">Ready to ship your first update?</h2>
+      <p class="lp__cta-sub">Create your changelog in minutes and keep your users in the loop.</p>
+      <a class="lp__btn lp__btn--primary lp__btn--lg" routerLink="/register">
+        Get started — it's free
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="lp__footer">
+    <span class="lp__logo">Changelog<strong>SaaS</strong></span>
+    <p class="lp__footer-copy">&copy; 2026 ChangelogSaaS. All rights reserved. &middot; Developed by <strong>Horavex</strong></p>
+  </footer>
+
+</div>

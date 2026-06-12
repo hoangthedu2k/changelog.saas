@@ -4,9 +4,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
+  padding: 0 28px;
   background: var(--color-bg-primary);
-  border-bottom: 1px solid var(--color-border-secondary);
+  border-bottom: 1px solid var(--color-border-tertiary);
 
   &__left {
     display: flex;
@@ -17,23 +17,27 @@
   &__right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
   }
 
   &__email {
     font-size: 13px;
-    color: var(--color-text-secondary);
+    color: var(--color-text-tertiary);
   }
 
   &__logout {
-    padding: 6px 14px;
-    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--color-text-secondary);
     background: transparent;
     border: 1px solid var(--color-border-secondary);
     border-radius: var(--radius-md);
     cursor: pointer;
+    font-family: var(--font-sans);
     transition: background 0.15s, color 0.15s;
 
     &:hover {

@@ -3,7 +3,7 @@
   max-width: 960px;
 
   &__loading {
-    padding: 60px;
+    padding: 40px;
     color: var(--color-text-tertiary);
     text-align: center;
     font-size: 13px;
@@ -16,12 +16,11 @@
     padding: 80px 32px;
     text-align: center;
 
-    &-icon { font-size: 44px; margin-bottom: 16px; opacity: 0.6; }
-
     h2 {
       font-size: 20px;
       font-weight: 600;
       margin: 0 0 8px;
+      color: var(--color-text-primary);
     }
 
     p {
@@ -34,25 +33,21 @@
 
   &__header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
 
   &__title {
     font-size: 22px;
     font-weight: 700;
-    margin: 0 0 2px;
+    margin: 0;
     letter-spacing: -0.4px;
   }
 
-  &__subtitle {
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    margin: 0;
+  &__section {
+    margin-top: 36px;
   }
-
-  &__section { margin-top: 36px; }
 
   &__section-header {
     display: flex;
@@ -64,18 +59,18 @@
       font-size: 15px;
       font-weight: 600;
       margin: 0;
+      color: var(--color-text-primary);
     }
   }
 
   &__no-entries {
-    font-size: 13px;
     color: var(--color-text-secondary);
+    font-size: 13px;
     padding: 32px;
     text-align: center;
     background: var(--color-bg-primary);
     border: 1px dashed var(--color-border-secondary);
     border-radius: var(--radius-lg);
-    margin: 0;
 
     a {
       color: var(--color-primary);
@@ -86,7 +81,7 @@
   }
 }
 
-/* ── Stat cards ────────────────────────────────────────────────────── */
+/* ── Stat cards ─────────────────────────────────────────────────────── */
 .stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -97,19 +92,19 @@
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border-secondary);
   border-radius: var(--radius-lg);
-  padding: 18px 20px;
+  padding: 20px 22px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   box-shadow: var(--shadow-sm);
   transition: box-shadow 0.15s;
 
   &:hover { box-shadow: var(--shadow-md); }
 
   &__icon {
-    font-size: 20px;
-    width: 42px;
-    height: 42px;
+    font-size: 24px;
+    width: 44px;
+    height: 44px;
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
@@ -127,9 +122,9 @@
   &__value {
     font-size: 26px;
     font-weight: 700;
+    color: var(--color-text-primary);
     line-height: 1;
     letter-spacing: -0.5px;
-    color: var(--color-text-primary);
   }
 
   &__label {
@@ -153,11 +148,13 @@
   }
 }
 
-/* ── Recent entry list ─────────────────────────────────────────────── */
+/* ── Recent entries list ─────────────────────────────────────────────── */
 .entry-list {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--color-border-secondary);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -189,7 +186,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 340px;
+    max-width: 300px;
   }
 
   &__version {
