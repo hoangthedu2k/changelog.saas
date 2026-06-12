@@ -27,7 +27,7 @@ namespace ChangelogSaas.Infrastructure.Services
         }
 
         public async Task<string> CreateCheckoutSessionAsync(
-            string userId, string priceId, string successUrl, string cancelUrl)
+            string userId, string? existingStripeCustomerId, string priceId, string successUrl, string cancelUrl)
         {
             var options = new SessionCreateOptions
             {
@@ -36,6 +36,7 @@ namespace ChangelogSaas.Infrastructure.Services
                 SuccessUrl = successUrl,
                 CancelUrl = cancelUrl,
                 ClientReferenceId = userId,
+                Customer = existingStripeCustomerId,
                 SubscriptionData = new SessionSubscriptionDataOptions
                 {
                     Metadata = new Dictionary<string, string> { ["userId"] = userId }
@@ -106,6 +107,10 @@ namespace ChangelogSaas.Infrastructure.Services
             if (user is not null && user.StripeCustomerId is null)
                 user.SetStripeCustomerId(stripeSub.CustomerId);
 
+            // Unlock all projects on upgrade
+            var projects = await _db.Projects.Where(p => p.UserId == userId).ToListAsync(ct);
+            foreach (var p in projects) p.Unlock();
+
             await _db.SaveChangesAsync(ct);
         }
 
@@ -118,6 +123,20 @@ namespace ChangelogSaas.Infrastructure.Services
             if (sub is null) return;
 
             sub.Cancel(stripeSub.CanceledAt ?? DateTime.UtcNow);
+
+            // Lock excess projects beyond Free limit (keep oldest 1 unlocked)
+            var freeLimit = Domain.Plans.PlanLimits.MaxProjects(SubscriptionPlan.Free);
+            var projects = await _db.Projects
+                .Where(p => p.UserId == userId)
+                .OrderBy(p => p.CreatedAt)
+                .ToListAsync(ct);
+
+            for (var i = 0; i < projects.Count; i++)
+            {
+                if (i < freeLimit) projects[i].Unlock();
+                else projects[i].Lock();
+            }
+
             await _db.SaveChangesAsync(ct);
         }
 

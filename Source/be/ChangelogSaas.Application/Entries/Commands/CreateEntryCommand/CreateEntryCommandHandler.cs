@@ -19,6 +19,9 @@ namespace ChangelogSaas.Application.Entries.Commands.CreateEntryCommand
                 .FirstOrDefaultAsync(p => p.Id == request.Request.ProjectId, cancellationToken)
                 ?? throw new NotFoundException(nameof(Project), request.Request.ProjectId);
 
+            if (project.IsLocked)
+                throw new DomainException("This project is locked. Upgrade your plan to create new entries.");
+
             var user = await _db.Users.FindAsync(new object[] { project.UserId }, cancellationToken);
             var subscription = await _db.Subscriptions
                 .FirstOrDefaultAsync(s => s.UserId == project.UserId, cancellationToken);

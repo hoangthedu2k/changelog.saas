@@ -1,6 +1,17 @@
 .billing {
   max-width: 640px;
 
+  &__success-banner {
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    font-size: 13px;
+    color: #15803d;
+    font-weight: 500;
+  }
+
   &__upgrade-banner {
     margin-bottom: 16px;
     padding: 10px 14px;

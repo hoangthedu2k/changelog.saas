@@ -20,6 +20,7 @@ export class Billing {
   private destroyRef = inject(DestroyRef);
 
   upgradePrompt = signal(false);
+  successBanner = signal(false);
   startingTrial: string | null = null;
   upgrading: string | null = null;
 
@@ -80,7 +81,13 @@ export class Billing {
   constructor() {
     this.route.queryParamMap
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(p => this.upgradePrompt.set(p.get('upgrade') === 'true'));
+      .subscribe(p => {
+        this.upgradePrompt.set(p.get('upgrade') === 'true');
+        if (p.get('success') === 'true') {
+          this.successBanner.set(true);
+          this.billing.loadSubscription().subscribe();
+        }
+      });
 
     afterNextRender(() => {
       this.billing.loadSubscription().subscribe();
@@ -93,12 +100,17 @@ export class Billing {
 
   canStartTrial(planId: string) {
     const sub = this.billing.subscription();
-    if (!sub) return false;
-    // Already trialing or paid — no trial button
-    if (sub.isTrialing || sub.plan !== 'Free') return false;
-    // Already trialed this plan before? (trialPlan was set but expired)
-    // We allow re-trial only if never trialed — handled by BE
-    return planId !== 'free';
+    if (!sub || planId === 'free') return false;
+    if (sub.plan !== 'Free' && !sub.isTrialing) return false; // already on paid plan
+
+    // Not trialing yet and never trialed: show trial button
+    if (!sub.isTrialing) return true;
+
+    // Currently trialing Pro → allow upgrade to Team
+    const planRank: Record<string, number> = { Pro: 1, Team: 2 };
+    const currentTrialRank = planRank[sub.trialPlan ?? ''] ?? 0;
+    const targetRank = planRank[planId.charAt(0).toUpperCase() + planId.slice(1)] ?? 0;
+    return targetRank > currentTrialRank;
   }
 
   startTrial(planId: string) {

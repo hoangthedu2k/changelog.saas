@@ -1,4 +1,9 @@
 <div class="billing">
+  @if (successBanner()) {
+    <div class="billing__success-banner">
+      ✓ Payment successful! Your plan has been upgraded. It may take a moment to reflect below.
+    </div>
+  }
   @if (upgradePrompt()) {
     <div class="billing__upgrade-banner">
       ✦ This feature requires a paid plan. Start a free trial or upgrade below.
@@ -24,7 +29,7 @@
         <span class="billing__current-label">Current plan:</span>
         @if (sub.isTrialing) {
           <span class="billing__current-plan">{{ sub.trialPlan }} Trial</span>
-          <span class="billing__current-period">· {{ sub.trialDaysLeft }} ngày còn lại</span>
+          <span class="billing__current-period">· {{ sub.trialDaysLeft }} days remaining</span>
         } @else {
           <span class="billing__current-plan">{{ sub.plan }}</span>
           @if (sub.currentPeriodEnd) {
@@ -71,29 +76,34 @@
             @if (currentPlan === 'free' && !billing.isTrial()) {
               <button class="billing__upgrade-btn billing__upgrade-btn--outline" disabled>Current plan</button>
             } @else if (billing.isTrial()) {
-              <button class="billing__downgrade-btn" (click)="manageSubscription()">Hết trial về Free</button>
+              <button class="billing__downgrade-btn" (click)="manageSubscription()">Trial ends — revert to Free</button>
             }
           } @else {
             @if (billing.isTrial() && billing.trialPlan()?.toLowerCase() === plan.id) {
-              <!-- Đang trial plan này -->
+              <!-- Currently trialing this plan -->
               <button
                 class="billing__upgrade-btn"
                 [class.billing__upgrade-btn--popular]="plan.popular"
                 (click)="upgrade(plan.priceId!, plan.id)"
                 [disabled]="upgrading === plan.id">
-                @if (upgrading === plan.id) { Redirecting… } @else { Upgrade to paid · giữ access }
+                @if (upgrading === plan.id) { Redirecting… } @else { Upgrade to paid · keep access }
               </button>
             } @else if (canStartTrial(plan.id)) {
-              <!-- Chưa trial, chưa trả tiền -->
               <button
                 class="billing__upgrade-btn"
                 [class.billing__upgrade-btn--popular]="plan.popular"
                 (click)="startTrial(plan.id)"
                 [disabled]="startingTrial === plan.id">
-                @if (startingTrial === plan.id) { Starting… } @else { Start 14-day free trial }
+                @if (startingTrial === plan.id) {
+                  Starting…
+                } @else if (billing.isTrial()) {
+                  Upgrade trial to {{ plan.name }}
+                } @else {
+                  Start 14-day free trial
+                }
               </button>
             } @else if (currentPlan !== plan.id && !billing.isTrial()) {
-              <!-- Free, đã hết trial (hoặc không có trial) → upgrade thẳng -->
+              <!-- Free, trial expired or never trialed — direct upgrade -->
               <button
                 class="billing__upgrade-btn"
                 [class.billing__upgrade-btn--popular]="plan.popular"

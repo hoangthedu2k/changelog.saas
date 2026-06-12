@@ -9,11 +9,13 @@ namespace ChangelogSaas.Application.Entries.Commands.PublishEntryCommand
     {
         private readonly IAppDbContext _db;
         private readonly ICacheService _cache;
+        private readonly IBackgroundJobService _jobs;
 
-        public PublishEntryCommandHandler(IAppDbContext db, ICacheService cache)
+        public PublishEntryCommandHandler(IAppDbContext db, ICacheService cache, IBackgroundJobService jobs)
         {
             _db = db;
             _cache = cache;
+            _jobs = jobs;
         }
 
         public async Task<Guid> Handle(PublishEntryCommand request, CancellationToken cancellationToken)
@@ -32,6 +34,7 @@ namespace ChangelogSaas.Application.Entries.Commands.PublishEntryCommand
             await _db.SaveChangesAsync(cancellationToken);
 
             await _cache.RemoveAsync($"widget:{project.Slug}");
+            _jobs.EnqueueNotifySubscribers(entry.Id);
 
             return entry.Id;
         }

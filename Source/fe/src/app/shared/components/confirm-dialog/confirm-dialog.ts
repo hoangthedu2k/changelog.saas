@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialog {
-  @Input() title = 'Xác nhận';
+  @Input() title = 'Confirm';
   @Input() message = '';
   @Input() subscriberCount: number | null = null;
   @Input() confirmLabel = 'Confirm';

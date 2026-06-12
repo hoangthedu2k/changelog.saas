@@ -10,6 +10,7 @@ export interface Project extends BaseEntity {
   accentColor: string;
   isPublic: boolean;
   widgetPosition: WidgetPosition;
+  isLocked: boolean;
 }
 
 export interface CreateProjectRequest {

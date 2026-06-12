@@ -110,6 +110,11 @@ namespace ChangelogSaas.Infrastructure.Persistence.Migrations
                         .HasMaxLength(253)
                         .HasColumnType("character varying(253)");
 
+                    b.Property<bool>("IsLocked")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("IsPublic")
                         .HasColumnType("boolean");
 
@@ -234,8 +239,11 @@ namespace ChangelogSaas.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<DateTime>("TrialEndsAt")
+                    b.Property<DateTime?>("TrialEndsAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("TrialPlan")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

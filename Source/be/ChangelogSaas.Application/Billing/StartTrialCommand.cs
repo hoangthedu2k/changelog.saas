@@ -21,8 +21,13 @@ namespace ChangelogSaas.Application.Billing
             var user = await _db.Users.FindAsync(new object[] { request.UserId }, cancellationToken)
                 ?? throw new NotFoundException("User", request.UserId);
 
-            if (user.IsInTrial)
-                throw new ValidationException("You already have an active trial.");
+            // Block re-trial after expiry
+            if (user.TrialEndsAt.HasValue && !user.IsInTrial)
+                throw new ValidationException("You have already used your free trial.");
+
+            // Allow upgrading trial plan (Pro → Team), but not downgrading
+            if (user.IsInTrial && user.TrialPlan.HasValue && request.Plan <= user.TrialPlan.Value)
+                throw new ValidationException("You are already trialing this plan or a higher one.");
 
             var hasPaidSub = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions
                 .AnyAsync(_db.Subscriptions, s => s.UserId == request.UserId, cancellationToken);

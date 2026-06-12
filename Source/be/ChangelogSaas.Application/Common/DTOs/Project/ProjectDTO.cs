@@ -12,5 +12,6 @@ namespace ChangelogSaas.Application.Common.DTOs.Project
         public string AccentColor { get; set; } = "#6366f1";
         public bool IsPublic { get; set; } = true;
         public WidgetPosition WidgetPosition { get; set; }
+        public bool IsLocked { get; set; } = false;
     }
 }

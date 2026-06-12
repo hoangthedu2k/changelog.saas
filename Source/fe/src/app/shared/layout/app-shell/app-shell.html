@@ -4,8 +4,8 @@
     <app-topbar />
     @if (billing.isTrial()) {
       <div class="shell__trial-banner">
-        <span>Trial <strong>{{ billing.trialPlan() }}</strong>: còn <strong>{{ billing.trialDaysLeft() }} ngày</strong> — sau đó về Free.</span>
-        <a class="shell__trial-upgrade" routerLink="/app/settings/billing">Upgrade để giữ access →</a>
+        <span>Trial <strong>{{ billing.trialPlan() }}</strong>: <strong>{{ billing.trialDaysLeft() }} days</strong> remaining — reverts to Free after.</span>
+        <a class="shell__trial-upgrade" routerLink="/app/settings/billing">Upgrade to keep access →</a>
       </div>
     }
     <main class="shell__content">

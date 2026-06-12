@@ -23,8 +23,8 @@ namespace ChangelogSaas.Application.Billing
                 ? Math.Max(0, (int)Math.Ceiling((user!.TrialEndsAt!.Value - DateTime.UtcNow).TotalDays))
                 : 0;
 
-            // Paid subscription takes precedence over trial
-            if (sub is not null)
+            // Active paid subscription takes precedence over trial
+            if (sub is not null && sub.Status != SubscriptionStatus.Canceled)
                 return new SubscriptionDto(sub.Plan, sub.Status, sub.CurrentPeriodEnd, user?.StripeCustomerId, false, null, 0);
 
             var effectivePlan = isTrialing && trialPlan.HasValue ? trialPlan.Value : SubscriptionPlan.Free;
