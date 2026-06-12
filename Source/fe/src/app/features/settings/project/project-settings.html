@@ -58,27 +58,16 @@
 
       @if (!isNewMode() && projectService.activeProject()) {
         <div class="project-settings__field">
-          <label class="project-settings__label">
-            Custom domain
-            @if (!isPaidPlan) {
-              <span class="project-settings__plan-badge">Pro+</span>
-            }
-          </label>
-          @if (isPaidPlan) {
-            <input
-              class="project-settings__input project-settings__input--mono"
-              type="text"
-              formControlName="customDomain"
-              placeholder="changelog.yourdomain.com"
-            />
-            <span class="project-settings__hint-text">
-              Point a CNAME record to our server, then enter the hostname here.
-            </span>
-          } @else {
-            <a class="project-settings__upgrade-hint" routerLink="/app/settings/billing" [queryParams]="{upgrade: true}">
-              Upgrade to Pro to use a custom domain →
-            </a>
-          }
+          <label class="project-settings__label">Custom domain</label>
+          <input
+            class="project-settings__input project-settings__input--mono"
+            type="text"
+            formControlName="customDomain"
+            placeholder="changelog.yourdomain.com"
+          />
+          <span class="project-settings__hint-text">
+            Point a CNAME to <strong>cname.changelogsaas.com</strong>, then enter the hostname here.
+          </span>
         </div>
       }
     </div>
