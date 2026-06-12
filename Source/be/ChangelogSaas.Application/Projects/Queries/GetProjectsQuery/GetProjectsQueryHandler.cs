@@ -34,7 +34,8 @@ namespace ChangelogSaas.Application.Projects.Queries.GetProjectsQuery
                     CustomDomain = p.CustomDomain,
                     AccentColor = p.AccentColor,
                     IsPublic = p.IsPublic,
-                    WidgetPosition = p.WidgetPosition
+                    WidgetPosition = p.WidgetPosition,
+                    IsLocked = p.IsLocked
                 })
                 .ToListAsync(cancellationToken);
         }

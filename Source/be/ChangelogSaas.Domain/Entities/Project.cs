@@ -12,6 +12,7 @@ namespace ChangelogSaas.Domain.Entities
         public string AccentColor { get; private set; } = "#6366f1";
         public bool IsPublic { get; private set; } = true;
         public WidgetPosition WidgetPosition { get; private set; }
+        public bool IsLocked { get; private set; } = false;
 
         public static Project Create(Guid userId, string name, string slug)
         {
@@ -47,6 +48,9 @@ namespace ChangelogSaas.Domain.Entities
 
             return sb.ToString().TrimEnd('-');
         }
+
+        public void Lock() => IsLocked = true;
+        public void Unlock() => IsLocked = false;
 
         public void Update(string name, string slug, string accentColor, bool isPublic, WidgetPosition widgetPosition, string? customDomain)
         {

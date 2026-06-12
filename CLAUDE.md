@@ -5,6 +5,15 @@ Context tổng hợp cho toàn bộ project. Đọc trước khi làm bất cứ
 - Làm việc trong `Source/be/` → xem thêm `Source/be/CLAUDE.md`
 - Làm việc trong `Source/fe/` → xem thêm `Source/fe/CLAUDE.md`
 
+## Language Rules — KHÔNG ĐƯỢC VI PHẠM
+
+All code output must be in **English only**:
+- UI strings, labels, button text, banners, error messages → English
+- Code comments → English
+- Variable names, function names → English
+
+Conversational replies to the user may be in Vietnamese. But **nothing written into source files** (`.ts`, `.html`, `.scss`, `.cs`, etc.) should contain Vietnamese.
+
 ## Skills
 - BE review: `_claude/skills/be-review/SKILL.md`
 - FE review: `_claude/skills/fe-review/SKILL.md`

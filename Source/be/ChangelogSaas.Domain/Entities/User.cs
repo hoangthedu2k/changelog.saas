@@ -33,7 +33,9 @@ namespace ChangelogSaas.Domain.Entities
         public void StartTrial(SubscriptionPlan plan)
         {
             TrialPlan = plan;
-            TrialEndsAt = DateTime.UtcNow.AddDays(14);
+            if (!TrialEndsAt.HasValue)
+                TrialEndsAt = DateTime.UtcNow.AddDays(14);
+            // Upgrading trial plan keeps the original expiry — clock does not reset
         }
     }
 }

@@ -14,5 +14,6 @@ public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.HasIndex(x => x.Slug).IsUnique();
         builder.Property(x => x.AccentColor).HasMaxLength(20);
         builder.Property(x => x.CustomDomain).HasMaxLength(253);
+        builder.Property(x => x.IsLocked).HasDefaultValue(false);
     }
 }

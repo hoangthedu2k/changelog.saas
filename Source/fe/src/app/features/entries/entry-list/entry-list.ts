@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EntriesService } from '../entries.service';
@@ -22,6 +22,7 @@ export class EntryList {
 
   entries = signal<Entry[]>([]);
   loading = signal(false);
+  isProjectLocked = computed(() => this.projectService.activeProject()?.isLocked ?? false);
 
   // Delete dialog
   pendingDeleteEntry = signal<Entry | null>(null);

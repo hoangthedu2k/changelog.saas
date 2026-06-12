@@ -1,8 +1,19 @@
 <div class="el">
   <div class="el__header">
     <h1 class="el__title">Entries</h1>
-    <a routerLink="/app/entries/new" class="btn btn--primary">+ New Entry</a>
+    @if (isProjectLocked()) {
+      <span class="badge badge--warning">🔒 Project locked</span>
+    } @else {
+      <a routerLink="/app/entries/new" class="btn btn--primary">+ New Entry</a>
+    }
   </div>
+
+  @if (isProjectLocked()) {
+    <div class="el__locked-banner">
+      This project is locked because your plan was downgraded.
+      <a routerLink="/app/settings/billing">Upgrade to unlock →</a>
+    </div>
+  }
 
   @if (!projectService.activeProject()) {
     <div class="el__empty">

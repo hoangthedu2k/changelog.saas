@@ -6,16 +6,20 @@ namespace ChangelogSaas.Application.Billing
     public class CreateCheckoutCommandHandler : IRequestHandler<CreateCheckoutCommand, string>
     {
         private readonly IBillingService _billing;
+        private readonly IAppDbContext _db;
 
-        public CreateCheckoutCommandHandler(IBillingService billing)
+        public CreateCheckoutCommandHandler(IBillingService billing, IAppDbContext db)
         {
             _billing = billing;
+            _db = db;
         }
 
-        public Task<string> Handle(CreateCheckoutCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(CreateCheckoutCommand request, CancellationToken cancellationToken)
         {
-            return _billing.CreateCheckoutSessionAsync(
+            var user = await _db.Users.FindAsync(new object[] { request.UserId }, cancellationToken);
+            return await _billing.CreateCheckoutSessionAsync(
                 request.UserId.ToString(),
+                user?.StripeCustomerId,
                 request.PriceId,
                 request.SuccessUrl,
                 request.CancelUrl);

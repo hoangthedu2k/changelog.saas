@@ -5,6 +5,7 @@ using ChangelogSaas.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Resend;
 
 namespace ChangelogSaas.Infrastructure
 {
@@ -35,6 +36,15 @@ namespace ChangelogSaas.Infrastructure
             services.AddStackExchangeRedisCache(opts => opts.Configuration = redisConn);
             services.AddScoped<ICacheService, RedisCacheService>();
             services.AddScoped<IBillingService, BillingService>();
+
+            services.AddOptions();
+            services.AddHttpClient<ResendClient>();
+            services.Configure<ResendClientOptions>(o =>
+                o.ApiToken = configuration["Resend:ApiKey"]
+                    ?? throw new InvalidOperationException("Resend:ApiKey is missing."));
+            services.AddTransient<IResend, ResendClient>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IBackgroundJobService, HangfireBackgroundJobService>();
 
             return services;
         }

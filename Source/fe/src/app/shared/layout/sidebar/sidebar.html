@@ -29,6 +29,9 @@
               (click)="selectProject(project)"
             >
               {{ project.name }}
+              @if (project.isLocked) {
+                <span class="sidebar__locked-badge">🔒</span>
+              }
             </button>
           }
           <div class="sidebar__project-divider"></div>

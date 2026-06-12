@@ -163,7 +163,7 @@ export class EntryEditor implements OnInit {
     const pid = this.projectId();
     if (!pid) return;
 
-    // Load subscriber count trước khi mở dialog
+    // Load subscriber count before opening the dialog
     this.subscriberCount.set(null);
     this.showPublishDialog.set(true);
 
