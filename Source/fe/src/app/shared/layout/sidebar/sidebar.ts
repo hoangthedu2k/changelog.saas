@@ -49,6 +49,7 @@ export class Sidebar {
   settingsNavItems: NavItem[] = [
     { label: 'Appearance', path: '/app/settings/appearance', icon: '◈' },
     { label: 'Project', path: '/app/settings/project', icon: '⊞' },
+    { label: 'Custom Domain', path: '/app/settings/custom-domain', icon: '◉' },
   ];
 
   toggleDropdown() {

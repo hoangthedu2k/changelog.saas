@@ -20,6 +20,7 @@ export const routes: Routes = [
             { path: 'settings', redirectTo: 'settings/appearance', pathMatch: 'full' },
             { path: 'settings/appearance', loadComponent: () => import('./features/settings/appearance/appearance').then(m => m.Appearance) },
             { path: 'settings/project', loadComponent: () => import('./features/settings/project/project-settings').then(m => m.ProjectSettings) },
+            { path: 'settings/custom-domain', loadComponent: () => import('./features/settings/custom-domain/custom-domain').then(m => m.CustomDomain) },
         ],
     },
     { path: 'c/:slug', loadComponent: () => import('./public/changelog-page/changelog-page').then(m => m.ChangelogPage) },

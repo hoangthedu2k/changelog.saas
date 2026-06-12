@@ -1,1 +1,85 @@
-<p>custom-domain works!</p>
+<div class="cd">
+  <div class="cd__header">
+    <h1 class="cd__title">Custom Domain</h1>
+    <p class="cd__subtitle">Point your own domain to your changelog public page.</p>
+  </div>
+
+  @if (!activeProject()) {
+    <div class="cd__empty">Select a project to configure a custom domain.</div>
+  } @else {
+    <div class="cd__card">
+      <h2 class="cd__section-title">Domain</h2>
+      <p class="cd__section-desc">
+        Enter a domain or subdomain you own (e.g. <code>changelog.yourcompany.com</code>).
+      </p>
+
+      <div class="cd__field">
+        <label class="cd__label" for="domain">Custom domain</label>
+        <div class="cd__input-row">
+          <input
+            id="domain"
+            class="cd__input"
+            type="text"
+            placeholder="changelog.yourcompany.com"
+            autocomplete="off"
+            [formControl]="domainControl"
+          />
+          <button
+            class="btn btn--primary"
+            [disabled]="domainControl.invalid || saving()"
+            (click)="save()"
+          >
+            {{ saving() ? 'Saving…' : saved() ? 'Saved ✓' : 'Save' }}
+          </button>
+          @if (activeProject()?.customDomain) {
+            <button
+              class="btn btn--danger-outline"
+              [disabled]="removing()"
+              (click)="remove()"
+            >
+              {{ removing() ? 'Removing…' : 'Remove' }}
+            </button>
+          }
+        </div>
+        @if (domainControl.invalid && domainControl.dirty) {
+          <p class="cd__error">Enter a valid domain (e.g. changelog.yourcompany.com).</p>
+        }
+      </div>
+
+      @if (activeProject()?.customDomain) {
+        <div class="cd__current">
+          Current domain: <strong>{{ activeProject()?.customDomain }}</strong>
+        </div>
+      }
+    </div>
+
+    <div class="cd__card">
+      <h2 class="cd__section-title">DNS Configuration</h2>
+      <p class="cd__section-desc">
+        Add the following DNS record at your domain registrar. Changes can take up to 48 hours to propagate.
+      </p>
+
+      <table class="cd__dns-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Name</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>CNAME</code></td>
+            <td><code>{{ domainControl.value || 'your-subdomain' }}</code></td>
+            <td><code>cname.changelogsaas.com</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="cd__tip">
+        <span class="cd__tip-icon">💡</span>
+        <span>If you're using an apex domain (e.g. <code>yourcompany.com</code> without a subdomain), use an <strong>ALIAS</strong> or <strong>ANAME</strong> record instead of CNAME — not all registrars support this.</span>
+      </div>
+    </div>
+  }
+</div>
