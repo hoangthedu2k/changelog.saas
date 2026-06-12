@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProjectService } from '../../../core/services/project.service';
-import { BillingService } from '../../../core/services/billing.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Project } from '../../../core/models/project.model';
 
@@ -22,7 +21,6 @@ interface NavItem {
 })
 export class Sidebar {
   projectService = inject(ProjectService);
-  billingService = inject(BillingService);
   authService = inject(AuthService);
 
   userInitials = computed(() => {
@@ -33,11 +31,6 @@ export class Sidebar {
   });
 
   dropdownOpen = signal(false);
-
-  isFree = computed(() => {
-    const sub = this.billingService.subscription();
-    return sub === null || sub.plan === 'Free';
-  });
 
   mainNavItems: NavItem[] = [
     { label: 'Dashboard', path: '/app/dashboard', icon: '▦' },

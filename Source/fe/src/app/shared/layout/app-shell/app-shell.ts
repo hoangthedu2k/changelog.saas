@@ -5,7 +5,6 @@ import { Sidebar } from '../sidebar/sidebar';
 import { Topbar } from '../topbar/topbar';
 import { Toast } from '../../components/toast/toast';
 import { ProjectService } from '../../../core/services/project.service';
-import { BillingService } from '../../../core/services/billing.service';
 
 @Component({
   selector: 'app-app-shell',
@@ -17,12 +16,10 @@ import { BillingService } from '../../../core/services/billing.service';
 })
 export class AppShell {
   private projectService = inject(ProjectService);
-  billing = inject(BillingService);
 
   constructor() {
     afterNextRender(() => {
       this.projectService.loadProjects().subscribe();
-      this.billing.loadSubscription().subscribe();
     });
   }
 }
