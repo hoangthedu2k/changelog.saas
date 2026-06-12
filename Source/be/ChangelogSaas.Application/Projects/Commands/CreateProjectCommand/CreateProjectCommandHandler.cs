@@ -2,7 +2,6 @@ using ChangelogSaas.Application.Common.DTOs.Project;
 using ChangelogSaas.Application.Interfaces;
 using ChangelogSaas.Domain.Entities;
 using ChangelogSaas.Domain.Exceptions;
-using ChangelogSaas.Domain.Plans;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,15 +15,6 @@ namespace ChangelogSaas.Application.Projects.Commands.CreateProjectCommand
 
         public async Task<ProjectDTO> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
         {
-            var user = await _db.Users.FindAsync(new object[] { request.UserId }, cancellationToken);
-            var subscription = await _db.Subscriptions
-                .FirstOrDefaultAsync(s => s.UserId == request.UserId, cancellationToken);
-            var plan = subscription?.Plan ?? user?.EffectivePlan ?? Domain.Enums.SubscriptionPlan.Free;
-
-            var projectCount = await _db.Projects.CountAsync(p => p.UserId == request.UserId, cancellationToken);
-            if (projectCount >= PlanLimits.MaxProjects(plan))
-                throw new PlanLimitException($"Your {plan} plan allows up to {PlanLimits.MaxProjects(plan)} project(s). Upgrade to create more.");
-
             var slug = string.IsNullOrWhiteSpace(request.Request.Slug)
                 ? Project.Slugify(request.Request.Name)
                 : request.Request.Slug.Trim().ToLowerInvariant();

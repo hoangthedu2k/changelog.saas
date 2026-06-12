@@ -2,7 +2,6 @@ using ChangelogSaas.Application.Interfaces;
 using ChangelogSaas.Domain.Entities;
 using ChangelogSaas.Domain.Enums;
 using ChangelogSaas.Domain.Exceptions;
-using ChangelogSaas.Domain.Plans;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,16 +26,6 @@ namespace ChangelogSaas.Application.Subscribers.Commands.SubscribeCommand
             var project = await _db.Projects
                 .FirstOrDefaultAsync(p => p.Id == request.ProjectId, cancellationToken)
                 ?? throw new NotFoundException(nameof(Project), request.ProjectId);
-
-            var user = await _db.Users.FindAsync(new object[] { project.UserId }, cancellationToken);
-            var subscription = await _db.Subscriptions
-                .FirstOrDefaultAsync(s => s.UserId == project.UserId, cancellationToken);
-            var plan = subscription?.Plan ?? user?.EffectivePlan ?? SubscriptionPlan.Free;
-
-            var subscriberCount = await _db.Subscribers
-                .CountAsync(s => s.ProjectId == request.ProjectId && s.Status == SubscriberStatus.Verified, cancellationToken);
-            if (subscriberCount >= PlanLimits.MaxSubscribers(plan))
-                throw new PlanLimitException($"This project has reached the subscriber limit for the {plan} plan.");
 
             var email = request.Email.Trim().ToLowerInvariant();
             var existing = await _db.Subscribers
