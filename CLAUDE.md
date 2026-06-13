@@ -130,7 +130,7 @@ public static class EntryEndpoints {
 - ✅ Tuần 2, Buổi 1–2: Project CRUD + Entry CRUD (CQRS pattern)
 - ✅ Tuần 2, Buổi 3: Widget public endpoint `GET /api/widget/{slug}`
 - ✅ Tuần 2, Buổi 4: Redis caching + Hangfire + Subscriber endpoints
-- ⬜ Tuần 5: Stripe billing + Resend email
+- ✅ Tuần 5: Resend email integration (Stripe billing removed — all features free)
 
 ---
 
