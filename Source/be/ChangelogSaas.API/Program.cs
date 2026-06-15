@@ -60,10 +60,13 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? ["http://localhost:4200"];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod());
 
@@ -100,5 +103,7 @@ app.MapProjectEndpoints();
 app.MapEntryEndpoints();
 app.MapWidgetEndpoints();
 app.MapSubscriberEndpoints();
+
+await app.Services.MigrateDatabaseAsync();
 
 app.Run();

@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+.git/
+.gitignore
+**/appsettings.Secrets.json
+**/appsettings.Development.json
+docker-compose.yml
+CLAUDE.md
+_claude/

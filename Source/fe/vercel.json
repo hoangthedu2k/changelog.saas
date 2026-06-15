@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "framework": null,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "outputDirectory": "dist/changelog-app/browser",
+  "functions": {
+    "api/ssr.mjs": {
+      "includeFiles": "dist/changelog-app/**"
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*\\.(?:js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot|map))$",
+      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/ssr"
+    }
+  ]
+}
