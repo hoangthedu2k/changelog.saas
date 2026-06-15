@@ -13,8 +13,9 @@ namespace ChangelogSaas.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            string connectionString = configuration.GetConnectionString("DefaultConnection")
+            string rawConn = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            string connectionString = ToNpgsqlConnectionString(rawConn);
 
             services.AddDbContext<AppDbContext>(options =>
             {
@@ -57,6 +58,22 @@ namespace ChangelogSaas.Infrastructure
             using var scope = services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             await db.Database.MigrateAsync();
+        }
+
+        private static string ToNpgsqlConnectionString(string cs)
+        {
+            if (!cs.StartsWith("postgres://") && !cs.StartsWith("postgresql://"))
+                return cs;
+
+            var uri = new Uri(cs);
+            var parts = uri.UserInfo.Split(':', 2);
+            var host = uri.Host;
+            var port = uri.Port > 0 ? uri.Port : 5432;
+            var db = uri.AbsolutePath.TrimStart('/');
+            var user = parts[0];
+            var pass = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : "";
+
+            return $"Host={host};Port={port};Database={db};Username={user};Password={pass}";
         }
     }
 }

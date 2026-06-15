@@ -20,7 +20,8 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-var pgConn = builder.Configuration.GetConnectionString("DefaultConnection")!;
+var pgConn = ToNpgsqlConnectionString(
+    builder.Configuration.GetConnectionString("DefaultConnection")!);
 builder.Services.AddHangfire(cfg => cfg
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
@@ -107,3 +108,21 @@ app.MapSubscriberEndpoints();
 await app.Services.MigrateDatabaseAsync();
 
 app.Run();
+
+// Converts postgres:// or postgresql:// URL to Npgsql key-value format.
+// Hangfire.PostgreSql does not accept URL-format connection strings.
+static string ToNpgsqlConnectionString(string cs)
+{
+    if (!cs.StartsWith("postgres://") && !cs.StartsWith("postgresql://"))
+        return cs;
+
+    var uri = new Uri(cs);
+    var parts = uri.UserInfo.Split(':', 2);
+    var host = uri.Host;
+    var port = uri.Port > 0 ? uri.Port : 5432;
+    var db = uri.AbsolutePath.TrimStart('/');
+    var user = parts[0];
+    var pass = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : "";
+
+    return $"Host={host};Port={port};Database={db};Username={user};Password={pass}";
+}
