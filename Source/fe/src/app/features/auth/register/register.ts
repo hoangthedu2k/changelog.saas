@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { RegisterRequest } from '../../../core/models/user.model';
+import { parseApiError } from '../../../core/http/parse-api-error';
 import { environment } from '../../../../environments/environment';
 
 declare const google: any;
@@ -122,7 +123,7 @@ export class Register {
         setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err) => {
-        this.errorMessage.set(err?.error?.message ?? 'Registration failed. Please try again.');
+        this.errorMessage.set(parseApiError(err));
         this.isSubmitting.set(false);
       },
     });

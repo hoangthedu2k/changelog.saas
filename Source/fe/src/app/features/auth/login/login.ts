@@ -16,6 +16,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LoginRequest } from '../../../core/models/user.model';
 import { environment } from '../../../../environments/environment';
+import { parseApiError } from '../../../core/http/parse-api-error';
 
 declare const google: any;
 declare const FB: any;
@@ -102,7 +103,7 @@ export class Login {
       next: () => this.router.navigate(['/app']),
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err?.error?.message ?? 'Sign-in failed. Please try again.');
+        this.errorMessage.set(parseApiError(err));
       },
     });
   }
@@ -116,7 +117,7 @@ export class Login {
       next: () => this.router.navigate(['/app']),
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err?.error?.message ?? 'Invalid email or password.');
+        this.errorMessage.set(parseApiError(err));
       },
     });
   }
