@@ -10,5 +10,5 @@
   <circle cx="31" cy="31.5" r="4" fill="#a5f3c4"/>
   <circle cx="31" cy="31.5" r="7" fill="#a5f3c4" opacity="0.25"/>
   <!-- Wordmark -->
-  <text x="52" y="30" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-weight="600" font-size="22" fill="#1a1a2e" letter-spacing="-0.5">Horavex</text>
+  <text x="52" y="28" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-weight="700" font-size="16" fill="#1a1a2e" letter-spacing="-0.3">Hora<tspan fill="#6c63ff">CHANGELOG</tspan></text>
 </svg>
