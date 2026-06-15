@@ -2,14 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY ChangelogSaaS.slnx ./
 COPY ChangelogSaas.API/ChangelogSaas.API.csproj ChangelogSaas.API/
 COPY ChangelogSaas.Application/ChangelogSaas.Application.csproj ChangelogSaas.Application/
 COPY ChangelogSaas.Domain/ChangelogSaas.Domain.csproj ChangelogSaas.Domain/
 COPY ChangelogSaas.Infrastructure/ChangelogSaas.Infrastructure.csproj ChangelogSaas.Infrastructure/
 COPY ChangelogSaas.Tests/ChangelogSaas.Tests.csproj ChangelogSaas.Tests/
 
-RUN dotnet restore
+RUN dotnet restore ChangelogSaas.API/ChangelogSaas.API.csproj
 
 COPY . .
 
