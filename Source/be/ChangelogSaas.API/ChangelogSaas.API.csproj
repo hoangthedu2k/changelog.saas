@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ChangelogSaaS.Application\ChangelogSaas.Application.csproj" />
-    <ProjectReference Include="..\ChangelogSaaS.Infrastructure\ChangelogSaas.Infrastructure.csproj" />
+    <ProjectReference Include="..\ChangelogSaas.Application\ChangelogSaas.Application.csproj" />
+    <ProjectReference Include="..\ChangelogSaas.Infrastructure\ChangelogSaas.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
