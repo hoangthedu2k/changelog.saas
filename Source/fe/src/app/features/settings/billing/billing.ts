@@ -57,7 +57,7 @@ export class Billing {
         { label: 'Remove branding', available: true },
         { label: 'API access', available: false },
       ],
-      priceId: environment.stripe.proPriceId,
+      priceId: null,
     },
     {
       id: 'team',
@@ -74,7 +74,7 @@ export class Billing {
         { label: 'Remove branding', available: true },
         { label: 'API access', available: true },
       ],
-      priceId: environment.stripe.teamPriceId,
+      priceId: null,
     },
   ];
 
