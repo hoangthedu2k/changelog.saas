@@ -36,7 +36,15 @@ namespace ChangelogSaas.Infrastructure.Jobs
             {
                 var unsubscribeUrl = $"{_publicUrl}/unsubscribe?token={s.UnsubscribeToken}";
                 return _email.SendChangelogNotificationAsync(
-                    s.Email, project.Name, entry.Title, entryUrl, unsubscribeUrl);
+                    s.Email,
+                    project.Name,
+                    entry.Title,
+                    entry.ContentHtml,
+                    entry.Tags,
+                    entry.Version,
+                    entry.PublishedAt,
+                    entryUrl,
+                    unsubscribeUrl);
             });
 
             await Task.WhenAll(tasks);
