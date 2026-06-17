@@ -12,6 +12,14 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseSentry(o =>
+{
+    o.Dsn = builder.Configuration["Sentry:Dsn"] ?? "";
+    o.TracesSampleRate = double.TryParse(builder.Configuration["Sentry:TracesSampleRate"], out var rate) ? rate : 0.2;
+    o.Environment = builder.Configuration["Sentry:Environment"] ?? builder.Environment.EnvironmentName;
+    o.SendDefaultPii = false;
+});
+
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                      .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
                      .AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: true)
@@ -98,6 +106,8 @@ if (app.Environment.IsDevelopment())
         options.WithDefaultHttpClient(ScalarTarget.Http, ScalarClient.HttpClient);
     });
 }
+
+app.MapGet("/api/health", () => Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }));
 
 app.MapAuthEndpoints();
 app.MapProjectEndpoints();
