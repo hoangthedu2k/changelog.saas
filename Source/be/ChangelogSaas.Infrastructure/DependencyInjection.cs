@@ -34,7 +34,7 @@ namespace ChangelogSaas.Infrastructure
 
             var redisConn = configuration.GetConnectionString("Redis")
                 ?? throw new InvalidOperationException("Connection string 'Redis' not found.");
-            services.AddStackExchangeRedisCache(opts => opts.Configuration = redisConn);
+            services.AddStackExchangeRedisCache(opts => opts.Configuration = ToRedisConnectionString(redisConn));
             services.AddScoped<ICacheService, RedisCacheService>();
             services.AddScoped<IBillingService, BillingService>();
 
@@ -58,6 +58,25 @@ namespace ChangelogSaas.Infrastructure
             using var scope = services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             await db.Database.MigrateAsync();
+        }
+
+        private static string ToRedisConnectionString(string cs)
+        {
+            if (!cs.StartsWith("redis://") && !cs.StartsWith("rediss://"))
+                return cs;
+
+            var uri = new Uri(cs);
+            var host = uri.Host;
+            var port = uri.Port > 0 ? uri.Port : 6379;
+            var password = uri.UserInfo.Contains(':')
+                ? Uri.UnescapeDataString(uri.UserInfo.Split(':', 2)[1])
+                : "";
+            var useSsl = cs.StartsWith("rediss://");
+
+            var conn = $"{host}:{port}";
+            if (!string.IsNullOrEmpty(password)) conn += $",password={password}";
+            if (useSsl) conn += ",ssl=True";
+            return conn;
         }
 
         private static string ToNpgsqlConnectionString(string cs)
