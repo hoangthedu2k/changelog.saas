@@ -18,7 +18,7 @@ export class WidgetSetup {
   embedCode = computed(() => {
     const p = this.projectService.activeProject();
     if (!p) return '';
-    const apiOrigin = environment.apiUrl.replace('/api', '');
+    const apiOrigin = environment.apiUrl.replace(/\/api$/, '');
     return `<script src="${apiOrigin}/widget.js" data-project="${p.slug}" data-public="${environment.publicUrl}"></script>`;
   });
 
