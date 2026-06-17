@@ -28,33 +28,35 @@
       <p>{{ statusFilter() ? 'No subscribers match this filter.' : 'No subscribers yet. Share your changelog public page to get subscribers.' }}</p>
     </div>
   } @else {
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Subscribed</th>
-          <th>Confirmed</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (sub of subscribers(); track sub.id) {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
           <tr>
-            <td class="table__email">{{ sub.email }}</td>
-            <td>
-              <span class="badge"
-                [class.badge--success]="sub.status === 'Verified'"
-                [class.badge--warning]="sub.status === 'Pending'"
-                [class.badge--neutral]="sub.status === 'Unsubscribed'">
-                {{ sub.status }}
-              </span>
-            </td>
-            <td class="table__date">{{ sub.createdAt | date:'dd/MM/yyyy' }}</td>
-            <td class="table__date">{{ sub.confirmedAt ? (sub.confirmedAt | date:'dd/MM/yyyy') : '—' }}</td>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Subscribed</th>
+            <th>Confirmed</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (sub of subscribers(); track sub.id) {
+            <tr>
+              <td class="table__email">{{ sub.email }}</td>
+              <td>
+                <span class="badge"
+                  [class.badge--success]="sub.status === 'Verified'"
+                  [class.badge--warning]="sub.status === 'Pending'"
+                  [class.badge--neutral]="sub.status === 'Unsubscribed'">
+                  {{ sub.status }}
+                </span>
+              </td>
+              <td class="table__date">{{ sub.createdAt | date:'dd/MM/yyyy' }}</td>
+              <td class="table__date">{{ sub.confirmedAt ? (sub.confirmedAt | date:'dd/MM/yyyy') : '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
     @if (totalPages() > 1) {
       <div class="sl__pagination">

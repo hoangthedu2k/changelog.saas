@@ -20,6 +20,31 @@
     gap: 12px;
   }
 
+  &__menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    transition: background 0.15s;
+
+    &:hover {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+    }
+  }
+
+  &__menu-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
   &__email {
     font-size: 13px;
     color: var(--color-text-tertiary);
@@ -43,6 +68,18 @@
     &:hover {
       background: var(--color-bg-secondary);
       color: var(--color-text-primary);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 16px;
+
+    &__menu-btn {
+      display: flex;
+    }
+
+    &__email {
+      display: none;
     }
   }
 }

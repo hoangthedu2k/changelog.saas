@@ -2,6 +2,10 @@
   padding: 28px 32px;
   max-width: 960px;
 
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
   &__loading {
     padding: 40px;
     color: var(--color-text-tertiary);
@@ -36,6 +40,12 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
   }
 
   &__title {
@@ -86,6 +96,11 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 .stat-card {

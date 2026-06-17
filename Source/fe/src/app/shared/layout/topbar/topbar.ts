@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AuthService } from '../../../core/auth/auth.service';
+import { LayoutService } from '../../../core/services/layout.service';
 
 @Component({
   selector: 'app-topbar',
@@ -11,6 +12,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 })
 export class Topbar {
   private auth = inject(AuthService);
+  layout = inject(LayoutService);
 
   currentUser = this.auth.currentUser;
 

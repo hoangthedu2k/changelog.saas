@@ -11,6 +11,11 @@
     padding: 24px 32px;
     border-bottom: 0.5px solid var(--color-border-tertiary, #f0eeed);
     flex-wrap: wrap;
+
+    @media (max-width: 600px) {
+      padding: 16px;
+      flex-direction: column;
+    }
   }
 
   &__title {
@@ -85,11 +90,24 @@
     display: flex;
     gap: 32px;
     padding: 32px;
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+      padding: 16px;
+      gap: 16px;
+    }
   }
 
   &__sidebar {
     width: 160px;
     flex-shrink: 0;
+
+    @media (max-width: 600px) {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
   }
 
   &__filter-title {

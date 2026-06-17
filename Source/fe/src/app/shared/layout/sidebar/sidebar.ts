@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProjectService } from '../../../core/services/project.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { LayoutService } from '../../../core/services/layout.service';
 import { Project } from '../../../core/models/project.model';
 
 interface NavItem {
@@ -22,6 +23,7 @@ interface NavItem {
 export class Sidebar {
   projectService = inject(ProjectService);
   authService = inject(AuthService);
+  layout = inject(LayoutService);
 
   userInitials = computed(() => {
     const user = this.authService.currentUser();

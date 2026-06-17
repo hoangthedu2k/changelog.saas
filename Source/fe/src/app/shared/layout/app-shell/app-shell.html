@@ -1,4 +1,5 @@
-<div class="shell">
+<div class="shell" [class.shell--sidebar-open]="layout.sidebarOpen()">
+  <div class="shell__overlay" (click)="layout.closeSidebar()"></div>
   <app-sidebar />
   <div class="shell__main">
     <app-topbar />

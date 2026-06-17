@@ -1,10 +1,10 @@
-<nav class="sidebar">
+<nav class="sidebar" [class.sidebar--open]="layout.sidebarOpen()">
   <!-- Logo + Project switcher -->
   <div class="sidebar__logo">
     <img src="horavex-changelog-logo.svg" alt="HoraCHANGELOG" class="sidebar__logo-img" height="28"/>
 
     @if (projectService.projects().length === 0) {
-      <a class="sidebar__logo-sub sidebar__logo-sub--empty" routerLink="/app/settings/project">
+      <a class="sidebar__logo-sub sidebar__logo-sub--empty" routerLink="/app/settings/project" (click)="layout.closeSidebar()">
         + Create project
       </a>
     } @else {
@@ -25,7 +25,7 @@
             </button>
           }
           <div class="sidebar__project-divider"></div>
-          <a class="sidebar__project-new" routerLink="/app/settings/project" [queryParams]="{mode: 'new'}" (click)="dropdownOpen.set(false)">
+          <a class="sidebar__project-new" routerLink="/app/settings/project" [queryParams]="{mode: 'new'}" (click)="dropdownOpen.set(false); layout.closeSidebar()">
             + New project
           </a>
         </div>
@@ -40,6 +40,7 @@
           class="sidebar__link"
           [routerLink]="item.path"
           routerLinkActive="sidebar__link--active"
+          (click)="layout.closeSidebar()"
         >
           <span class="sidebar__link-icon">{{ item.icon }}</span>
           <span>{{ item.label }}</span>
@@ -57,6 +58,7 @@
           class="sidebar__link"
           [routerLink]="item.path"
           routerLinkActive="sidebar__link--active"
+          (click)="layout.closeSidebar()"
         >
           <span class="sidebar__link-icon">{{ item.icon }}</span>
           <span>{{ item.label }}</span>

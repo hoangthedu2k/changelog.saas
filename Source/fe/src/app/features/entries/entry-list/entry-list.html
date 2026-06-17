@@ -17,44 +17,46 @@
       <a routerLink="/app/entries/new" class="btn btn--primary">Create your first entry</a>
     </div>
   } @else {
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Version</th>
-          <th>Tags</th>
-          <th>Status</th>
-          <th>Created</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (entry of entries(); track entry.id) {
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
           <tr>
-            <td class="table__title">{{ entry.title }}</td>
-            <td class="table__mono">{{ entry.version || '—' }}</td>
-            <td>
-              @for (tag of entry.tags; track tag) {
-                <span class="tag">{{ tag }}</span>
-              }
-            </td>
-            <td>
-              <span class="badge" [class.badge--success]="entry.status === 'Published'" [class.badge--warning]="entry.status === 'Draft'">
-                {{ entry.status }}
-              </span>
-            </td>
-            <td class="table__date">{{ entry.createdAt | date:'dd/MM/yyyy' }}</td>
-            <td class="table__actions">
-              <a [routerLink]="['/app/entries', entry.id, 'edit']" class="btn btn--ghost btn--sm">Edit</a>
-              @if (entry.status === 'Draft') {
-                <button class="btn btn--ghost btn--sm" (click)="publish(entry)">Publish</button>
-              }
-              <button class="btn btn--danger btn--sm" (click)="openDeleteDialog(entry)">Delete</button>
-            </td>
+            <th>Title</th>
+            <th>Version</th>
+            <th>Tags</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th></th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (entry of entries(); track entry.id) {
+            <tr>
+              <td class="table__title">{{ entry.title }}</td>
+              <td class="table__mono">{{ entry.version || '—' }}</td>
+              <td>
+                @for (tag of entry.tags; track tag) {
+                  <span class="tag">{{ tag }}</span>
+                }
+              </td>
+              <td>
+                <span class="badge" [class.badge--success]="entry.status === 'Published'" [class.badge--warning]="entry.status === 'Draft'">
+                  {{ entry.status }}
+                </span>
+              </td>
+              <td class="table__date">{{ entry.createdAt | date:'dd/MM/yyyy' }}</td>
+              <td class="table__actions">
+                <a [routerLink]="['/app/entries', entry.id, 'edit']" class="btn btn--ghost btn--sm">Edit</a>
+                @if (entry.status === 'Draft') {
+                  <button class="btn btn--ghost btn--sm" (click)="publish(entry)">Publish</button>
+                }
+                <button class="btn btn--danger btn--sm" (click)="openDeleteDialog(entry)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
 </div>
 

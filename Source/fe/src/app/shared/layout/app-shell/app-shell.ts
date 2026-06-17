@@ -5,6 +5,7 @@ import { Sidebar } from '../sidebar/sidebar';
 import { Topbar } from '../topbar/topbar';
 import { Toast } from '../../components/toast/toast';
 import { ProjectService } from '../../../core/services/project.service';
+import { LayoutService } from '../../../core/services/layout.service';
 
 @Component({
   selector: 'app-app-shell',
@@ -16,6 +17,7 @@ import { ProjectService } from '../../../core/services/project.service';
 })
 export class AppShell {
   private projectService = inject(ProjectService);
+  layout = inject(LayoutService);
 
   constructor() {
     afterNextRender(() => {

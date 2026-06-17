@@ -2,6 +2,10 @@
   padding: 28px 32px;
   max-width: 860px;
 
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
   &__loading {
     padding: 40px;
     text-align: center;
@@ -13,6 +17,11 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
+
+    @media (max-width: 768px) {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
   }
 
   &__back { font-size: 13px; }
@@ -63,6 +72,10 @@
     gap: 16px;
     margin-bottom: 20px;
     align-items: start;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__meta-field {

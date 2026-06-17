@@ -1,6 +1,8 @@
 <header class="topbar">
   <div class="topbar__left">
-    <!-- project switcher -->
+    <button class="topbar__menu-btn" (click)="layout.toggleSidebar()" aria-label="Toggle menu">
+      <span class="topbar__menu-icon">☰</span>
+    </button>
   </div>
   <div class="topbar__right">
     @if (currentUser(); as user) {
