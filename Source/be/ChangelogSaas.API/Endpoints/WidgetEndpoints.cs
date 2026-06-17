@@ -24,7 +24,8 @@ namespace ChangelogSaas.API.Endpoints
             // Embeddable widget script
             app.MapGet("/api/widget.js", (HttpContext ctx) =>
             {
-                var origin = $"{ctx.Request.Scheme}://{ctx.Request.Host}";
+                var scheme = ctx.Request.Headers["X-Forwarded-Proto"].FirstOrDefault() ?? ctx.Request.Scheme;
+                var origin = $"{scheme}://{ctx.Request.Host}";
                 var js = $$"""
 (function () {
   var script = document.currentScript || (function () {
