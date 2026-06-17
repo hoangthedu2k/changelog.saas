@@ -37,7 +37,8 @@ export class AuthService {
     if (token) {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const payload = JSON.parse(atob(base64));
+      const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+      const payload = JSON.parse(new TextDecoder().decode(bytes));
       this.currentUser.set({ id: payload.sub, email: payload.email, displayName: payload.name } as User);
     }
   }
