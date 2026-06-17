@@ -107,7 +107,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.MapGet("/api/health", () => Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }));
+app.MapMethods("/api/health", ["GET", "HEAD"], () => Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }));
 
 app.MapAuthEndpoints();
 app.MapProjectEndpoints();
