@@ -10,6 +10,14 @@ if (environment.production && environment.sentryDsn) {
     environment: 'production',
     tracesSampleRate: 0.2,
     integrations: [Sentry.browserTracingIntegration()],
+    beforeSend(event) {
+      const msg = event.exception?.values?.[0]?.value ?? '';
+      // Ignore errors injected by browser extensions (Zalo, etc.)
+      if (/zaloJSV2|chrome-extension|moz-extension/i.test(msg)) return null;
+      const frames = event.exception?.values?.[0]?.stacktrace?.frames ?? [];
+      if (frames.some(f => /chrome-extension|moz-extension/i.test(f.filename ?? ''))) return null;
+      return event;
+    },
   });
 }
 
