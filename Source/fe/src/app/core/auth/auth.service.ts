@@ -34,12 +34,19 @@ export class AuthService {
   initFromStorage() {
     if (!this.isBrowser) return;
     const token = localStorage.getItem('token');
-    if (token) {
+    if (!token) return;
+    try {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
       const payload = JSON.parse(new TextDecoder().decode(bytes));
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        localStorage.removeItem('token');
+        return;
+      }
       this.currentUser.set({ id: payload.sub, email: payload.email, displayName: payload.name } as User);
+    } catch {
+      localStorage.removeItem('token');
     }
   }
 

@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/angular';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { authInterceptor } from "./core/auth/auth.interceptor";
+import { errorInterceptor } from "./core/http/error.interceptor";
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideQuillConfig } from 'ngx-quill';
 import { environment } from '../environments/environment';
@@ -17,7 +18,7 @@ export const appConfig: ApplicationConfig = {
       : []),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     provideQuillConfig({
       modules: {
         toolbar: [
