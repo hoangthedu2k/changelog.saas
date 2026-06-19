@@ -52,6 +52,14 @@
     margin: 0;
   }
 
+  &__header-btn {
+    flex-shrink: 0;
+  }
+
+  &__cta-mobile {
+    display: none;
+  }
+
   &__section { margin-top: 36px; }
 
   &__section-header {
@@ -84,6 +92,33 @@
       &:hover { text-decoration: underline; }
     }
   }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    &__header {
+      margin-bottom: 16px;
+    }
+
+    &__title {
+      font-size: 18px;
+    }
+
+    &__header-btn {
+      display: none;
+    }
+
+    &__cta-mobile {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    &__section {
+      margin-top: 24px;
+    }
+  }
 }
 
 /* ── Stat cards ────────────────────────────────────────────────────── */
@@ -91,6 +126,10 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+  }
 }
 
 .stat-card {
@@ -150,6 +189,25 @@
   &--primary {
     .stat-card__value { color: var(--color-primary-text); }
     .stat-card__icon { background: var(--color-primary-soft); }
+  }
+
+  @media (max-width: 768px) {
+    background: var(--color-bg-secondary);
+    border: none;
+    box-shadow: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 12px 8px;
+    gap: 4px;
+
+    &__icon { display: none; }
+
+    &__body { align-items: center; }
+
+    &__value { font-size: 22px; }
+
+    &__label { font-size: 10px; }
   }
 }
 
@@ -213,5 +271,33 @@
     font-size: 12px;
     color: var(--color-text-tertiary);
     white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    padding: 11px 14px;
+
+    &__info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    &__title {
+      max-width: 180px;
+    }
+
+    &__version {
+      font-size: 10px;
+    }
+
+    &__meta {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    &__date {
+      font-size: 11px;
+    }
   }
 }
