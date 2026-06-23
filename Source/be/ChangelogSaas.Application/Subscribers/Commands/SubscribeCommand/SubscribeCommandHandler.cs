@@ -35,6 +35,12 @@ namespace ChangelogSaas.Application.Subscribers.Commands.SubscribeCommand
             }
             else
             {
+                var count = await _db.Subscribers
+                    .CountAsync(s => s.ProjectId == request.ProjectId && s.Status == SubscriberStatus.Verified, cancellationToken);
+
+                if (count >= 2000)
+                    throw new DomainException("This project has reached the maximum subscriber limit (2,000).");
+
                 var subscriber = Subscriber.Create(request.ProjectId, email);
                 subscriber.Confirm();
                 _db.Subscribers.Add(subscriber);
