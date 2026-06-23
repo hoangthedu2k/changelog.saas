@@ -44,6 +44,7 @@ export class ChangelogPage implements OnInit {
   emailControl = new FormControl('', [Validators.required, Validators.email]);
   subscribing = signal(false);
   subscribeState = signal<'idle' | 'success' | 'error'>('idle');
+  subscribeError = signal<string | null>(null);
 
   filteredEntries = computed(() => {
     const d = this.data();
@@ -106,6 +107,7 @@ export class ChangelogPage implements OnInit {
     if (!d) return;
 
     this.subscribing.set(true);
+    this.subscribeError.set(null);
     this.api
       .post<{ confirmToken: string }>('/subscribers', {
         projectId: d.projectId,
@@ -118,9 +120,10 @@ export class ChangelogPage implements OnInit {
           this.subscribeState.set('success');
           this.emailControl.reset();
         },
-        error: () => {
+        error: (err) => {
           this.subscribing.set(false);
           this.subscribeState.set('error');
+          this.subscribeError.set(err?.error?.detail ?? 'Something went wrong, please try again.');
         },
       });
   }

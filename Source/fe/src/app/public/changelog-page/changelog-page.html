@@ -27,7 +27,7 @@
           <p class="cl__sub-ok">✓ Subscribed successfully</p>
         }
         @if (subscribeState() === 'error') {
-          <p class="cl__sub-err">Something went wrong, try again.</p>
+          <p class="cl__sub-err">{{ subscribeError() }}</p>
         }
       </div>
     </header>
