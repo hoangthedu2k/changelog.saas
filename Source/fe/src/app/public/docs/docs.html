@@ -1,0 +1,88 @@
+<div class="docs">
+
+  <!-- Nav -->
+  <nav class="docs__nav">
+    <a routerLink="/" class="docs__nav-logo">
+      <img src="horavex-changelog-logo.svg" alt="HoraCHANGELOG" height="28" />
+    </a>
+    <div class="docs__nav-actions">
+      <a routerLink="/login" class="docs__nav-link">Sign in</a>
+      <a routerLink="/register" class="docs__nav-cta">Get started free</a>
+    </div>
+  </nav>
+
+  <div class="docs__layout">
+
+    <!-- Sidebar -->
+    <aside class="docs__sidebar">
+      <p class="docs__sidebar-heading">On this page</p>
+      <ul class="docs__sidebar-list">
+        @for (section of sections; track section.id) {
+          <li>
+            <a class="docs__sidebar-link" (click)="scrollTo(section.id)" href="javascript:void(0)">{{ section.title }}</a>
+          </li>
+        }
+        <li><a class="docs__sidebar-link" (click)="scrollTo('faq')" href="javascript:void(0)">FAQ</a></li>
+      </ul>
+    </aside>
+
+    <!-- Content -->
+    <main class="docs__content">
+
+      <div class="docs__hero">
+        <span class="docs__badge">Documentation</span>
+        <h1 class="docs__title">Getting started with HoraCHANGELOG</h1>
+        <p class="docs__subtitle">
+          Everything you need to publish release notes, embed the widget, and keep your users informed.
+        </p>
+      </div>
+
+      @for (section of sections; track section.id) {
+        <section class="docs__section" [id]="section.id">
+          <h2 class="docs__section-title">{{ section.title }}</h2>
+
+          @for (step of section.steps; track step.title) {
+            <div class="docs__step">
+              @if (step.number) {
+                <span class="docs__step-num">{{ step.number }}</span>
+              }
+              <div class="docs__step-body">
+                <h3 class="docs__step-title">{{ step.title }}</h3>
+                <p class="docs__step-text" [innerHTML]="step.body"></p>
+                @if (step.code) {
+                  <pre class="docs__code"><code>{{ step.code }}</code></pre>
+                }
+              </div>
+            </div>
+          }
+        </section>
+      }
+
+      <!-- FAQ -->
+      <section class="docs__section" id="faq">
+        <h2 class="docs__section-title">FAQ</h2>
+        @for (item of faq; track item.q) {
+          <div class="docs__faq-item">
+            <h3 class="docs__faq-q">{{ item.q }}</h3>
+            <p class="docs__faq-a" [innerHTML]="item.a"></p>
+          </div>
+        }
+      </section>
+
+      <!-- CTA -->
+      <div class="docs__cta-box">
+        <h3 class="docs__cta-title">Ready to get started?</h3>
+        <p class="docs__cta-sub">Create your changelog in under 5 minutes — free, no credit card needed.</p>
+        <a routerLink="/register" class="docs__cta-btn">Create your changelog</a>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="docs__footer">
+    <img src="horavex-changelog-logo.svg" alt="HoraCHANGELOG" height="28" />
+    <p class="docs__footer-copy">&copy; 2026 Horavex. All rights reserved.</p>
+  </footer>
+
+</div>

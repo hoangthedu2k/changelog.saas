@@ -156,6 +156,37 @@
   }
 }
 
+.webview-notice {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  border: 0.5px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+  text-align: center;
+
+  p {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+}
+
+.btn-open-browser {
+  display: inline-block;
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--color-border-primary);
+  background: var(--color-bg-secondary);
+  font-size: 12px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover { opacity: 0.8; }
+}
+
 .auth-divider {
   display: flex;
   align-items: center;

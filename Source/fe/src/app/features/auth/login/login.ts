@@ -45,15 +45,33 @@ export class Login {
   errorMessage = signal<string | null>(null);
   isLoading = signal(false);
 
+  isWebView = signal(false);
+
   constructor() {
     afterNextRender(() => {
+      this.isWebView.set(this.detectWebView());
       this.initGoogle();
       this.initFacebook();
     });
   }
 
+  private detectWebView(): boolean {
+    const ua = navigator.userAgent || '';
+    return /ZaloApp|ZaloBrowser|FBAN|FBAV|Instagram|Line\/|MicroMessenger|WebView/i.test(ua)
+      || (/(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(ua))
+      || (/Android.*wv/i.test(ua));
+  }
+
+  openInSystemBrowser() {
+    const url = window.location.href;
+    // iOS Zalo: itms-apps trick doesn't work, just show a hint.
+    // Best effort: open self in a new tab which some WebViews hand off to the system browser.
+    window.open(url, '_system') || window.open(url, '_blank');
+  }
+
   private initGoogle() {
     if (!isPlatformBrowser(this.platformId)) return;
+    if (this.isWebView()) return; // Google GSI blocks WebViews anyway
     const clientId = environment.oauth.googleClientId;
     if (!clientId || typeof google === 'undefined') return;
 

@@ -1,0 +1,350 @@
+$primary: #1c1917;
+$accent: #f97316;
+$muted: #78716c;
+$border: #e7e5e4;
+$bg-soft: #fafaf9;
+$code-bg: #f5f5f4;
+
+.docs {
+  min-height: 100vh;
+  background: #fff;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  color: $primary;
+
+  // ── Nav ──────────────────────────────────────────────────────────────────
+  &__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 56px;
+    border-bottom: 0.5px solid $border;
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+
+  &__nav-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  &__nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__nav-link {
+    font-size: 13px;
+    color: $muted;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: color 0.15s;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+
+  &__nav-cta {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: $accent;
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 7px;
+    transition: opacity 0.15s;
+
+    &:hover {
+      opacity: 0.88;
+    }
+  }
+
+  // ── Layout ────────────────────────────────────────────────────────────────
+  &__layout {
+    display: flex;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    gap: 48px;
+  }
+
+  // ── Sidebar ──────────────────────────────────────────────────────────────
+  &__sidebar {
+    width: 200px;
+    flex-shrink: 0;
+
+    position: sticky;
+    top: 72px;
+    align-self: flex-start;
+
+    @media (max-width: 720px) {
+      display: none;
+    }
+  }
+
+  &__sidebar-heading {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $muted;
+    margin: 0 0 12px;
+  }
+
+  &__sidebar-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__sidebar-link {
+    font-size: 13px;
+    color: $muted;
+    text-decoration: none;
+    display: block;
+    padding: 4px 8px;
+    border-radius: 5px;
+    transition: color 0.15s, background 0.15s;
+
+    &:hover {
+      color: $primary;
+      background: $bg-soft;
+    }
+  }
+
+  // ── Content ───────────────────────────────────────────────────────────────
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  // ── Hero ──────────────────────────────────────────────────────────────────
+  &__hero {
+    margin-bottom: 56px;
+  }
+
+  &__badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: $accent;
+    background: rgba($accent, 0.08);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin: 0 0 12px;
+    color: $primary;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    color: $muted;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 540px;
+  }
+
+  // ── Section ───────────────────────────────────────────────────────────────
+  &__section {
+    margin-bottom: 56px;
+    scroll-margin-top: 72px;
+  }
+
+  &__section-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin: 0 0 24px;
+    color: $primary;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $border;
+  }
+
+  // ── Steps ─────────────────────────────────────────────────────────────────
+  &__step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__step-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: $accent;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  &__step-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__step-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: $primary;
+  }
+
+  &__step-text {
+    font-size: 14px;
+    color: $muted;
+    line-height: 1.65;
+    margin: 0 0 12px;
+
+    a {
+      color: $accent;
+      text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
+
+    strong { color: $primary; font-weight: 600; }
+    em { font-style: italic; }
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      background: $code-bg;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: $primary;
+    }
+  }
+
+  // ── Code block ────────────────────────────────────────────────────────────
+  &__code {
+    background: $code-bg;
+    border: 1px solid $border;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: $primary;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 0;
+
+    code {
+      font-family: inherit;
+      font-size: inherit;
+    }
+  }
+
+  // ── FAQ ───────────────────────────────────────────────────────────────────
+  &__faq-item {
+    border-bottom: 1px solid $border;
+    padding: 20px 0;
+
+    &:first-child { padding-top: 0; }
+    &:last-child { border-bottom: none; }
+  }
+
+  &__faq-q {
+    font-size: 15px;
+    font-weight: 600;
+    color: $primary;
+    margin: 0 0 8px;
+  }
+
+  &__faq-a {
+    font-size: 14px;
+    color: $muted;
+    line-height: 1.65;
+    margin: 0;
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      background: $code-bg;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: $primary;
+    }
+  }
+
+  // ── CTA Box ───────────────────────────────────────────────────────────────
+  &__cta-box {
+    background: $bg-soft;
+    border: 1px solid $border;
+    border-radius: 12px;
+    padding: 36px 40px;
+    margin-top: 56px;
+    text-align: center;
+  }
+
+  &__cta-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin: 0 0 8px;
+    color: $primary;
+  }
+
+  &__cta-sub {
+    font-size: 14px;
+    color: $muted;
+    margin: 0 0 20px;
+  }
+
+  &__cta-btn {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: $accent;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    transition: opacity 0.15s;
+
+    &:hover {
+      opacity: 0.88;
+    }
+  }
+
+  // ── Footer ────────────────────────────────────────────────────────────────
+  &__footer {
+    border-top: 1px solid $border;
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__footer-copy {
+    font-size: 12px;
+    color: $muted;
+    margin: 0;
+  }
+}
