@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 400" width="660" height="400">
+  <defs>
+    <clipPath id="c">
+      <rect x="0" y="0" width="660" height="400" rx="10"/>
+    </clipPath>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="white" stop-opacity="0"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0.88"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Browser chrome -->
+  <rect x="0" y="0" width="660" height="400" rx="10" fill="#eceae7"/>
+  <rect x="0" y="0" width="660" height="38" fill="#eceae7" clip-path="url(#c)"/>
+  <circle cx="18" cy="19" r="5" fill="#f87171"/>
+  <circle cx="32" cy="19" r="5" fill="#fbbf24"/>
+  <circle cx="46" cy="19" r="5" fill="#4ade80"/>
+  <rect x="130" y="10" width="400" height="18" rx="9" fill="white" stroke="#ddd8d4" stroke-width="0.5"/>
+  <text x="330" y="22.5" text-anchor="middle" font-size="11" fill="#a8a29e" font-family="-apple-system,BlinkMacSystemFont,sans-serif">horachangelog.com/c/my-project</text>
+
+  <!-- Page content -->
+  <rect x="0" y="38" width="660" height="362" fill="white" clip-path="url(#c)"/>
+
+  <!-- Header -->
+  <text x="24" y="68" font-size="15" font-weight="600" fill="#1c1917" font-family="-apple-system,BlinkMacSystemFont,sans-serif">My App Changelog</text>
+  <text x="24" y="84" font-size="11" fill="#a8a29e" font-family="-apple-system,BlinkMacSystemFont,sans-serif">4 updates · Subscribe to get notified</text>
+  <rect x="398" y="56" width="168" height="24" rx="6" fill="white" stroke="#e7e5e4" stroke-width="0.5"/>
+  <text x="412" y="72" font-size="11" fill="#c5c3be" font-family="-apple-system,BlinkMacSystemFont,sans-serif">your@email.com</text>
+  <rect x="572" y="56" width="68" height="24" rx="6" fill="#1c1917"/>
+  <text x="606" y="72" text-anchor="middle" font-size="11" fill="white" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Subscribe</text>
+
+  <!-- Dividers -->
+  <line x1="0" y1="98" x2="660" y2="98" stroke="#f0eeed" stroke-width="0.75"/>
+
+  <!-- Filter pills -->
+  <rect x="16" y="108" width="32" height="20" rx="10" fill="#1c1917"/>
+  <text x="32" y="122" text-anchor="middle" font-size="10.5" fill="white" font-family="-apple-system,BlinkMacSystemFont,sans-serif">All</text>
+  <rect x="52" y="108" width="54" height="20" rx="10" fill="none" stroke="#e0deda" stroke-width="0.5"/>
+  <text x="79" y="122" text-anchor="middle" font-size="10.5" fill="#78716c" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Feature</text>
+  <rect x="110" y="108" width="36" height="20" rx="10" fill="none" stroke="#e0deda" stroke-width="0.5"/>
+  <text x="128" y="122" text-anchor="middle" font-size="10.5" fill="#78716c" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Fix</text>
+  <rect x="150" y="108" width="90" height="20" rx="10" fill="none" stroke="#e0deda" stroke-width="0.5"/>
+  <text x="195" y="122" text-anchor="middle" font-size="10.5" fill="#78716c" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Improvement</text>
+
+  <line x1="0" y1="136" x2="660" y2="136" stroke="#f0eeed" stroke-width="0.75"/>
+  <line x1="112" y1="136" x2="112" y2="400" stroke="#f4f3f1" stroke-width="0.75"/>
+
+  <!-- Entry 1 — Feature -->
+  <text x="16" y="162" font-size="10.5" fill="#a8a29e" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Jun 10</text>
+  <text x="16" y="176" font-size="10.5" fill="#a8a29e" font-family="-apple-system,BlinkMacSystemFont,sans-serif">2026</text>
+  <rect x="124" y="144" width="52" height="18" rx="9" fill="#EEEDFE"/>
+  <text x="150" y="157" text-anchor="middle" font-size="10" fill="#534AB7" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Feature</text>
+  <text x="124" y="181" font-size="13.5" font-weight="600" fill="#1c1917" font-family="-apple-system,BlinkMacSystemFont,sans-serif">New dashboard analytics</text>
+  <text x="124" y="198" font-size="11.5" fill="#78716c" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Redesigned analytics with real-time charts, custom date ranges,</text>
+  <text x="124" y="213" font-size="11.5" fill="#78716c" font-family="-apple-system,BlinkMacSystemFont,sans-serif">and CSV export. Available on all plans.</text>
+  <text x="124" y="230" font-size="11" fill="#7c6bff" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Read more →</text>
+
+  <line x1="0" y1="244" x2="660" y2="244" stroke="#f0eeed" stroke-width="0.75"/>
+
+  <!-- Entry 2 — Fix -->
+  <text x="16" y="268" font-size="10.5" fill="#a8a29e" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Jun 7</text>
+  <text x="16" y="282" font-size="10.5" fill="#a8a29e" font-family="-apple-system,BlinkMacSystemFont,sans-serif">2026</text>
+  <rect x="124" y="252" width="32" height="18" rx="9" fill="#FAEEDA"/>
+  <text x="140" y="265" text-anchor="middle" font-size="10" fill="#854F0B" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Fix</text>
+  <text x="124" y="289" font-size="13.5" font-weight="600" fill="#1c1917" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Login redirect issue resolved</text>
+  <text x="124" y="306" font-size="11.5" fill="#78716c" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Fixed a bug where users were redirected to the wrong page</text>
+  <text x="124" y="321" font-size="11.5" fill="#78716c" font-family="-apple-system,BlinkMacSystemFont,sans-serif">after completing OAuth login.</text>
+  <text x="124" y="338" font-size="11" fill="#7c6bff" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Read more →</text>
+
+  <line x1="0" y1="352" x2="660" y2="352" stroke="#f0eeed" stroke-width="0.75"/>
+
+  <!-- Entry 3 — Improvement (faded) -->
+  <text x="16" y="373" font-size="10.5" fill="#c8c6c2" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Jun 2</text>
+  <text x="16" y="387" font-size="10.5" fill="#c8c6c2" font-family="-apple-system,BlinkMacSystemFont,sans-serif">2026</text>
+  <rect x="124" y="358" width="86" height="18" rx="9" fill="#E1F5EE"/>
+  <text x="167" y="371" text-anchor="middle" font-size="10" fill="#0F6E56" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Improvement</text>
+  <text x="124" y="396" font-size="13.5" font-weight="600" fill="#c8c6c2" font-family="-apple-system,BlinkMacSystemFont,sans-serif">Faster entry loading times</text>
+
+  <!-- Fade-out at bottom -->
+  <rect x="0" y="355" width="660" height="45" fill="url(#fade)" clip-path="url(#c)"/>
+
+  <!-- Outer border -->
+  <rect x="0" y="0" width="660" height="400" rx="10" fill="none" stroke="#d6d4d0" stroke-width="0.75"/>
+</svg>

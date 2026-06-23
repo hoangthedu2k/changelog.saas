@@ -177,13 +177,9 @@ $bg-soft: #fafaf9;
     }
   }
 
-  // ── Mock browser preview ──────────────────────────────────────────────────
+  // ── Product preview ───────────────────────────────────────────────────────
   &__preview {
-    flex: 0 0 380px;
-    border: 0.5px solid $border;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+    flex: 0 0 480px;
 
     @media (max-width: 860px) {
       flex: 1;
@@ -191,88 +187,10 @@ $bg-soft: #fafaf9;
     }
   }
 
-  &__preview-bar {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 14px;
-    background: $bg-soft;
-    border-bottom: 0.5px solid $border;
-  }
-
-  &__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-
-    &--red    { background: #ff5f57; }
-    &--yellow { background: #febc2e; }
-    &--green  { background: #28c840; }
-  }
-
-  &__preview-url {
-    flex: 1;
-    text-align: center;
-    font-size: 11px;
-    color: $muted;
-    background: #fff;
-    border: 0.5px solid $border;
-    border-radius: 4px;
-    padding: 3px 8px;
-  }
-
-  &__preview-body {
-    padding: 16px;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  &__mock-entry {
-    padding: 12px 14px;
-    border: 0.5px solid $border;
-    border-radius: 8px;
-    background: #fff;
-
-    &--dim {
-      opacity: 0.45;
-    }
-  }
-
-  &__mock-tag {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    border-radius: 4px;
-    padding: 2px 6px;
-    margin-bottom: 6px;
-
-    &--feature     { background: #dbeafe; color: #1d4ed8; }
-    &--fix         { background: #fee2e2; color: #b91c1c; }
-    &--improvement { background: #d1fae5; color: #065f46; }
-  }
-
-  &__mock-title {
-    font-size: 13px;
-    font-weight: 500;
-    margin: 0 0 3px;
-    color: $primary;
-  }
-
-  &__mock-date {
-    font-size: 11px;
-    color: #a8a29e;
-    margin: 0 0 6px;
-  }
-
-  &__mock-desc {
-    font-size: 12px;
-    color: $muted;
-    line-height: 1.5;
-    margin: 0;
+  &__preview-img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
   // ── Shared section wrapper ────────────────────────────────────────────────
