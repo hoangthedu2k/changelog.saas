@@ -40,7 +40,7 @@ export class SubscriberList {
   hasPrev = computed(() => this.result()?.hasPrev ?? false);
   hasNext = computed(() => this.result()?.hasNext ?? false);
 
-  readonly maxSubscribersLabel = '∞';
+  readonly maxSubscribersLabel = '2000';
 
   readonly statusOptions: { label: string; value: SubscriberStatus | '' }[] = [
     { label: 'All', value: '' },
