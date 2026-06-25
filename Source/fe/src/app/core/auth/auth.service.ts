@@ -31,6 +31,11 @@ export class AuthService {
     this.route.navigate(['/login']);
   }
 
+  clearSession() {
+    if (this.isBrowser) localStorage.removeItem('token');
+    this.currentUser.set(null);
+  }
+
   initFromStorage() {
     if (!this.isBrowser) return;
     const token = localStorage.getItem('token');

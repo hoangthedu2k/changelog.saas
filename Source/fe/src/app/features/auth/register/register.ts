@@ -118,8 +118,8 @@ export class Register {
     const req = this.form.getRawValue() as RegisterRequest;
     this.authService.register(req).subscribe({
       next: () => {
+        this.authService.clearSession();
         this.successMessage.set('Account created! Redirecting to login…');
-        this.authService.logout();
         setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err) => {
