@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -29,7 +29,7 @@ const WIDGET_POSITIONS: { value: WidgetPosition; label: string }[] = [
   styleUrl: './appearance.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Appearance implements OnInit {
+export class Appearance {
   projectService = inject(ProjectService);
   private toast = inject(ToastService);
 
@@ -44,15 +44,17 @@ export class Appearance implements OnInit {
     widgetPosition: new FormControl<WidgetPosition>('br', Validators.required),
   });
 
-  ngOnInit() {
-    const p = this.projectService.activeProject();
-    if (p) {
-      this.form.patchValue({
-        name: p.name,
-        accentColor: p.accentColor,
-        widgetPosition: p.widgetPosition,
-      });
-    }
+  constructor() {
+    effect(() => {
+      const p = this.projectService.activeProject();
+      if (p) {
+        this.form.patchValue({
+          name: p.name,
+          accentColor: p.accentColor,
+          widgetPosition: p.widgetPosition,
+        }, { emitEvent: false });
+      }
+    });
   }
 
   selectColor(color: string) {
