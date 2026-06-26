@@ -13,6 +13,7 @@ import { EntriesService } from '../entries.service';
 import { ProjectService } from '../../../core/services/project.service';
 import { SubscriberService } from '../../subscribers/subscriber.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { parseApiError } from '../../../core/http/parse-api-error';
 import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { Entry } from '../../../core/models/entry.model';
 
@@ -83,7 +84,7 @@ export class EntryEditor implements OnInit {
           }
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => { this.loading.set(false); this.toast.error('Failed to load entry.'); },
       });
     } else {
       this.loading.set(false);
@@ -138,7 +139,7 @@ export class EntryEditor implements OnInit {
           this.saving.set(false);
           this.toast.success('Draft saved.');
         },
-        error: () => this.saving.set(false),
+        error: (err) => { this.saving.set(false); this.toast.error(parseApiError(err)); },
       });
     } else {
       this.entriesService.create({
@@ -154,7 +155,7 @@ export class EntryEditor implements OnInit {
           this.toast.success('Draft created.');
           this.router.navigate(['/app/entries', newId, 'edit'], { replaceUrl: true });
         },
-        error: () => this.saving.set(false),
+        error: (err) => { this.saving.set(false); this.toast.error(parseApiError(err)); },
       });
     }
   }
@@ -189,7 +190,7 @@ export class EntryEditor implements OnInit {
         this.toast.success('Entry published successfully.');
         this.router.navigate(['/app/entries']);
       },
-      error: () => this.publishing.set(false),
+      error: (err) => { this.publishing.set(false); this.toast.error(parseApiError(err)); },
     });
   }
 }

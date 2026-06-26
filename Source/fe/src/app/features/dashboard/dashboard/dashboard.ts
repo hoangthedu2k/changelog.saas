@@ -3,6 +3,8 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DashboardService, DashboardStats } from '../dashboard.service';
 import { ProjectService } from '../../../core/services/project.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { parseApiError } from '../../../core/http/parse-api-error';
 import { Entry } from '../../../core/models/entry.model';
 
 @Component({
@@ -16,6 +18,7 @@ import { Entry } from '../../../core/models/entry.model';
 export class Dashboard {
   projectService = inject(ProjectService);
   private dashboardService = inject(DashboardService);
+  private toast = inject(ToastService);
 
   stats = signal<DashboardStats>({ total: 0, published: 0, draft: 0 });
   recentEntries = signal<Entry[]>([]);
@@ -29,10 +32,11 @@ export class Dashboard {
       this.loading.set(true);
       this.dashboardService.getRecentEntries(project.id).subscribe({
         next: entries => this.recentEntries.set(entries),
+        error: (err) => this.toast.error(parseApiError(err)),
       });
       this.dashboardService.getStats(project.id).subscribe({
         next: s => { this.stats.set(s); this.loading.set(false); },
-        error: () => this.loading.set(false),
+        error: (err) => { this.loading.set(false); this.toast.error(parseApiError(err)); },
       });
     });
   }

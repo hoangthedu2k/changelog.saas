@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DestroyRef } from '@angular/core';
 import { BillingService } from '../../../core/services/billing.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { parseApiError } from '../../../core/http/parse-api-error';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -18,6 +20,7 @@ export class Billing {
   billing = inject(BillingService);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+  private toast = inject(ToastService);
 
   upgradePrompt = signal(false);
   successBanner = signal(false);
@@ -85,12 +88,16 @@ export class Billing {
         this.upgradePrompt.set(p.get('upgrade') === 'true');
         if (p.get('success') === 'true') {
           this.successBanner.set(true);
-          this.billing.loadSubscription().subscribe();
+          this.billing.loadSubscription().subscribe({
+            error: (err) => this.toast.error(parseApiError(err)),
+          });
         }
       });
 
     afterNextRender(() => {
-      this.billing.loadSubscription().subscribe();
+      this.billing.loadSubscription().subscribe({
+        error: (err) => this.toast.error(parseApiError(err)),
+      });
     });
   }
 
@@ -119,7 +126,7 @@ export class Billing {
     const plan = planId === 'pro' ? 'Pro' : 'Team';
     this.billing.startTrial(plan).subscribe({
       next: () => { this.startingTrial = null; },
-      error: () => { this.startingTrial = null; },
+      error: (err) => { this.startingTrial = null; this.toast.error(parseApiError(err)); },
     });
   }
 
@@ -130,7 +137,7 @@ export class Billing {
     const cancelUrl = `${environment.publicUrl}/app/settings/billing`;
     this.billing.createCheckout(priceId, successUrl, cancelUrl).subscribe({
       next: ({ url }) => window.location.href = url,
-      error: () => { this.upgrading = null; },
+      error: (err) => { this.upgrading = null; this.toast.error(parseApiError(err)); },
     });
   }
 
@@ -138,6 +145,7 @@ export class Billing {
     const returnUrl = `${environment.publicUrl}/app/settings/billing`;
     this.billing.createPortal(returnUrl).subscribe({
       next: ({ url }) => window.location.href = url,
+      error: () => this.toast.error('Failed to open billing portal.'),
     });
   }
 }

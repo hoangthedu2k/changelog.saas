@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { ProjectService } from '../../../core/services/project.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { parseApiError } from '../../../core/http/parse-api-error';
 
 @Component({
   selector: 'app-custom-domain',
@@ -55,7 +56,7 @@ export class CustomDomain {
         this.toast.success('Custom domain saved.');
         setTimeout(() => this.saved.set(false), 2000);
       },
-      error: () => this.saving.set(false),
+      error: (err) => { this.saving.set(false); this.toast.error(parseApiError(err)); },
     });
   }
 
@@ -78,7 +79,7 @@ export class CustomDomain {
         this.domainControl.setValue('', { emitEvent: false });
         this.toast.success('Custom domain removed.');
       },
-      error: () => this.removing.set(false),
+      error: (err) => { this.removing.set(false); this.toast.error(parseApiError(err)); },
     });
   }
 }

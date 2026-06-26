@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../core/http/api.service';
 import { ProjectService } from '../../../core/services/project.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { Subscriber, SubscriberStatus } from '../../../core/models/subscriber.model';
 
 interface PagedResult<T> {
@@ -27,6 +28,7 @@ const PAGE_SIZE = 20;
 export class SubscriberList {
   private api = inject(ApiService);
   projectService = inject(ProjectService);
+  private toast = inject(ToastService);
 
   result = signal<PagedResult<Subscriber> | null>(null);
   loading = signal(false);
@@ -67,7 +69,7 @@ export class SubscriberList {
 
     this.api.get<PagedResult<Subscriber>>(url).subscribe({
       next: res => { this.result.set(res); this.loading.set(false); },
-      error: () => this.loading.set(false),
+      error: () => { this.loading.set(false); this.toast.error('Failed to load subscribers.'); },
     });
   }
 

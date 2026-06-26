@@ -35,7 +35,7 @@ export class EntryList {
       this.loading.set(true);
       this.entriesService.getAll({ projectId: project.id }).subscribe({
         next: entries => { this.entries.set(entries); this.loading.set(false); },
-        error: () => this.loading.set(false),
+        error: () => { this.loading.set(false); this.toast.error('Failed to load entries.'); },
       });
     });
   }
@@ -72,7 +72,7 @@ export class EntryList {
         this.deleting.set(false);
         this.toast.success(`"${title}" has been deleted.`);
       },
-      error: () => this.deleting.set(false),
+      error: () => { this.deleting.set(false); this.toast.error('Failed to delete entry.'); },
     });
   }
 }

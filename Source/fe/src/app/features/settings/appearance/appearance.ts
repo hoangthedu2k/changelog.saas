@@ -8,7 +8,9 @@ import {
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ProjectService } from '../../../core/services/project.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { WidgetPosition } from '../../../core/models/project.model';
+import { parseApiError } from '../../../core/http/parse-api-error';
 
 const ACCENT_COLORS = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#1a1714'];
 
@@ -29,6 +31,7 @@ const WIDGET_POSITIONS: { value: WidgetPosition; label: string }[] = [
 })
 export class Appearance implements OnInit {
   projectService = inject(ProjectService);
+  private toast = inject(ToastService);
 
   accentColors = ACCENT_COLORS;
   widgetPositions = WIDGET_POSITIONS;
@@ -99,7 +102,10 @@ export class Appearance implements OnInit {
         this.saved.set(true);
         setTimeout(() => this.saved.set(false), 2000);
       },
-      error: () => this.saving.set(false),
+      error: (err) => {
+        this.saving.set(false);
+        this.toast.error(parseApiError(err));
+      },
     });
   }
 }

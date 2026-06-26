@@ -46,6 +46,7 @@ export class ProjectService {
         this.projects.update(list => [...list, newProject]);
         this.activeProject.set(newProject);
       })
+      
     );
   }
 

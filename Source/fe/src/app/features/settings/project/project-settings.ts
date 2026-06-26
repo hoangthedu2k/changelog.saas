@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProjectService } from '../../../core/services/project.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { parseApiError } from '../../../core/http/parse-api-error';
 
 @Component({
   selector: 'app-project-settings',
@@ -100,7 +101,10 @@ export class ProjectSettings implements OnInit {
           setTimeout(() => this.saved.set(false), 2000);
         }
       },
-      error: () => this.saving.set(false),
+      error: (err) => {
+        this.saving.set(false);
+        this.toast.error(parseApiError(err));
+      },
     });
   }
 
@@ -119,7 +123,7 @@ export class ProjectSettings implements OnInit {
           this.router.navigate(['/app/settings/project'], { queryParams: { mode: 'new' } });
         }
       },
-      error: () => this.deleting.set(false),
+      error: (err) => { this.deleting.set(false); this.toast.error(parseApiError(err)); },
     });
   }
 }
