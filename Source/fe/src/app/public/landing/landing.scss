@@ -221,6 +221,37 @@ $bg-soft: #fafaf9;
     margin: 0 0 48px;
   }
 
+  // ── Demo video ────────────────────────────────────────────────────────────
+  &__demo {
+    padding: 72px 0 80px;
+    border-bottom: 0.5px solid $border;
+  }
+
+  &__demo-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: $muted;
+    margin: 0 0 20px;
+  }
+
+  &__demo-frame {
+    border: 0.5px solid $border;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+    max-width: 900px;
+    margin: 0 auto;
+    background: $primary;
+  }
+
+  &__demo-video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
   // ── Steps ─────────────────────────────────────────────────────────────────
   &__steps {
     background: $bg-soft;
