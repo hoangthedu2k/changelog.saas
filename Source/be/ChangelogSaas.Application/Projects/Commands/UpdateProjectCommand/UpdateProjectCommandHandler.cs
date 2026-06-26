@@ -9,10 +9,12 @@ namespace ChangelogSaas.Application.Projects.Commands.UpdateProjectCommand
     public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand, ProjectDTO>
     {
         private readonly IAppDbContext _db;
+        private readonly ICacheService _cache;
 
-        public UpdateProjectCommandHandler(IAppDbContext db)
+        public UpdateProjectCommandHandler(IAppDbContext db, ICacheService cache)
         {
             _db = db;
+            _cache = cache;
         }
 
         public async Task<ProjectDTO> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
@@ -32,6 +34,7 @@ namespace ChangelogSaas.Application.Projects.Commands.UpdateProjectCommand
                 request.Request.CustomDomain);
 
             await _db.SaveChangesAsync(cancellationToken);
+            await _cache.RemoveAsync($"widget:{project.Slug}");
 
             return new ProjectDTO
             {
