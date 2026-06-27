@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -10,6 +11,25 @@ import { RouterLink } from '@angular/router';
   styleUrl: './landing.scss',
 })
 export class Landing {
+  constructor() {
+    inject(Title).setTitle('HoraCHANGELOG — Beautiful changelog pages for your product');
+    inject(Meta).addTags([
+      {
+        name: 'description',
+        content:
+          'Publish release notes, collect subscribers, and notify your audience automatically. Free plan available.',
+      },
+      { name: 'robots', content: 'index, follow' },
+      { property: 'og:title', content: 'HoraCHANGELOG — Beautiful changelog pages for your product' },
+      {
+        property: 'og:description',
+        content:
+          'Publish release notes, collect subscribers, and notify your audience automatically. Free plan available.',
+      },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: 'https://horachangelog.com' },
+    ]);
+  }
   readonly steps = [
     {
       number: '01',
